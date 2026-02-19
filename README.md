@@ -95,7 +95,7 @@ Entidades principais:
 
 * Marcelo Fonseca
 * João Cláudio Beltrão
-* Vinícius Cezar Rodrigues Carvalho
+* Vinícius Cezar
 * Mateus Reinaux
 * João Mafra
 * Arthur Rodrigues
