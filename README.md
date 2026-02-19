@@ -93,10 +93,17 @@ Entidades principais:
 
 ## 👨‍💻 Equipe
 
-* Nome dos integrantes
+* Marcelo Fonseca
+* João Cláudio Beltrão
+* Vinicíus Cezar
+* Mateus Reinaux
+* João Mafra
+* Arthur Rodrigues
+
 
 ---
 
 ## 📄 Licença
 
 Projeto acadêmico desenvolvido para fins educacionais.
+Fundamentos de Software
