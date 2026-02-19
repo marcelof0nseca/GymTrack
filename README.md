@@ -98,7 +98,7 @@ Entidades principais:
 * Vinícius Cezar
 * Mateus Reinaux
 * João Mafra
-* Arthur Rodrigues
+* Arthur Rodrigues de Andrade
 
 
 ---
