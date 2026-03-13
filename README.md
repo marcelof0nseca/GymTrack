@@ -127,7 +127,7 @@ Entidades principais:
 Apresentação do sistema e explicação das funcionalidades desenvolvidas:
 
 🔗 Assista no YouTube:  
-[https://youtube.com/seu_link_aqui](https://youtu.be/NLc96nqyUZ8)
+[https://youtu.be/NLc96nqyUZ8]
 
 ---
 ## 📅 Status do Projeto
