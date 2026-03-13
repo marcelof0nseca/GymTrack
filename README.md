@@ -85,9 +85,54 @@ Entidades principais:
 
 ---
 
+## 📚 Histórias de Usuário
+
+### US01 — Cadastro de Usuário
+**Como** novo usuário  
+**Quero** criar uma conta no sistema  
+**Para** poder acessar e registrar meus treinos.
+
+---
+
+### US02 — Login no Sistema
+**Como** usuário cadastrado  
+**Quero** realizar login  
+**Para** acessar meus treinos e meu histórico.
+
+---
+
+### US03 — Criar Treino
+**Como** usuário logado  
+**Quero** criar um treino (ex: Treino A, Treino B)  
+**Para** organizar minha rotina de exercícios.
+
+---
+
+### US04 — Adicionar Exercícios ao Treino
+**Como** usuário logado  
+**Quero** adicionar exercícios com séries, repetições e carga  
+**Para** registrar como devo executar meu treino.
+
+---
+
+### US05 — Visualizar Histórico de Treinos
+**Como** usuário  
+**Quero** visualizar meus treinos realizados  
+**Para** acompanhar minha evolução na academia.
+
+---
+
+## 🎥 Screencast do Projeto
+
+Apresentação do sistema e explicação das funcionalidades desenvolvidas:
+
+🔗 Assista no YouTube:  
+[https://youtube.com/seu_link_aqui](https://youtu.be/NLc96nqyUZ8)
+
+---
 ## 📅 Status do Projeto
 
-🚧 Em desenvolvimento — *Entrega 1 (Kickoff)*
+🚧 Feito — *Entrega 1 (Kickoff)*
 
 ---
 
