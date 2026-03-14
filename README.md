@@ -13,128 +13,153 @@ A plataforma permite que o usuário cadastre **treinos**, **exercícios**, **sé
 O objetivo do sistema é substituir anotações em papel ou controles desorganizados, oferecendo uma solução simples, centralizada e acessível.
 
 ---
+## 📦 Entregas do Projeto
 
-## 🎯 Problema
+<details>
+<summary>📌 Entrega 1 — Kickoff</summary>
 
-Muitos praticantes de academia:
+## Histórias de Usuário
 
-* ❌ Não registram suas cargas e repetições
-* ❌ Não acompanham sua evolução
-* ❌ Esquecem qual treino realizar no dia
-* ❌ Não possuem histórico organizado
+<details>
+<summary>Ver histórias</summary>
 
-O **GymTrack** resolve esse problema centralizando todas as informações de treino em um único ambiente web.
+Histórias de Usuário — GymTrack
+1. Criar treino
 
----
+Descrição
 
-## 👥 Público-Alvo
+Como usuário do sistema,
+eu quero criar um treino,
+para organizar meus exercícios por categoria ou objetivo.
 
-* 🎓 Estudantes
-* 💪 Praticantes iniciantes e intermediários
-* 🏋️ Pessoas que frequentam academia regularmente
-* 📈 Usuários que desejam acompanhar sua evolução
+BDD
 
----
+Given que estou na tela de treinos
+When eu preencho o nome do treino e clico em "Criar treino"
+Then o sistema deve salvar o treino e exibi-lo na lista de treinos cadastrados.
 
-## ⚙️ Funcionalidades Principais
+2. Adicionar exercícios ao treino
 
-### 👤 Usuário
+Descrição
 
-* Cadastro de usuário
-* Login e autenticação
-* Edição de perfil
+Como usuário,
+eu quero adicionar exercícios a um treino,
+para montar a sequência de exercícios que devo realizar.
 
-### 🏋️ Treinos
+BDD
 
-* Criação de treinos (ex: Treino A, Treino B)
-* Edição e exclusão de treinos
-* Organização por dia da semana
+Given que já existe um treino criado
+When eu informo o nome do exercício, número de séries e repetições
+Then o sistema deve adicionar o exercício ao treino selecionado.
 
-### 💪 Exercícios
+3. Criar atleta
 
-* Cadastro de exercícios dentro de cada treino
-* Definição de séries
-* Definição de repetições
-* Registro de carga utilizada
+Descrição
 
-### 📊 Acompanhamento
+Como usuário,
+eu quero cadastrar um atleta,
+para registrar suas informações físicas e objetivos de treino.
 
-* Histórico de treinos realizados
-* Registro de evolução de carga
-* Visualização de progresso ao longo do tempo
+BDD
 
----
+Given que estou na tela de cadastro de atleta
+When eu preencho os dados obrigatórios e clico em "Cadastrar atleta"
+Then o sistema deve salvar o atleta e exibir seu perfil no sistema.
 
-## 🛠️ Tecnologias (Previstas)
+4. Registrar medidas
 
-* **Backend:** Django
-* **Banco de Dados:** PostgreSQL ou SQLite
-* **Frontend:** HTML, CSS, JavaScript
-* **Versionamento:** Git + GitHub
+Descrição
 
----
+Como usuário,
+eu quero registrar medidas físicas,
+para acompanhar a evolução corporal ao longo do tempo.
 
-## 🧱 Estrutura Inicial do Sistema
+BDD
 
-Entidades principais:
+Given que existe um atleta cadastrado
+When eu informo valores como peso, braço ou cintura e clico em salvar
+Then o sistema deve registrar as medidas no histórico do atleta.
 
-* Usuário
-* Treino
-* Exercício
-* Registro de Treino
+5. Criar lembretes
 
----
+Descrição
 
-## 📚 Histórias de Usuário
+Como usuário,
+eu quero criar lembretes,
+para ser avisado sobre treinos ou atividades importantes.
 
-### US01 — Cadastro de Usuário
-**Como** novo usuário  
-**Quero** criar uma conta no sistema  
-**Para** poder acessar e registrar meus treinos.
+BDD
 
----
+Given que estou na tela de lembretes
+When eu informo o título, data e horário do lembrete
+Then o sistema deve salvar o lembrete e exibi-lo na lista de lembretes.
 
-### US02 — Login no Sistema
-**Como** usuário cadastrado  
-**Quero** realizar login  
-**Para** acessar meus treinos e meu histórico.
+6. Definir metas
 
----
+Descrição
 
-### US03 — Criar Treino
-**Como** usuário logado  
-**Quero** criar um treino (ex: Treino A, Treino B)  
-**Para** organizar minha rotina de exercícios.
+Como usuário,
+eu quero definir metas de treino ou evolução,
+para ter objetivos claros dentro da minha rotina de treino.
 
----
+BDD
 
-### US04 — Adicionar Exercícios ao Treino
-**Como** usuário logado  
-**Quero** adicionar exercícios com séries, repetições e carga  
-**Para** registrar como devo executar meu treino.
+Given que estou na tela de metas
+When eu informo o nome da meta, valor objetivo e prazo
+Then o sistema deve salvar a meta e exibi-la na lista de metas.
 
----
+7. Registrar execução do treino
 
-### US05 — Visualizar Histórico de Treinos
-**Como** usuário  
-**Quero** visualizar meus treinos realizados  
-**Para** acompanhar minha evolução na academia.
+Descrição
 
----
+Como usuário,
+eu quero registrar a execução de um treino,
+para marcar os exercícios que já foram concluídos.
 
-## 🎥 Screencast do Projeto
+BDD
 
-Apresentação do sistema e explicação das funcionalidades desenvolvidas:
+Given que existe um treino com exercícios cadastrados
+When eu marco os exercícios como concluídos e finalizo o treino
+Then o sistema deve registrar que o treino foi realizado.
 
-🔗 Assista no YouTube:  
-[https://youtu.be/NLc96nqyUZ8]
+</details>
+Screencast:
+https://youtube.com/seu_video
 
----
-## 📅 Status do Projeto
+</details>
 
-🚧 Feito — *Entrega 1 (Kickoff)*
+<details>
+<summary>📌 Entrega 2 — Protótipo</summary>
 
----
+Conteúdo da segunda entrega.
+
+- Protótipo de interface
+- Modelagem inicial do sistema
+- Atualização das histórias de usuário
+
+</details>
+
+<details>
+<summary>📌 Entrega 3 — Implementação</summary>
+
+Conteúdo da terceira entrega.
+
+- Implementação das funcionalidades principais
+- Integração com banco de dados
+- Testes iniciais
+
+</details>
+
+<details>
+<summary>📌 Entrega 4 — Versão Final</summary>
+
+Conteúdo da entrega final.
+
+- Sistema completo
+- Melhorias de interface
+- Apresentação final
+
+</details>
 
 ## 👨‍💻 Equipe
 
