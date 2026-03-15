@@ -8,10 +8,6 @@
 
 O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de academia a organizarem, registrarem e acompanharem seus treinos de forma estruturada e eficiente.
 
-A plataforma permite que o usuário cadastre **treinos**, **exercícios**, **séries**, **repetições** e **cargas**, além de visualizar seu histórico e evolução ao longo do tempo.
-
-O objetivo do sistema é substituir anotações em papel ou controles desorganizados, oferecendo uma solução simples, centralizada e acessível.
-
 ---
 
 ## 👨‍💻 Integrantes
