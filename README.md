@@ -45,7 +45,7 @@ Backlog do Produto:
 ![historia](assets/Historias.png)
 
 Quadro da Sprint 1:
-![jira](assets/jira_gymtrack.png)
+![Sprint]([assets/jira_gymtrack.png](https://github.com/marcelof0nseca/GymTrack/blob/5d1877b243048587729ec81ed0dcd862fbbf58ca/assets/Jira_gymtrack.png))
 <details>
 <summary>Ver histórias</summary>
 
