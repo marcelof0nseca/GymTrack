@@ -45,7 +45,7 @@ Backlog do Produto:
 ![historia](assets/Historias.png)
 
 Quadro da Sprint 1:
-![jira](assets/jira_gymtrack.png)
+![Sprint](assets/Sprint.png)
 <details>
 <summary>Ver histórias</summary>
 
