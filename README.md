@@ -1,41 +1,42 @@
-# 🏋️ GymTrack
+#  GymTrack
+![Logo](assets/gymtrack.png)
 
 > Sistema Web para Gerenciamento de Treinos de Academia
 
 ---
 
-## 📌 Sobre o Projeto
+##   Sobre o Projeto
 
 O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de academia a organizarem, registrarem e acompanharem seus treinos de forma estruturada e eficiente.
 
 ---
 
-## 👨‍💻 Integrantes
+##  Integrantes
 
 * Marcelo Fonseca  maf@cesar.school
 * João Cláudio Beltrão  jccbf@cesar.school
 * Vinícius Cezar  vcrc@cesar.school
 * Mateus Reinaux  
-* João Mafra  jmf@cesar.school
+* João Mafra  jcmsn@cesar.school
 * Arthur Rodrigues de Andrade
 * João Lucas
 
 ---
 
-## 🔗 Links Úteis
+## Links Úteis
 
-- 📋 **Jira (Gerenciamento do Projeto)**  
+- **Jira (Gerenciamento do Projeto)**  
 [Quadro do Jira](https://gymtrackteam.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiZDc0NzljNTI3MzI0NDMyNjhkYTE3MWZlMjY5Y2FkNzIiLCJwIjoiaiJ9)
 
-- 🎨 **Protótipo no Figma**  
+-  **Protótipo no Figma**  
 [Figma](https://www.figma.com/files/team/1540039649788931211/project/572415580?fuid=1540039646964877001)
 
 ---
 
-## 📦 Entregas do Projeto
+##  Entregas do Projeto
 
 <details>
-<summary>📌 Entrega 1 — Kickoff</summary>
+<summary> Entrega 1 — Kickoff</summary>
 
 ## Histórias de Usuário
 
@@ -154,7 +155,7 @@ Then o sistema deve registrar que o treino foi realizado.
 
 </details>
 
-### 🎥 Screencast
+###  Screencast
 https://youtube.com/seu_video
 
 </details>
@@ -162,7 +163,7 @@ https://youtube.com/seu_video
 ---
 
 <details>
-<summary>📌 Entrega 2 — Protótipo</summary>
+<summary> Entrega 2 — Protótipo</summary>
 
 Conteúdo da segunda entrega.
 
@@ -175,7 +176,7 @@ Conteúdo da segunda entrega.
 ---
 
 <details>
-<summary>📌 Entrega 3 — Implementação</summary>
+<summary> Entrega 3 — Implementação</summary>
 
 Conteúdo da terceira entrega.
 
@@ -188,7 +189,7 @@ Conteúdo da terceira entrega.
 ---
 
 <details>
-<summary>📌 Entrega 4 — Versão Final</summary>
+<summary> Entrega 4 — Versão Final</summary>
 
 Conteúdo da entrega final.
 
@@ -200,7 +201,7 @@ Conteúdo da entrega final.
 
 ---
 
-## 📄 Licença
+## Licença
 
 Projeto acadêmico desenvolvido para fins educacionais.  
 Disciplina: **Fundamentos de Software**
