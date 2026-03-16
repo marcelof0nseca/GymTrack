@@ -13,8 +13,8 @@ O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de 
 
 ##  Integrantes
 
-* João Mafra  jcmsn@cesar.school
 * Marcelo Fonseca  maf@cesar.school
+* João Mafra  jcmsn@cesar.school
 * João Cláudio Beltrão  jccbf@cesar.school
 * Vinícius Cezar  vcrc@cesar.school
 * Mateus Reinaux  mrbm@cesar.school
