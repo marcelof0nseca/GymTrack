@@ -31,6 +31,11 @@ O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de 
 -  **Protótipo no Figma**  
 [Figma](https://www.figma.com/files/team/1540039649788931211/project/572415580?fuid=1540039646964877001)
 
+
+
+-  **Docs**  
+[Docs](https://docs.google.com/document/d/1_7_Va8dvJpgzO_IRk2-y4eVUFT7FXoAKBGFNV3WwMas/edit?usp=sharing)
+
 ---
 
 ##  Entregas do Projeto
