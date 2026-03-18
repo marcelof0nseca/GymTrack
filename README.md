@@ -50,7 +50,7 @@ O projeto está sendo gerenciado utilizando a metodologia **Scrum**.
 ![Sprint](assets/Sprint.png)
 
 ### Screencast
-[Assistir vídeo](https://youtu.be/zOUuL4RQky8)
+[Assistir vídeo](https://youtu.be/a5PJF1hkWF8)
 
 </details>
 
