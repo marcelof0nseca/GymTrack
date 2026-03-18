@@ -44,7 +44,7 @@ O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de 
 O projeto está sendo gerenciado utilizando a metodologia **Scrum**.
 
 ### Backlog do Produto
-![historia](assets/Historias.png)
+![historia](assets/historias.png)
 
 ### Quadro da Sprint 1
 ![Sprint](assets/Sprint.png)
