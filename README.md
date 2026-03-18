@@ -47,7 +47,7 @@ O projeto está sendo gerenciado utilizando a metodologia **Scrum**.
 ![historia](assets/historias.png)
 
 ### Quadro da Sprint 1
-![Sprint](assets/Sprint.png)
+![Sprint](assets/sprint.png)
 
 ### Screencast
 [Assistir vídeo](https://youtu.be/a5PJF1hkWF8)
