@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Criar treino</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Criar treino</button>
+</form>
+
+<h3>Treinos cadastrados</h3>
+<ul>
+    {% for treino in treinos %}
+        <li>{{ treino.nome }}</li>
+    {% empty %}
+        <li>Nenhum treino cadastrado.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

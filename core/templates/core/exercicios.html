@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Adicionar exercícios ao treino</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Adicionar exercício</button>
+</form>
+
+<h3>Exercícios cadastrados</h3>
+<ul>
+    {% for exercicio in exercicios %}
+        <li>
+            {{ exercicio.nome }} - {{ exercicio.series }}x{{ exercicio.repeticoes }}
+            (Treino: {{ exercicio.treino.nome }})
+        </li>
+    {% empty %}
+        <li>Nenhum exercício cadastrado.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

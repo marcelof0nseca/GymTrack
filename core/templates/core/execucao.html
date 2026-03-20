@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Registrar execução do treino</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Finalizar treino</button>
+</form>
+
+{% if form.errors %}
+    <div>
+        {{ form.errors }}
+    </div>
+{% endif %}
+
+<h3>Execuções registradas</h3>
+<ul>
+    {% for execucao in execucoes %}
+        <li>{{ execucao.treino.nome }} - {{ execucao.data_execucao|date:"d/m/Y H:i" }}</li>
+    {% empty %}
+        <li>Nenhuma execução registrada.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

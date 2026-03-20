@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymTrack</title>
+</head>
+<body>
+    <header>
+        <h1>GymTrack</h1>
+
+        {% if user.is_authenticated %}
+            <nav>
+                <a href="{% url 'home' %}">Início</a> |
+                <a href="{% url 'treinos' %}">Treinos</a> |
+                <a href="{% url 'exercicios' %}">Exercícios</a> |
+                <a href="{% url 'execucao' %}">Execução</a> |
+                <a href="{% url 'logout' %}">Sair</a>
+            </nav>
+        {% else %}
+            <nav>
+                <a href="{% url 'login' %}">Login</a> |
+                <a href="{% url 'register' %}">Cadastro</a>
+            </nav>
+        {% endif %}
+
+        <hr>
+    </header>
+
+    {% block content %}{% endblock %}
+</body>
+</html>

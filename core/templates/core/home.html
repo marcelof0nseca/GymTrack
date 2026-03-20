@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Bem-vindo ao GymTrack</h2>
+<p>Escolha uma funcionalidade:</p>
+
+<ul>
+    <li><a href="{% url 'treinos' %}">Criar treino</a></li>
+    <li><a href="{% url 'exercicios' %}">Adicionar exercícios</a></li>
+    <li><a href="{% url 'execucao' %}">Registrar execução</a></li>
+</ul>
+{% endblock %}
