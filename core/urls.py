@@ -9,4 +9,5 @@ urlpatterns = [
     path('treinos/', views.treinos_view, name='treinos'),
     path('exercicios/', views.exercicios_view, name='exercicios'),
     path('execucao/', views.execucao_view, name='execucao'),
+    path('treinos/excluir/<int:treino_id>/', views.excluir_treino, name='excluir_treino'),
 ]

@@ -516,3 +516,12 @@ a {
     object-fit: contain;
     display: block;
 }
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}

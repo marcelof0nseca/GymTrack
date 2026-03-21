@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-
 from .models import Treino, Exercicio, ExecucaoTreino
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
 
@@ -30,6 +29,9 @@ def login_view(request):
             login(request, user)
             return redirect('home')
 
+    form.fields['username'].label = 'Nome de usuário'
+    form.fields['password'].label = 'Senha'
+
     return render(request, 'core/login.html', {'form': form})
 
 
@@ -45,15 +47,16 @@ def home(request):
 
 @login_required
 def treinos_view(request):
-    form = TreinoForm()
-
     if request.method == 'POST':
         form = TreinoForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('treinos')
+    else:
+        form = TreinoForm()
 
-    treinos = Treino.objects.all()
+    treinos = Treino.objects.prefetch_related('exercicios').all()
+
     return render(request, 'core/treinos.html', {
         'form': form,
         'treinos': treinos
@@ -71,6 +74,7 @@ def exercicios_view(request):
             return redirect('exercicios')
 
     exercicios = Exercicio.objects.all()
+
     return render(request, 'core/exercicios.html', {
         'form': form,
         'exercicios': exercicios
@@ -88,7 +92,18 @@ def execucao_view(request):
             return redirect('execucao')
 
     execucoes = ExecucaoTreino.objects.all()
+
     return render(request, 'core/execucao.html', {
         'form': form,
         'execucoes': execucoes
     })
+
+@login_required
+def excluir_treino(request, treino_id):
+    treino = Treino.objects.get(id=treino_id)
+    
+    if request.method == 'POST':
+        treino.delete()
+        return redirect('treinos')
+
+    return redirect('treinos')

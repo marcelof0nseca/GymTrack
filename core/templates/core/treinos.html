@@ -33,19 +33,42 @@
         <p class="section-subtitle">Lista atual de treinos registrados no sistema.</p>
 
         {% if treinos %}
-            <ul class="items-list">
-                {% for treino in treinos %}
-                    <li class="item">
-                        <div>
-                            <strong>{{ treino.nome }}</strong>
-                            <span>Treino disponível para receber exercícios.</span>
+    <ul class="items-list">
+        {% for treino in treinos %}
+            <li class="item">
+        <div>
+            <strong>{{ treino.nome }}</strong>
+
+            {% if treino.exercicios.count > 0 %}
+                <span>
+                    {{ treino.exercicios.count }} exercício{{ treino.exercicios.count|pluralize }}
+                    cadastrado{{ treino.exercicios.count|pluralize }} neste treino.
+                </span>
+
+                <div class="exercise-preview-list">
+                    {% for exercicio in treino.exercicios.all %}
+                        <div class="exercise-preview-item">
+                            • {{ exercicio.nome }} — {{ exercicio.series }} séries x {{ exercicio.repeticoes }} repetições
                         </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <div class="empty-state">Nenhum treino cadastrado até o momento.</div>
-        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <span>Este treino ainda não possui exercícios cadastrados.</span>
+            {% endif %}
+        </div>
+
+        <form method="post" action="{% url 'excluir_treino' treino.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir</button>
+        </form>
+    </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="empty-state">
+        Nenhum treino cadastrado até o momento.
+    </div>
+{% endif %}
     </div>
 </section>
 {% endblock %}
