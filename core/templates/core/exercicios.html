@@ -1,23 +1,70 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Adicionar exercícios ao treino</h2>
+<section class="page-grid">
+    <div class="content-card">
+        <h2 class="section-title">Adicionar exercícios ao treino</h2>
+        <p class="section-subtitle">Associe exercícios a um treino existente, definindo séries e repetições.</p>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Adicionar exercício</button>
-</form>
+        <form method="post">
+            {% csrf_token %}
 
-<h3>Exercícios cadastrados</h3>
-<ul>
-    {% for exercicio in exercicios %}
-        <li>
-            {{ exercicio.nome }} - {{ exercicio.series }}x{{ exercicio.repeticoes }}
-            (Treino: {{ exercicio.treino.nome }})
-        </li>
-    {% empty %}
-        <li>Nenhum exercício cadastrado.</li>
-    {% endfor %}
-</ul>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="{{ form.treino.id_for_label }}">Treino</label>
+                    {{ form.treino }}
+                </div>
+
+                <div class="form-group full">
+                    <label for="{{ form.nome.id_for_label }}">Nome do exercício</label>
+                    {{ form.nome }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.series.id_for_label }}">Séries</label>
+                    {{ form.series }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.repeticoes.id_for_label }}">Repetições</label>
+                    {{ form.repeticoes }}
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    Preencha corretamente os campos do exercício.
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Adicionar exercício</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="list-card">
+        <h3 class="section-title">Exercícios cadastrados</h3>
+        <p class="section-subtitle">Exercícios já vinculados aos treinos cadastrados.</p>
+
+        {% if exercicios %}
+            <ul class="items-list">
+                {% for exercicio in exercicios %}
+                    <li class="item">
+                        <div>
+                            <strong>{{ exercicio.nome }}</strong>
+                            <span>
+                                Treino: {{ exercicio.treino.nome }} •
+                                {{ exercicio.series }} séries •
+                                {{ exercicio.repeticoes }} repetições
+                            </span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state">Nenhum exercício cadastrado até o momento.</div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

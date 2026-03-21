@@ -1,32 +1,47 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymTrack</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
-        <h1>GymTrack</h1>
+<div class="page-shell">
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <div class="brand-logo">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo do GymTrack">
 
-        {% if user.is_authenticated %}
-            <nav>
-                <a href="{% url 'home' %}">Início</a> |
-                <a href="{% url 'treinos' %}">Treinos</a> |
-                <a href="{% url 'exercicios' %}">Exercícios</a> |
-                <a href="{% url 'execucao' %}">Execução</a> |
-                <a href="{% url 'logout' %}">Sair</a>
-            </nav>
-        {% else %}
-            <nav>
-                <a href="{% url 'login' %}">Login</a> |
-                <a href="{% url 'register' %}">Cadastro</a>
-            </nav>
-        {% endif %}
+                </div>
+                <div class="brand-text">
+                    <h1>GymTrack</h1>
+                    <p>Gestão moderna de treinos</p>
+                </div>
+            </div>
 
-        <hr>
+            {% if user.is_authenticated %}
+                <nav class="nav">
+                    <a href="{% url 'home' %}">Início</a>
+                    <a href="{% url 'treinos' %}">Treinos</a>
+                    <a href="{% url 'exercicios' %}">Exercícios</a>
+                    <a href="{% url 'execucao' %}">Execução</a>
+                    <a href="{% url 'logout' %}" class="nav-primary">Sair</a>
+                </nav>
+            {% else %}
+                <nav class="nav">
+                    <a href="{% url 'login' %}">Entrar</a>
+                    <a href="{% url 'register' %}" class="nav-primary">Cadastrar</a>
+                </nav>
+            {% endif %}
+        </div>
     </header>
 
-    {% block content %}{% endblock %}
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+</div>
 </body>
 </html>

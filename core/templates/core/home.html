@@ -1,12 +1,78 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Bem-vindo ao GymTrack</h2>
-<p>Escolha uma funcionalidade:</p>
+<section class="hero">
+    <div class="hero-panel">
+        <span class="status-chip">Sistema ativo</span>
+        <h2 class="hero-title">Organize seus treinos com clareza, controle e praticidade.</h2>
+        <p class="hero-text">
+            O GymTrack foi desenvolvido para registrar treinos, adicionar exercícios e acompanhar a execução
+            das sessões de forma simples e estruturada.
+        </p>
 
-<ul>
-    <li><a href="{% url 'treinos' %}">Criar treino</a></li>
-    <li><a href="{% url 'exercicios' %}">Adicionar exercícios</a></li>
-    <li><a href="{% url 'execucao' %}">Registrar execução</a></li>
-</ul>
+        <div class="hero-actions">
+            <a href="{% url 'treinos' %}" class="btn btn-primary">Criar treino</a>
+            <a href="{% url 'exercicios' %}" class="btn btn-secondary">Adicionar exercícios</a>
+            <a href="{% url 'execucao' %}" class="btn btn-secondary">Registrar execução</a>
+        </div>
+    </div>
+
+    <div class="hero-side">
+        <div class="mini-stat">
+            <span>História 1</span>
+            <strong>Treinos</strong>
+        </div>
+        <div class="mini-stat">
+            <span>História 2</span>
+            <strong>Exercícios</strong>
+        </div>
+        <div class="mini-stat">
+            <span>História 3</span>
+            <strong>Execução</strong>
+        </div>
+    </div>
+</section>
+
+<section class="grid-2">
+    <div class="info-card">
+        <h3 class="section-title">O que você pode fazer</h3>
+        <p class="section-subtitle">Funcionalidades principais implementadas nesta entrega.</p>
+
+        <ul class="items-list">
+            <li class="item">
+                <div>
+                    <strong>Criar treino</strong>
+                    <span>Cadastre treinos por nome e organize sua rotina.</span>
+                </div>
+            </li>
+            <li class="item">
+                <div>
+                    <strong>Adicionar exercícios</strong>
+                    <span>Relacione exercícios, séries e repetições a cada treino.</span>
+                </div>
+            </li>
+            <li class="item">
+                <div>
+                    <strong>Registrar execução</strong>
+                    <span>Salve quando um treino foi realizado com sucesso.</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="info-card">
+        <h3 class="section-title">Objetivo do sistema</h3>
+        <p class="section-subtitle">
+            Centralizar o gerenciamento de treinos em uma interface simples e acessível.
+        </p>
+
+        <div class="help-box">
+            O sistema também possui autenticação com cadastro, login e logout, permitindo acesso controlado às páginas.
+        </div>
+
+        <p>
+            Esta versão foi organizada para demonstrar funcionalidades reais de CRUD e fluxo de uso de um sistema web com Django.
+        </p>
+    </div>
+</section>
 {% endblock %}

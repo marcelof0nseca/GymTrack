@@ -1,26 +1,53 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Registrar execução do treino</h2>
+<section class="page-grid">
+    <div class="content-card">
+        <h2 class="section-title">Registrar execução do treino</h2>
+        <p class="section-subtitle">
+            Selecione um treino para registrar sua execução. Apenas treinos com exercícios podem ser finalizados.
+        </p>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Finalizar treino</button>
-</form>
+        <form method="post">
+            {% csrf_token %}
 
-{% if form.errors %}
-    <div>
-        {{ form.errors }}
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="{{ form.treino.id_for_label }}">Treino</label>
+                    {{ form.treino }}
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Finalizar treino</button>
+            </div>
+        </form>
     </div>
-{% endif %}
 
-<h3>Execuções registradas</h3>
-<ul>
-    {% for execucao in execucoes %}
-        <li>{{ execucao.treino.nome }} - {{ execucao.data_execucao|date:"d/m/Y H:i" }}</li>
-    {% empty %}
-        <li>Nenhuma execução registrada.</li>
-    {% endfor %}
-</ul>
+    <div class="list-card">
+        <h3 class="section-title">Execuções registradas</h3>
+        <p class="section-subtitle">Histórico de treinos finalizados no sistema.</p>
+
+        {% if execucoes %}
+            <ul class="items-list">
+                {% for execucao in execucoes %}
+                    <li class="item">
+                        <div>
+                            <strong>{{ execucao.treino.nome }}</strong>
+                            <span>{{ execucao.data_execucao|date:"d/m/Y H:i" }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state">Nenhuma execução registrada até o momento.</div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

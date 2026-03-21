@@ -1,13 +1,46 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<h2>Cadastro</h2>
+<div class="auth-wrapper">
+    <section class="auth-card">
+        <h2 class="auth-title">Criar conta</h2>
+        <p class="auth-subtitle">Cadastre-se para começar a organizar sua rotina de treinos.</p>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Criar conta</button>
-</form>
+        <form method="post">
+            {% csrf_token %}
 
-<p>Já possui conta? <a href="{% url 'login' %}">Entrar</a></p>
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Nome de usuário</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">E-mail</label>
+                {{ form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Senha</label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirmar senha</label>
+                {{ form.password2 }}
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    Verifique os dados preenchidos e tente novamente.
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Criar conta</button>
+            </div>
+        </form>
+
+        <p class="auth-footer">Já possui conta? <a href="{% url 'login' %}">Entrar</a></p>
+    </section>
+</div>
 {% endblock %}
