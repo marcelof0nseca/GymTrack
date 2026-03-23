@@ -55,13 +55,12 @@ def treinos_view(request):
     else:
         form = TreinoForm()
 
-    treinos = Treino.objects.prefetch_related('exercicios').all()
+    treinos = Treino.objects.prefetch_related('exercicios__exercicio_base').all()
 
     return render(request, 'core/treinos.html', {
         'form': form,
         'treinos': treinos
     })
-
 
 @login_required
 def exercicios_view(request):
@@ -73,13 +72,12 @@ def exercicios_view(request):
             form.save()
             return redirect('exercicios')
 
-    exercicios = Exercicio.objects.all()
+    exercicios = Exercicio.objects.select_related('treino', 'exercicio_base').all()
 
     return render(request, 'core/exercicios.html', {
         'form': form,
         'exercicios': exercicios
     })
-
 
 @login_required
 def execucao_view(request):

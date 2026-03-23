@@ -4,7 +4,7 @@
 <section class="page-grid">
     <div class="content-card">
         <h2 class="section-title">Adicionar exercícios ao treino</h2>
-        <p class="section-subtitle">Associe exercícios a um treino existente, definindo séries e repetições.</p>
+        <p class="section-subtitle">Selecione um exercício já cadastrado no sistema e associe ao treino.</p>
 
         <form method="post">
             {% csrf_token %}
@@ -16,8 +16,8 @@
                 </div>
 
                 <div class="form-group full">
-                    <label for="{{ form.nome.id_for_label }}">Nome do exercício</label>
-                    {{ form.nome }}
+                    <label for="{{ form.exercicio_base.id_for_label }}">Exercício</label>
+                    {{ form.exercicio_base }}
                 </div>
 
                 <div class="form-group">
@@ -52,7 +52,13 @@
                 {% for exercicio in exercicios %}
                     <li class="item">
                         <div>
-                            <strong>{{ exercicio.nome }}</strong>
+                            <strong>
+                                {% if exercicio.exercicio_base %}
+                                    {{ exercicio.exercicio_base.nome }}
+                                {% else %}
+                                    {{ exercicio.nome }}
+                                {% endif %}
+                            </strong>
                             <span>
                                 Treino: {{ exercicio.treino.nome }} •
                                 {{ exercicio.series }} séries •
