@@ -5,6 +5,7 @@ from .models import Treino, Exercicio, ExecucaoTreino, ExercicioBase
 
 
 class RegisterForm(UserCreationForm):
+    nome_completo = forms.CharField(label='Nome completo', max_length=150)
     email = forms.EmailField(required=True, label='E-mail')
     username = forms.CharField(label='Nome de usuário')
     password1 = forms.CharField(label='Senha', widget=forms.PasswordInput)
@@ -12,8 +13,22 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['nome_completo', 'username', 'email', 'password1', 'password2']
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        nome_completo = self.cleaned_data['nome_completo'].strip()
+        partes_nome = nome_completo.split(' ', 1)
+
+        user.first_name = partes_nome[0]
+        user.last_name = partes_nome[1] if len(partes_nome) > 1 else ''
+        user.email = self.cleaned_data['email']
+
+        if commit:
+            user.save()
+
+        return user
 
 class TreinoForm(forms.ModelForm):
     class Meta:

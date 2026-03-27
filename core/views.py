@@ -5,8 +5,6 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Treino, Exercicio, ExecucaoTreino
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
-
-
 def register_view(request):
     form = RegisterForm()
 
@@ -43,7 +41,19 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    return render(request, 'core/home.html')
+    treinos = Treino.objects.filter(usuario=request.user)
+    exercicios = Exercicio.objects.filter(treino__usuario=request.user)
+    execucoes = ExecucaoTreino.objects.filter(treino__usuario=request.user)
+
+    return render(request, 'core/home.html', {
+        'total_treinos': treinos.count(),
+        'total_exercicios': exercicios.count(),
+        'total_execucoes': execucoes.count()
+    })
+
+@login_required
+def perfil_view(request):
+    return render(request, 'core/perfil.html')
 
 
 @login_required

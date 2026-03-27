@@ -4,10 +4,19 @@
 <section class="hero">
     <div class="hero-panel">
         <span class="status-chip">Sistema ativo</span>
-        <h2 class="hero-title">Organize seus treinos com clareza, controle e praticidade.</h2>
+
+        <h2 class="hero-title">
+            Olá,
+            {% if request.user.first_name %}
+                {{ request.user.first_name }}
+            {% else %}
+                {{ request.user.username }}
+            {% endif %}
+            👋
+        </h2>
+
         <p class="hero-text">
-            O GymTrack foi desenvolvido para registrar treinos, adicionar exercícios e acompanhar a execução
-            das sessões de forma simples e estruturada.
+            Bem-vindo ao GymTrack. Organize seus treinos com clareza, controle e praticidade.
         </p>
 
         <div class="hero-actions">
@@ -17,20 +26,22 @@
         </div>
     </div>
 
-    <div class="hero-side">
-        <div class="mini-stat">
-            <span>História 1</span>
-            <strong>Treinos</strong>
-        </div>
-        <div class="mini-stat">
-            <span>História 2</span>
-            <strong>Exercícios</strong>
-        </div>
-        <div class="mini-stat">
-            <span>História 3</span>
-            <strong>Execução</strong>
-        </div>
+<div class="hero-side">
+    <div class="mini-stat">
+        <span>Treinos cadastrados</span>
+        <strong>{{ total_treinos }}</strong>
     </div>
+
+    <div class="mini-stat">
+        <span>Exercícios adicionados</span>
+        <strong>{{ total_exercicios }}</strong>
+    </div>
+
+    <div class="mini-stat">
+        <span>Execuções realizadas</span>
+        <strong>{{ total_execucoes }}</strong>
+    </div>
+</div>
 </section>
 
 <section class="grid-2">
@@ -61,18 +72,23 @@
     </div>
 
     <div class="info-card">
-        <h3 class="section-title">Objetivo do sistema</h3>
-        <p class="section-subtitle">
-            Centralizar o gerenciamento de treinos em uma interface simples e acessível.
-        </p>
+        <h3 class="section-title">Seu perfil</h3>
+        <p class="section-subtitle">Informações do usuário logado.</p>
 
         <div class="help-box">
-            O sistema também possui autenticação com cadastro, login e logout, permitindo acesso controlado às páginas.
+            <strong>Nome:</strong>
+            {% if request.user.first_name or request.user.last_name %}
+                {{ request.user.first_name }} {{ request.user.last_name }}
+            {% else %}
+                Não informado
+            {% endif %}
+            <br>
+            <strong>Usuário:</strong> {{ request.user.username }}
+            <br>
+            <strong>E-mail:</strong> {{ request.user.email }}
         </div>
 
-        <p>
-            Esta versão foi organizada para demonstrar funcionalidades reais de CRUD e fluxo de uso de um sistema web com Django.
-        </p>
+        <a href="{% url 'perfil' %}" class="btn btn-primary">Ver perfil</a>
     </div>
 </section>
 {% endblock %}

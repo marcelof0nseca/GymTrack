@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid">
+    <div class="content-card">
+        <h2 class="section-title">Meu perfil</h2>
+        <p class="section-subtitle">Visualize os dados da sua conta no sistema.</p>
+
+        <div class="items-list">
+            <div class="item">
+                <div>
+                    <strong>Nome completo</strong>
+                    <span>
+                        {% if request.user.first_name or request.user.last_name %}
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                        {% else %}
+                            Não informado
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="item">
+                <div>
+                    <strong>Nome de usuário</strong>
+                    <span>{{ request.user.username }}</span>
+                </div>
+            </div>
+
+            <div class="item">
+                <div>
+                    <strong>E-mail</strong>
+                    <span>{{ request.user.email }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
