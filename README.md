@@ -63,7 +63,23 @@ Conteúdo da segunda entrega.
 
 - Protótipo de interface  
 - Modelagem inicial do sistema  
-- Atualização das histórias de usuário  
+- Atualização das histórias de usuário
+
+## Relatos de Pair Programming
+
+Durante o desenvolvimento do *GymTrack, adotamos a prática de *pair programming em diferentes etapas do projeto, especialmente nas partes mais críticas da implementação. As atividades foram realizadas em reuniões via Discord, com compartilhamento de tela, permitindo colaboração em tempo real e alinhamento técnico entre os integrantes.
+
+A equipe foi organizada em dois núcleos principais:
+
+- *Núcleo de Implementação:* responsável pelo desenvolvimento do sistema, incluindo backend e frontend. Esse grupo atuou diretamente na codificação das funcionalidades, integração das páginas e ajustes na interface, garantindo que o sistema estivesse funcional de acordo com os requisitos.
+
+- *Núcleo de Planejamento:* responsável pela definição da estrutura do sistema, organização das funcionalidades, construção das histórias de usuário e alinhamento das decisões técnicas. Esse grupo teve papel fundamental na orientação do desenvolvimento e validação das soluções implementadas.
+
+Essa divisão permitiu maior eficiência no fluxo de trabalho, com foco simultâneo na execução técnica e na qualidade das decisões do projeto.
+
+As reuniões foram realizadas principalmente via *Discord*, utilizando compartilhamento de tela para desenvolvimento colaborativo e resolução de problemas. A comunicação contínua entre os integrantes foi mantida por meio da própria plataforma, onde eram definidos prazos, distribuídas tarefas e acompanhada a evolução do projeto.
+
+Mesmo com a divisão de responsabilidades, houve constante interação entre os núcleos, garantindo que o sistema fosse desenvolvido de forma consistente, alinhada e dentro dos critérios estabelecidos
 
 </details>
 
