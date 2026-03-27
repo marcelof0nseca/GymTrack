@@ -46,6 +46,11 @@ a {
     color: inherit;
 }
 
+img {
+    max-width: 100%;
+    display: block;
+}
+
 .page-shell {
     min-height: 100vh;
     display: flex;
@@ -75,6 +80,7 @@ a {
     display: flex;
     align-items: center;
     gap: 14px;
+    min-width: 0;
 }
 
 .brand-badge {
@@ -89,9 +95,35 @@ a {
     box-shadow: 0 10px 24px rgba(79, 70, 229, 0.35);
 }
 
+.brand-logo {
+    width: 76px;
+    height: 76px;
+    background: white;
+    border-radius: 16px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.brand-text {
+    min-width: 0;
+}
+
 .brand-text h1 {
     font-size: 1.3rem;
     line-height: 1.1;
+    word-break: break-word;
 }
 
 .brand-text p {
@@ -113,6 +145,7 @@ a {
     color: #e5e7eb;
     font-weight: 600;
     transition: 0.25s ease;
+    white-space: nowrap;
 }
 
 .nav a:hover {
@@ -190,6 +223,7 @@ a {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    text-align: center;
 }
 
 .btn-primary {
@@ -210,6 +244,15 @@ a {
 
 .btn-secondary:hover {
     background: rgba(255,255,255,0.14);
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
 }
 
 .hero-side {
@@ -285,6 +328,7 @@ a {
 .form-group select,
 .form-group textarea {
     width: 100%;
+    min-width: 0;
     padding: 14px 14px;
     border-radius: 12px;
     border: 1px solid #d1d5db;
@@ -339,7 +383,7 @@ a {
     border-radius: 16px;
     padding: 16px 18px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
 }
@@ -455,6 +499,16 @@ a {
     margin-bottom: 20px;
 }
 
+.exercise-preview-list {
+    margin-top: 10px;
+}
+
+.exercise-preview-item {
+    margin-bottom: 6px;
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
 @media (max-width: 900px) {
     .hero,
     .grid-2,
@@ -465,21 +519,120 @@ a {
     .topbar-inner {
         flex-direction: column;
         align-items: flex-start;
+        padding: 16px 18px;
     }
 
     .nav {
         width: 100%;
         justify-content: flex-start;
     }
+
+    .main-container {
+        padding: 30px 18px 50px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .item form {
+        width: 100%;
+    }
+
+    .item .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .topbar {
+        position: static;
+    }
+
+    .topbar-inner {
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .brand {
+        gap: 10px;
+        align-items: center;
+    }
+
+    .brand-logo {
+        width: 58px;
+        height: 58px;
+        padding: 6px;
+        border-radius: 12px;
+    }
+
+    .brand-text h1 {
+        font-size: 1.05rem;
+    }
+
+    .brand-text p {
+        font-size: 0.78rem;
+    }
+
+    .nav {
+        gap: 8px;
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .nav a {
+        padding: 8px 11px;
+        font-size: 0.92rem;
+    }
+
+    .hero-panel,
+    .content-card,
+    .list-card,
+    .info-card,
+    .auth-card {
+        padding: 22px;
+    }
+
+    .section-title {
+        font-size: 1.35rem;
+    }
+
+    .section-subtitle {
+        margin-bottom: 18px;
+    }
 }
 
 @media (max-width: 600px) {
     .main-container {
-        padding: 24px 14px 40px;
+        padding: 22px 14px 36px;
+    }
+
+    .hero {
+        gap: 18px;
+        margin-bottom: 22px;
     }
 
     .hero-title {
-        font-size: 1.8rem;
+        font-size: 1.65rem;
+    }
+
+    .hero-text {
+        font-size: 0.96rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
     }
 
     .content-card,
@@ -487,41 +640,60 @@ a {
     .info-card,
     .auth-card,
     .hero-panel {
-        padding: 22px;
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .mini-stat {
+        padding: 18px;
+    }
+
+    .mini-stat strong {
+        font-size: 1.7rem;
     }
 
     .item {
-        flex-direction: column;
-        align-items: flex-start;
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .auth-card {
+        max-width: 100%;
+    }
+
+    .auth-title {
+        font-size: 1.7rem;
+    }
+
+    .btn {
+        width: 100%;
     }
 }
 
-.brand-logo {
-    width: 76px;
-    height: 76px;
-    background: white;
-    border-radius: 16px;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    flex-shrink: 0;
-}
+@media (max-width: 420px) {
+    .brand-logo {
+        width: 52px;
+        height: 52px;
+    }
 
-.brand-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-}
+    .brand-text h1 {
+        font-size: 0.98rem;
+    }
 
-.btn-danger {
-    background: #dc2626;
-    color: white;
-}
+    .brand-text p {
+        font-size: 0.72rem;
+    }
 
-.btn-danger:hover {
-    background: #b91c1c;
+    .nav a {
+        font-size: 0.86rem;
+        padding: 7px 10px;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
 }
