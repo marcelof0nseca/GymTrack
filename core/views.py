@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+
 from .models import Treino, Exercicio, ExecucaoTreino
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
 
@@ -50,56 +51,83 @@ def treinos_view(request):
     if request.method == 'POST':
         form = TreinoForm(request.POST)
         if form.is_valid():
-            form.save()
+            treino = form.save(commit=False)
+            treino.usuario = request.user
+            treino.save()
             return redirect('treinos')
     else:
         form = TreinoForm()
 
-    treinos = Treino.objects.prefetch_related('exercicios__exercicio_base').all()
+    treinos = Treino.objects.filter(
+        usuario=request.user
+    ).prefetch_related('exercicios__exercicio_base')
 
     return render(request, 'core/treinos.html', {
         'form': form,
         'treinos': treinos
     })
 
+
 @login_required
 def exercicios_view(request):
-    form = ExercicioForm()
-
     if request.method == 'POST':
         form = ExercicioForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('exercicios')
+            exercicio = form.save(commit=False)
 
-    exercicios = Exercicio.objects.select_related('treino', 'exercicio_base').all()
+            if exercicio.treino.usuario != request.user:
+                return redirect('exercicios')
+
+            exercicio.save()
+            return redirect('exercicios')
+    else:
+        form = ExercicioForm()
+
+    form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+
+    exercicios = Exercicio.objects.select_related(
+        'treino',
+        'exercicio_base'
+    ).filter(treino__usuario=request.user)
 
     return render(request, 'core/exercicios.html', {
         'form': form,
         'exercicios': exercicios
     })
 
+
 @login_required
 def execucao_view(request):
-    form = ExecucaoTreinoForm()
-
     if request.method == 'POST':
         form = ExecucaoTreinoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('execucao')
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
 
-    execucoes = ExecucaoTreino.objects.all()
+        if form.is_valid():
+            execucao = form.save(commit=False)
+
+            if execucao.treino.usuario != request.user:
+                return redirect('execucao')
+
+            execucao.save()
+            return redirect('execucao')
+    else:
+        form = ExecucaoTreinoForm()
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+
+    execucoes = ExecucaoTreino.objects.select_related('treino').filter(
+        treino__usuario=request.user
+    )
 
     return render(request, 'core/execucao.html', {
         'form': form,
         'execucoes': execucoes
     })
 
+
 @login_required
 def excluir_treino(request, treino_id):
-    treino = Treino.objects.get(id=treino_id)
-    
+    treino = get_object_or_404(Treino, id=treino_id, usuario=request.user)
+
     if request.method == 'POST':
         treino.delete()
         return redirect('treinos')
