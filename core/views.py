@@ -82,6 +82,8 @@ def treinos_view(request):
 def exercicios_view(request):
     if request.method == 'POST':
         form = ExercicioForm(request.POST)
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+
         if form.is_valid():
             exercicio = form.save(commit=False)
 
@@ -92,19 +94,29 @@ def exercicios_view(request):
             return redirect('exercicios')
     else:
         form = ExercicioForm()
-
-    form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
 
     exercicios = Exercicio.objects.select_related(
         'treino',
         'exercicio_base'
-    ).filter(treino__usuario=request.user)
+    ).filter(
+        treino__usuario=request.user
+    ).order_by('exercicio_base__grupo_muscular', 'exercicio_base__nome')
+
+    exercicios_agrupados = {}
+
+    for exercicio in exercicios:
+        grupo = exercicio.exercicio_base.grupo_muscular if exercicio.exercicio_base else 'Outros'
+
+        if grupo not in exercicios_agrupados:
+            exercicios_agrupados[grupo] = []
+
+        exercicios_agrupados[grupo].append(exercicio)
 
     return render(request, 'core/exercicios.html', {
         'form': form,
-        'exercicios': exercicios
+        'exercicios_agrupados': exercicios_agrupados
     })
-
 
 @login_required
 def execucao_view(request):

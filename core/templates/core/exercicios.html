@@ -45,29 +45,35 @@
 
     <div class="list-card">
         <h3 class="section-title">Exercícios cadastrados</h3>
-        <p class="section-subtitle">Exercícios já vinculados aos treinos cadastrados.</p>
+        <p class="section-subtitle">Exercícios já vinculados aos treinos, agrupados por grupamento muscular.</p>
 
-        {% if exercicios %}
-            <ul class="items-list">
-                {% for exercicio in exercicios %}
-                    <li class="item">
-                        <div>
-                            <strong>
-                                {% if exercicio.exercicio_base %}
-                                    {{ exercicio.exercicio_base.nome }}
-                                {% else %}
-                                    {{ exercicio.nome }}
-                                {% endif %}
-                            </strong>
-                            <span>
-                                Treino: {{ exercicio.treino.nome }} •
-                                {{ exercicio.series }} séries •
-                                {{ exercicio.repeticoes }} repetições
-                            </span>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
+        {% if exercicios_agrupados %}
+            {% for grupo, lista_exercicios in exercicios_agrupados.items %}
+                <div class="muscle-group-block">
+                    <h4 class="muscle-group-title">{{ grupo }}</h4>
+
+                    <ul class="items-list">
+                        {% for exercicio in lista_exercicios %}
+                            <li class="item">
+                                <div>
+                                    <strong>
+                                        {% if exercicio.exercicio_base %}
+                                            {{ exercicio.exercicio_base.nome }}
+                                        {% else %}
+                                            {{ exercicio.nome }}
+                                        {% endif %}
+                                    </strong>
+                                    <span>
+                                        Treino: {{ exercicio.treino.nome }} •
+                                        {{ exercicio.series }} séries •
+                                        {{ exercicio.repeticoes }} repetições
+                                    </span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
         {% else %}
             <div class="empty-state">Nenhum exercício cadastrado até o momento.</div>
         {% endif %}

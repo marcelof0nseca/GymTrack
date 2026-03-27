@@ -697,3 +697,16 @@ img {
         font-size: 1.2rem;
     }
 }
+
+.muscle-group-block {
+    margin-top: 24px;
+}
+
+.muscle-group-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e5e7eb;
+}
