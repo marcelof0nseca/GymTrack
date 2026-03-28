@@ -17,6 +17,9 @@
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nome de usuário</label>
                 {{ form.username }}
+                <small class="form-hint">
+                    Esse será o nome usado para entrar no sistema (não é o e-mail).
+                </small>
             </div>
 
             <div class="form-group">
@@ -24,14 +27,35 @@
                 {{ form.email }}
             </div>
 
-            <div class="form-group">
+            <!-- SENHA -->
+            <div class="form-group password-group">
                 <label for="{{ form.password1.id_for_label }}">Senha</label>
-                {{ form.password1 }}
+
+                <div class="password-wrapper">
+                    {{ form.password1 }}
+                    <button type="button" class="toggle-password">👁️</button>
+                </div>
+
+                <small class="form-hint">
+                    • mínimo de 8 caracteres<br>
+                    • use letras e números<br>
+                    • evite senhas simples como "12345678"<br>
+                    • não use algo parecido com seu usuário
+                </small>
             </div>
 
-            <div class="form-group">
+            <!-- CONFIRMAR SENHA -->
+            <div class="form-group password-group">
                 <label for="{{ form.password2.id_for_label }}">Confirmar senha</label>
-                {{ form.password2 }}
+
+                <div class="password-wrapper">
+                    {{ form.password2 }}
+                    <button type="button" class="toggle-password">👁️</button>
+                </div>
+
+                <small class="form-hint">
+                    Digite a mesma senha novamente.
+                </small>
             </div>
 
             {% if form.errors %}
@@ -45,7 +69,9 @@
             </div>
         </form>
 
-        <p class="auth-footer">Já possui conta? <a href="{% url 'login' %}">Entrar</a></p>
+        <p class="auth-footer">
+            Já possui conta? <a href="{% url 'login' %}">Entrar</a>
+        </p>
     </section>
 </div>
 {% endblock %}

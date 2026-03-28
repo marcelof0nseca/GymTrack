@@ -795,3 +795,35 @@ img {
 .auto-hide {
     transition: all 0.5s ease;
 }
+
+.form-hint {
+    font-size: 0.85rem;
+    color: #d1d5db;
+    margin-top: 4px;
+    display: block;
+    line-height: 1.5;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #9aa4b2;
+}
+
+.toggle-password:hover {
+    color: #4f46e5;
+}
