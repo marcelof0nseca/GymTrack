@@ -62,5 +62,7 @@ class ExecucaoTreinoForm(forms.ModelForm):
     def clean_treino(self):
         treino = self.cleaned_data['treino']
         if treino.exercicios.count() == 0:
-            raise forms.ValidationError('Não é possível registrar a execução de um treino sem exercícios.')
+            raise forms.ValidationError(
+                'Esse treino ainda não possui exercícios cadastrados. Adicione pelo menos um exercício antes de finalizar.'
+            )
         return treino

@@ -710,3 +710,12 @@ img {
     padding-bottom: 6px;
     border-bottom: 2px solid #e5e7eb;
 }
+
+
+.alert p {
+    margin: 0;
+}
+
+.alert p + p {
+    margin-top: 8px;
+}
