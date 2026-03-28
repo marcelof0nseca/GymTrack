@@ -6,17 +6,24 @@
         <h2 class="auth-title">Entrar</h2>
         <p class="auth-subtitle">Acesse sua conta para gerenciar treinos, exercícios e execuções.</p>
 
-        <form method="post">
+        <form method="post" class="submit-once-form">
             {% csrf_token %}
 
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nome de usuário</label>
                 {{ form.username }}
+                <small class="form-hint">
+                    Entre usando seu nome de usuário, não o e-mail.
+                </small>
             </div>
 
-            <div class="form-group">
+            <div class="form-group password-group">
                 <label for="{{ form.password.id_for_label }}">Senha</label>
-                {{ form.password }}
+
+                <div class="password-wrapper">
+                    {{ form.password }}
+                    <button type="button" class="toggle-password">👁️</button>
+                </div>
             </div>
 
             {% if form.errors %}
@@ -26,7 +33,9 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Entrar</button>
+                <button type="submit" class="btn btn-primary submit-btn" data-loading-text="Entrando...">
+                    Entrar
+                </button>
             </div>
         </form>
 

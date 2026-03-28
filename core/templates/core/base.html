@@ -69,8 +69,6 @@
             }
         });
     });
-</script>
-<script>
 
     setTimeout(() => {
         const alerts = document.querySelectorAll('.auto-hide');
@@ -83,7 +81,19 @@
                 alert.remove();
             }, 500);
         });
-    }, 3000); // 3 segundos
+    }, 3000);
+
+    document.querySelectorAll('.submit-once-form').forEach((form) => {
+        form.addEventListener('submit', () => {
+            const submitButton = form.querySelector('.submit-btn');
+
+            if (submitButton) {
+                const loadingText = submitButton.dataset.loadingText || 'Enviando...';
+                submitButton.disabled = true;
+                submitButton.textContent = loadingText;
+            }
+        });
+    });
 </script>
 </body>
 </html>

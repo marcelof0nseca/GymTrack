@@ -16,6 +16,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, 'Conta criada com sucesso! Bem-vindo ao GymTrack.')
             return redirect('home')
 
     return render(request, 'core/register.html', {'form': form})
@@ -29,6 +30,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            messages.success(request, 'Login realizado com sucesso!')
             return redirect('home')
 
     form.fields['username'].label = 'Nome de usuário'
@@ -44,14 +46,16 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    treinos = Treino.objects.filter(usuario=request.user)
+    treinos = Treino.objects.filter(usuario=request.user).order_by('-id')
     exercicios = Exercicio.objects.filter(treino__usuario=request.user)
-    execucoes = ExecucaoTreino.objects.filter(treino__usuario=request.user)
+    execucoes = ExecucaoTreino.objects.filter(treino__usuario=request.user).select_related('treino').order_by('-id')
 
     return render(request, 'core/home.html', {
         'total_treinos': treinos.count(),
         'total_exercicios': exercicios.count(),
-        'total_execucoes': execucoes.count()
+        'total_execucoes': execucoes.count(),
+        'ultimo_treino': treinos.first(),
+        'ultima_execucao': execucoes.first(),
     })
 
 
@@ -75,7 +79,7 @@ def treinos_view(request):
 
     treinos = Treino.objects.filter(
         usuario=request.user
-    ).prefetch_related('exercicios__exercicio_base')
+    ).prefetch_related('exercicios__exercicio_base').order_by('-id')
 
     return render(request, 'core/treinos.html', {
         'form': form,
@@ -87,19 +91,21 @@ def treinos_view(request):
 def exercicios_view(request):
     if request.method == 'POST':
         form = ExercicioForm(request.POST)
-        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
 
         if form.is_valid():
             exercicio = form.save(commit=False)
 
             if exercicio.treino.usuario != request.user:
+                messages.error(request, 'Você não tem permissão para adicionar exercícios a este treino.')
                 return redirect('exercicios')
 
             exercicio.save()
+            messages.success(request, 'Exercício adicionado com sucesso!')
             return redirect('exercicios')
     else:
         form = ExercicioForm()
-        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
 
     exercicios = Exercicio.objects.select_related(
         'treino',
@@ -128,23 +134,25 @@ def exercicios_view(request):
 def execucao_view(request):
     if request.method == 'POST':
         form = ExecucaoTreinoForm(request.POST)
-        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
 
         if form.is_valid():
             execucao = form.save(commit=False)
 
             if execucao.treino.usuario != request.user:
+                messages.error(request, 'Você não tem permissão para registrar este treino.')
                 return redirect('execucao')
 
             execucao.save()
+            messages.success(request, 'Execução registrada com sucesso!')
             return redirect('execucao')
     else:
         form = ExecucaoTreinoForm()
-        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user)
+        form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
 
     execucoes = ExecucaoTreino.objects.select_related('treino').filter(
         treino__usuario=request.user
-    )
+    ).order_by('-id')
 
     return render(request, 'core/execucao.html', {
         'form': form,
@@ -172,8 +180,18 @@ def editar_treino_view(request, treino_id):
         usuario=request.user
     )
 
+    if request.method == 'POST':
+        form = TreinoForm(request.POST, instance=treino)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Treino atualizado com sucesso!')
+            return redirect('editar_treino', treino_id=treino.id)
+    else:
+        form = TreinoForm(instance=treino)
+
     return render(request, 'core/editar_treino.html', {
-        'treino': treino
+        'treino': treino,
+        'form': form
     })
 
 

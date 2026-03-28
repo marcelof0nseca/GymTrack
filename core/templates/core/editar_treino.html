@@ -5,7 +5,38 @@
     <div class="content-card">
         <h2 class="section-title">Editar treino</h2>
         <p class="section-subtitle">
-            Gerencie os exercícios do treino <strong>{{ treino.nome }}</strong>.
+            Atualize o nome do treino e gerencie os exercícios cadastrados.
+        </p>
+
+        <form method="post" class="submit-once-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="{{ form.nome.id_for_label }}">Nome do treino</label>
+                    {{ form.nome }}
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    Verifique os dados informados antes de salvar.
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary submit-btn" data-loading-text="Salvando...">
+                    Salvar alterações
+                </button>
+                <a href="{% url 'treinos' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="list-card">
+        <h3 class="section-title">Exercícios do treino</h3>
+        <p class="section-subtitle">
+            Gerencie os exercícios vinculados a <strong>{{ treino.nome }}</strong>.
         </p>
 
         {% if treino.exercicios.count > 0 %}
@@ -21,16 +52,18 @@
                                 {% endif %}
                             </strong>
                             <span>
-                                {{ exercicio.series }} séries •
-                                {{ exercicio.repeticoes }} repetições
+                                {{ exercicio.series }} séries • {{ exercicio.repeticoes }} repetições
                             </span>
                         </div>
 
                         <form method="post"
+                              class="submit-once-form"
                               action="{% url 'excluir_exercicio' exercicio.id %}"
                               onsubmit="return confirm('Tem certeza que deseja excluir este exercício do treino?');">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm submit-btn"
+                                    data-loading-text="Excluindo...">
                                 Excluir exercício
                             </button>
                         </form>
@@ -39,7 +72,7 @@
             </ul>
         {% else %}
             <div class="empty-state">
-                Este treino ainda não possui exercícios cadastrados.
+                Este treino ainda não possui exercícios cadastrados. Adicione um exercício para começar.
             </div>
         {% endif %}
 

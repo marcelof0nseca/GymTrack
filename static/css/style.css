@@ -827,3 +827,44 @@ img {
 .toggle-password:hover {
     color: #4f46e5;
 }
+
+
+.submit-btn[disabled] {
+    opacity: 0.75;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.input-readonly {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.empty-state strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #111827;
+}
+
+.info-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.info-line {
+    color: #6b7280;
+    font-size: 0.96rem;
+}
+
+.form-actions a.btn {
+    text-decoration: none;
+}
+
+.auth-card .toggle-password {
+    color: #d1d5db;
+}
+
+.auth-card .toggle-password:hover {
+    color: white;
+}
