@@ -3,8 +3,6 @@
 {% block content %}
 <section class="hero">
     <div class="hero-panel">
-        <span class="status-chip">Sistema ativo</span>
-
         <h2 class="hero-title">
             Olá,
             {% if request.user.first_name %}
@@ -16,7 +14,7 @@
         </h2>
 
         <p class="hero-text">
-            Bem-vindo ao GymTrack. Organize seus treinos com clareza, controle e praticidade.
+            Organize seus treinos com mais clareza, acompanhe seus exercícios e registre suas execuções de forma prática.
         </p>
 
         <div class="hero-actions">
@@ -26,28 +24,28 @@
         </div>
     </div>
 
-<div class="hero-side">
-    <div class="mini-stat">
-        <span>Treinos cadastrados</span>
-        <strong>{{ total_treinos }}</strong>
-    </div>
+    <div class="hero-side">
+        <div class="mini-stat">
+            <span>Treinos cadastrados</span>
+            <strong>{{ total_treinos }}</strong>
+        </div>
 
-    <div class="mini-stat">
-        <span>Exercícios adicionados</span>
-        <strong>{{ total_exercicios }}</strong>
-    </div>
+        <div class="mini-stat">
+            <span>Exercícios adicionados</span>
+            <strong>{{ total_exercicios }}</strong>
+        </div>
 
-    <div class="mini-stat">
-        <span>Execuções realizadas</span>
-        <strong>{{ total_execucoes }}</strong>
+        <div class="mini-stat">
+            <span>Execuções realizadas</span>
+            <strong>{{ total_execucoes }}</strong>
+        </div>
     </div>
-</div>
 </section>
 
 <section class="grid-2">
     <div class="info-card">
         <h3 class="section-title">O que você pode fazer</h3>
-        <p class="section-subtitle">Funcionalidades principais implementadas nesta entrega.</p>
+        <p class="section-subtitle">Principais funcionalidades disponíveis no sistema.</p>
 
         <ul class="items-list">
             <li class="item">
@@ -59,13 +57,13 @@
             <li class="item">
                 <div>
                     <strong>Adicionar exercícios</strong>
-                    <span>Relacione exercícios, séries e repetições a cada treino.</span>
+                    <span>Associe exercícios, séries e repetições a cada treino.</span>
                 </div>
             </li>
             <li class="item">
                 <div>
                     <strong>Registrar execução</strong>
-                    <span>Salve quando um treino foi realizado com sucesso.</span>
+                    <span>Salve quando um treino foi concluído com sucesso.</span>
                 </div>
             </li>
         </ul>
@@ -73,7 +71,7 @@
 
     <div class="info-card">
         <h3 class="section-title">Seu perfil</h3>
-        <p class="section-subtitle">Informações do usuário logado.</p>
+        <p class="section-subtitle">Informações da conta atualmente logada.</p>
 
         <div class="help-box">
             <strong>Nome:</strong>
