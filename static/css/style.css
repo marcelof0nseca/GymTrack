@@ -237,13 +237,13 @@ img {
 }
 
 .btn-secondary {
-    background: rgba(255,255,255,0.08);
-    color: white;
-    border: 1px solid var(--border);
+    background: #eef2ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,0.14);
+    background: #e0e7ff;
 }
 
 .btn-danger {
@@ -718,4 +718,80 @@ img {
 
 .alert p + p {
     margin-top: 8px;
+}
+
+.exercise-preview-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5e7eb;
+    flex-wrap: wrap;
+}
+
+.exercise-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-sm {
+    padding: 8px 12px;
+    font-size: 0.88rem;
+}
+
+@media (max-width: 600px) {
+    .exercise-preview-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .exercise-actions {
+        width: 100%;
+    }
+
+    .exercise-actions .btn,
+    .exercise-actions form {
+        width: 100%;
+    }
+
+    .exercise-actions form .btn {
+        width: 100%;
+    }
+}
+
+.treino-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.btn-sm {
+    padding: 8px 12px;
+    font-size: 0.88rem;
+}
+
+@media (max-width: 600px) {
+    .treino-actions {
+        width: 100%;
+    }
+
+    .treino-actions .btn,
+    .treino-actions form {
+        width: 100%;
+    }
+
+    .treino-actions form .btn {
+        width: 100%;
+    }
+}
+
+.alert {
+    margin-bottom: 20px;
+}
+
+.auto-hide {
+    transition: all 0.5s ease;
 }

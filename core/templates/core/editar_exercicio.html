@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid">
+    <div class="content-card">
+        <h2 class="section-title">Editar exercício</h2>
+        <p class="section-subtitle">Atualize os dados do exercício cadastrado.</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="{{ form.treino.id_for_label }}">Treino</label>
+                    {{ form.treino }}
+                </div>
+
+                <div class="form-group full">
+                    <label for="{{ form.exercicio_base.id_for_label }}">Exercício</label>
+                    {{ form.exercicio_base }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.series.id_for_label }}">Séries</label>
+                    {{ form.series }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.repeticoes.id_for_label }}">Repetições</label>
+                    {{ form.repeticoes }}
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    Verifique os dados informados antes de salvar.
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                <a href="{% url 'treinos' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

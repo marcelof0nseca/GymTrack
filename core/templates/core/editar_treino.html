@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid">
+    <div class="content-card">
+        <h2 class="section-title">Editar treino</h2>
+        <p class="section-subtitle">
+            Gerencie os exercícios do treino <strong>{{ treino.nome }}</strong>.
+        </p>
+
+        {% if treino.exercicios.count > 0 %}
+            <ul class="items-list">
+                {% for exercicio in treino.exercicios.all %}
+                    <li class="item">
+                        <div>
+                            <strong>
+                                {% if exercicio.exercicio_base %}
+                                    {{ exercicio.exercicio_base.nome }}
+                                {% else %}
+                                    {{ exercicio.nome }}
+                                {% endif %}
+                            </strong>
+                            <span>
+                                {{ exercicio.series }} séries •
+                                {{ exercicio.repeticoes }} repetições
+                            </span>
+                        </div>
+
+                        <form method="post"
+                              action="{% url 'excluir_exercicio' exercicio.id %}"
+                              onsubmit="return confirm('Tem certeza que deseja excluir este exercício do treino?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Excluir exercício
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state">
+                Este treino ainda não possui exercícios cadastrados.
+            </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <a href="{% url 'exercicios' %}" class="btn btn-primary">Adicionar exercício</a>
+            <a href="{% url 'treinos' %}" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

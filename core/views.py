@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import Treino, Exercicio, ExecucaoTreino
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
+
+
 def register_view(request):
     form = RegisterForm()
 
@@ -51,6 +54,7 @@ def home(request):
         'total_execucoes': execucoes.count()
     })
 
+
 @login_required
 def perfil_view(request):
     return render(request, 'core/perfil.html')
@@ -64,6 +68,7 @@ def treinos_view(request):
             treino = form.save(commit=False)
             treino.usuario = request.user
             treino.save()
+            messages.success(request, 'Treino criado com sucesso!')
             return redirect('treinos')
     else:
         form = TreinoForm()
@@ -118,6 +123,7 @@ def exercicios_view(request):
         'exercicios_agrupados': exercicios_agrupados
     })
 
+
 @login_required
 def execucao_view(request):
     if request.method == 'POST':
@@ -152,6 +158,37 @@ def excluir_treino(request, treino_id):
 
     if request.method == 'POST':
         treino.delete()
+        messages.success(request, 'Treino excluído com sucesso!')
         return redirect('treinos')
+
+    return redirect('treinos')
+
+
+@login_required
+def editar_treino_view(request, treino_id):
+    treino = get_object_or_404(
+        Treino.objects.prefetch_related('exercicios__exercicio_base'),
+        id=treino_id,
+        usuario=request.user
+    )
+
+    return render(request, 'core/editar_treino.html', {
+        'treino': treino
+    })
+
+
+@login_required
+def excluir_exercicio(request, exercicio_id):
+    exercicio = get_object_or_404(
+        Exercicio,
+        id=exercicio_id,
+        treino__usuario=request.user
+    )
+
+    if request.method == 'POST':
+        treino_id = exercicio.treino.id
+        exercicio.delete()
+        messages.success(request, 'Exercício excluído com sucesso!')
+        return redirect('editar_treino', treino_id=treino_id)
 
     return redirect('treinos')

@@ -41,8 +41,33 @@
     </header>
 
     <main class="main-container">
-        {% block content %}{% endblock %}
-    </main>
+
+{% if messages %}
+    <div id="alerts-container">
+        {% for message in messages %}
+            <div class="alert alert-success auto-hide">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+    {% block content %}{% endblock %}
+</main>
 </div>
+<script>
+    setTimeout(() => {
+        const alerts = document.querySelectorAll('.auto-hide');
+
+        alerts.forEach(alert => {
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-10px)';
+
+            setTimeout(() => {
+                alert.remove();
+            }, 500);
+        });
+    }, 3000); // 3 segundos
+</script>
 </body>
 </html>
