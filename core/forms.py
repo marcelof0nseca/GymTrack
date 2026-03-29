@@ -30,6 +30,7 @@ class RegisterForm(UserCreationForm):
 
         return user
 
+
 class TreinoForm(forms.ModelForm):
     class Meta:
         model = Treino
@@ -63,6 +64,6 @@ class ExecucaoTreinoForm(forms.ModelForm):
         treino = self.cleaned_data['treino']
         if treino.exercicios.count() == 0:
             raise forms.ValidationError(
-                'Esse treino ainda não possui exercícios cadastrados. Adicione pelo menos um exercício antes de finalizar.'
+                'Esse treino ainda não possui exercícios cadastrados. Adicione pelo menos um exercício antes de iniciar.'
             )
         return treino

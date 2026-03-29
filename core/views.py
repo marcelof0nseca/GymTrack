@@ -3,8 +3,9 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 
-from .models import Treino, Exercicio, ExecucaoTreino
+from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
 
 
@@ -53,7 +54,7 @@ def home(request):
     return render(request, 'core/home.html', {
         'total_treinos': treinos.count(),
         'total_exercicios': exercicios.count(),
-        'total_execucoes': execucoes.count(),
+        'total_execucoes': execucoes.filter(status='concluido').count(),
         'ultimo_treino': treinos.first(),
         'ultima_execucao': execucoes.first(),
     })
@@ -137,15 +138,25 @@ def execucao_view(request):
         form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
 
         if form.is_valid():
-            execucao = form.save(commit=False)
+            treino = form.cleaned_data['treino']
 
-            if execucao.treino.usuario != request.user:
-                messages.error(request, 'Você não tem permissão para registrar este treino.')
+            if treino.usuario != request.user:
+                messages.error(request, 'Você não tem permissão para iniciar este treino.')
                 return redirect('execucao')
 
-            execucao.save()
-            messages.success(request, 'Execução registrada com sucesso!')
-            return redirect('execucao')
+            execucao = ExecucaoTreino.objects.create(
+                treino=treino,
+                status='em_andamento'
+            )
+
+            for exercicio in treino.exercicios.all():
+                ExecucaoExercicio.objects.create(
+                    execucao=execucao,
+                    exercicio=exercicio
+                )
+
+            messages.success(request, 'Treino iniciado com sucesso!')
+            return redirect('execucao_detalhe', execucao_id=execucao.id)
     else:
         form = ExecucaoTreinoForm()
         form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
@@ -158,6 +169,46 @@ def execucao_view(request):
         'form': form,
         'execucoes': execucoes
     })
+
+
+@login_required
+def execucao_detalhe_view(request, execucao_id):
+    execucao = get_object_or_404(
+        ExecucaoTreino.objects.select_related('treino').prefetch_related('itens__exercicio__exercicio_base'),
+        id=execucao_id,
+        treino__usuario=request.user
+    )
+
+    return render(request, 'core/execucao_detalhe.html', {
+        'execucao': execucao
+    })
+
+
+@login_required
+def concluir_exercicio_view(request, item_id):
+    item = get_object_or_404(
+        ExecucaoExercicio.objects.select_related('execucao', 'exercicio__exercicio_base'),
+        id=item_id,
+        execucao__treino__usuario=request.user
+    )
+
+    if request.method == 'POST':
+        if not item.concluido:
+            item.concluido = True
+            item.data_conclusao = timezone.now()
+            item.save()
+
+            execucao = item.execucao
+            if execucao.itens.filter(concluido=False).count() == 0:
+                execucao.status = 'concluido'
+                execucao.save()
+                messages.success(request, 'Treino concluído com sucesso!')
+            else:
+                messages.success(request, 'Exercício marcado como concluído!')
+
+        return redirect('execucao_detalhe', execucao_id=item.execucao.id)
+
+    return redirect('execucao')
 
 
 @login_required

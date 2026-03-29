@@ -868,3 +868,103 @@ img {
 .auth-card .toggle-password:hover {
     color: white;
 }
+
+
+.submit-btn[disabled] {
+    opacity: 0.75;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.input-readonly {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.empty-state strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #111827;
+}
+
+.info-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.info-line {
+    color: #6b7280;
+    font-size: 0.96rem;
+}
+
+.form-actions a.btn {
+    text-decoration: none;
+}
+
+.auth-card .toggle-password {
+    color: #d1d5db;
+}
+
+.auth-card .toggle-password:hover {
+    color: white;
+}
+
+.progress-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    color: #111827;
+    font-weight: 700;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.execution-item {
+    align-items: center;
+}
+
+.execution-complete {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+
+.status-badge {
+    display: inline-flex;
+    margin-top: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.status-done {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}

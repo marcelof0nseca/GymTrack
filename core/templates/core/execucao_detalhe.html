@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid">
+    <div class="content-card">
+        <h2 class="section-title">Execução do treino</h2>
+        <p class="section-subtitle">
+            <strong>{{ execucao.treino.nome }}</strong> • {{ execucao.get_status_display }}
+        </p>
+
+        <div class="progress-card">
+            <div class="progress-header">
+                <span>Progresso do treino</span>
+                <strong>{{ execucao.exercicios_concluidos }}/{{ execucao.total_exercicios }}</strong>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill"
+                     style="width:
+                     {% if execucao.total_exercicios > 0 %}
+                        {% widthratio execucao.exercicios_concluidos execucao.total_exercicios 100 %}%
+                     {% else %}
+                        0%
+                     {% endif %};">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-card">
+        <h3 class="section-title">Exercícios do treino</h3>
+        <p class="section-subtitle">
+            Marque cada exercício como concluído para finalizar o treino.
+        </p>
+
+        {% if execucao.itens.all %}
+            <ul class="items-list">
+                {% for item in execucao.itens.all %}
+                    <li class="item execution-item {% if item.concluido %}execution-complete{% endif %}">
+                        <div>
+                            <strong>
+                                {% if item.exercicio.exercicio_base %}
+                                    {{ item.exercicio.exercicio_base.nome }}
+                                {% else %}
+                                    {{ item.exercicio.nome }}
+                                {% endif %}
+                            </strong>
+                            <span>
+                                {{ item.exercicio.series }} séries • {{ item.exercicio.repeticoes }} repetições
+                            </span>
+
+                            {% if item.concluido %}
+                                <div class="status-badge status-done">Concluído</div>
+                            {% else %}
+                                <div class="status-badge status-pending">Pendente</div>
+                            {% endif %}
+                        </div>
+
+                        {% if not item.concluido %}
+                            <form method="post"
+                                  class="submit-once-form"
+                                  action="{% url 'concluir_exercicio' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-primary btn-sm submit-btn"
+                                        data-loading-text="Marcando...">
+                                    Concluir exercício
+                                </button>
+                            </form>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                Finalizado
+                            </button>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="form-actions">
+            <a href="{% url 'execucao' %}" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

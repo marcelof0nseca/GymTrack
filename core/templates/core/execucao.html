@@ -3,12 +3,12 @@
 {% block content %}
 <section class="page-grid">
     <div class="content-card">
-        <h2 class="section-title">Registrar execução do treino</h2>
+        <h2 class="section-title">Iniciar treino</h2>
         <p class="section-subtitle">
-            Selecione um treino para registrar sua execução. Apenas treinos com exercícios podem ser finalizados.
+            Escolha um treino para começar a execução exercício por exercício.
         </p>
 
-        <form method="post">
+        <form method="post" class="submit-once-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -25,7 +25,6 @@
                             <p>{{ error }}</p>
                         {% endfor %}
                     {% endfor %}
-
                     {% for error in form.non_field_errors %}
                         <p>{{ error }}</p>
                     {% endfor %}
@@ -33,14 +32,16 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Finalizar treino</button>
+                <button type="submit" class="btn btn-primary submit-btn" data-loading-text="Iniciando...">
+                    Iniciar treino
+                </button>
             </div>
         </form>
     </div>
 
     <div class="list-card">
-        <h3 class="section-title">Execuções registradas</h3>
-        <p class="section-subtitle">Histórico de treinos finalizados no sistema.</p>
+        <h3 class="section-title">Histórico de execuções</h3>
+        <p class="section-subtitle">Execuções registradas no sistema.</p>
 
         {% if execucoes %}
             <ul class="items-list">
@@ -48,13 +49,23 @@
                     <li class="item">
                         <div>
                             <strong>{{ execucao.treino.nome }}</strong>
-                            <span>{{ execucao.data_execucao|date:"d/m/Y H:i" }}</span>
+                            <span>
+                                {{ execucao.get_status_display }} •
+                                {{ execucao.data_execucao|date:"d/m/Y H:i" }}
+                            </span>
                         </div>
+
+                        <a href="{% url 'execucao_detalhe' execucao.id %}" class="btn btn-secondary btn-sm">
+                            Ver execução
+                        </a>
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <div class="empty-state">Nenhuma execução registrada até o momento.</div>
+            <div class="empty-state">
+                <strong>Nenhuma execução registrada.</strong>
+                Inicie um treino para acompanhar seu progresso exercício por exercício.
+            </div>
         {% endif %}
     </div>
 </section>
