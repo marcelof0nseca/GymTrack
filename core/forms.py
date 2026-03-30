@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models.functions import Lower, Trim
+
 from .models import Treino, Exercicio, ExecucaoTreino, ExercicioBase
 
 
@@ -39,6 +41,10 @@ class TreinoForm(forms.ModelForm):
             'nome': 'Nome do treino',
         }
 
+    def clean_nome(self):
+        nome = self.cleaned_data['nome'].strip()
+        return nome
+
 
 class ExercicioForm(forms.ModelForm):
     class Meta:
@@ -50,6 +56,27 @@ class ExercicioForm(forms.ModelForm):
             'series': 'Séries',
             'repeticoes': 'Repetições',
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        treino = cleaned_data.get('treino')
+        exercicio_base = cleaned_data.get('exercicio_base')
+
+        if treino and exercicio_base:
+            qs = Exercicio.objects.filter(
+                treino=treino,
+                exercicio_base=exercicio_base
+            )
+
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+
+            if qs.exists():
+                raise forms.ValidationError(
+                    'Esse exercício já foi adicionado a este treino.'
+                )
+
+        return cleaned_data
 
 
 class ExecucaoTreinoForm(forms.ModelForm):

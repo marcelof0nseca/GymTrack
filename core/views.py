@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.db.models.functions import Lower, Trim
 
 from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
@@ -49,7 +50,9 @@ def logout_view(request):
 def home(request):
     treinos = Treino.objects.filter(usuario=request.user).order_by('-id')
     exercicios = Exercicio.objects.filter(treino__usuario=request.user)
-    execucoes = ExecucaoTreino.objects.filter(treino__usuario=request.user).select_related('treino').order_by('-id')
+    execucoes = ExecucaoTreino.objects.filter(
+        treino__usuario=request.user
+    ).select_related('treino').order_by('-id')
 
     return render(request, 'core/home.html', {
         'total_treinos': treinos.count(),
@@ -70,11 +73,24 @@ def treinos_view(request):
     if request.method == 'POST':
         form = TreinoForm(request.POST)
         if form.is_valid():
-            treino = form.save(commit=False)
-            treino.usuario = request.user
-            treino.save()
-            messages.success(request, 'Treino criado com sucesso!')
-            return redirect('treinos')
+            nome_treino = form.cleaned_data['nome'].strip()
+
+            existe = Treino.objects.annotate(
+                nome_limpo=Lower(Trim('nome'))
+            ).filter(
+                usuario=request.user,
+                nome_limpo=nome_treino.lower()
+            ).exists()
+
+            if existe:
+                messages.error(request, 'Você já possui um treino com esse nome.')
+            else:
+                treino = form.save(commit=False)
+                treino.usuario = request.user
+                treino.nome = nome_treino
+                treino.save()
+                messages.success(request, 'Treino criado com sucesso!')
+                return redirect('treinos')
     else:
         form = TreinoForm()
 
@@ -104,6 +120,10 @@ def exercicios_view(request):
             exercicio.save()
             messages.success(request, 'Exercício adicionado com sucesso!')
             return redirect('exercicios')
+        else:
+            for errors in form.errors.values():
+                for error in errors:
+                    messages.error(request, error)
     else:
         form = ExercicioForm()
         form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
@@ -157,6 +177,10 @@ def execucao_view(request):
 
             messages.success(request, 'Treino iniciado com sucesso!')
             return redirect('execucao_detalhe', execucao_id=execucao.id)
+        else:
+            for errors in form.errors.values():
+                for error in errors:
+                    messages.error(request, error)
     else:
         form = ExecucaoTreinoForm()
         form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
@@ -234,9 +258,23 @@ def editar_treino_view(request, treino_id):
     if request.method == 'POST':
         form = TreinoForm(request.POST, instance=treino)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Treino atualizado com sucesso!')
-            return redirect('editar_treino', treino_id=treino.id)
+            nome_treino = form.cleaned_data['nome'].strip()
+
+            existe = Treino.objects.annotate(
+                nome_limpo=Lower(Trim('nome'))
+            ).filter(
+                usuario=request.user,
+                nome_limpo=nome_treino.lower()
+            ).exclude(id=treino.id).exists()
+
+            if existe:
+                messages.error(request, 'Você já possui outro treino com esse nome.')
+            else:
+                treino_editado = form.save(commit=False)
+                treino_editado.nome = nome_treino
+                treino_editado.save()
+                messages.success(request, 'Treino atualizado com sucesso!')
+                return redirect('editar_treino', treino_id=treino.id)
     else:
         form = TreinoForm(instance=treino)
 
