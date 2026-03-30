@@ -11,16 +11,13 @@
 <div class="page-shell">
     <header class="topbar">
         <div class="topbar-inner">
-            <div class="brand">
+            <a href="{% url 'home' %}" class="brand">
                 <div class="brand-logo">
                     <img src="{% static 'images/logo.png' %}" alt="Logo do GymTrack">
+                </div>
 
-                </div>
-                <div class="brand-text">
-                    <h1>GymTrack</h1>
-                    <p>Gestão moderna de treinos</p>
-                </div>
-            </div>
+                <p class="brand-subtitle">Gestão moderna de treinos</p>
+            </a>
 
             {% if user.is_authenticated %}
                 <nav class="nav">
