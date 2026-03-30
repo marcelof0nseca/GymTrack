@@ -39,7 +39,7 @@ O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de 
 ## Entregas do Projeto
 
 <details>
-<summary>Prototipo 1 — Kickoff</summary>
+<summary>Prototipo 1 — Figma</summary>
 
 O projeto está sendo gerenciado utilizando a metodologia **Scrum**.
 
@@ -57,7 +57,7 @@ O projeto está sendo gerenciado utilizando a metodologia **Scrum**.
 ---
 
 <details>
-<summary>Implementação 1 — Protótipo</summary>
+<summary>Entrega 2— Implementação 1</summary>
 
 Conteúdo da segunda entrega.
 
@@ -88,7 +88,7 @@ Mesmo com a divisão de responsabilidades, houve constante interação entre os 
 ---
 
 <details>
-<summary>Entrega 3 — Implementação</summary>
+<summary>Entrega 3 — Implementação 2</summary>
 
 Conteúdo da terceira entrega.
 
