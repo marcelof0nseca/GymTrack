@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymTrack</title>
+    <script>
+        document.documentElement.classList.add('js');
+    </script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/navigation.js' %}" defer></script>
 </head>
 <body>
 <div class="page-shell">
@@ -16,24 +20,60 @@
                     <img src="{% static 'images/logo.png' %}" alt="Logo do GymTrack">
                 </div>
 
-                <p class="brand-subtitle">Gestão moderna de treinos</p>
+                <div class="brand-copy">
+                    <span class="brand-title">GymTrack</span>
+                    <p class="brand-subtitle">Gest&atilde;o moderna de treinos</p>
+                </div>
             </a>
 
-            {% if user.is_authenticated %}
-                <nav class="nav">
-                    <a href="{% url 'home' %}">Início</a>
-                    <a href="{% url 'treinos' %}">Treinos</a>
-                    <a href="{% url 'exercicios' %}">Exercícios</a>
-                    <a href="{% url 'execucao' %}">Execução</a>
-                    <a href="{% url 'perfil' %}">Perfil</a>
-                    <a href="{% url 'logout' %}" class="nav-primary">Sair</a>
-                </nav>
-            {% else %}
-                <nav class="nav">
-                    <a href="{% url 'login' %}">Entrar</a>
-                    <a href="{% url 'register' %}" class="nav-primary">Cadastrar</a>
-                </nav>
-            {% endif %}
+            <button
+                type="button"
+                class="nav-toggle"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+                aria-label="Abrir menu de navegacao"
+                data-nav-toggle
+            >
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            {% with current_view=request.resolver_match.url_name %}
+                {% if user.is_authenticated %}
+                    <nav class="nav" id="primary-navigation" data-nav-root>
+                        <div class="nav-panel">
+                            <a href="{% url 'home' %}" class="nav-link{% if current_view == 'home' %} is-active{% endif %}" data-nav-link>
+                                In&iacute;cio
+                            </a>
+                            <a href="{% url 'treinos' %}" class="nav-link{% if current_view == 'treinos' or current_view == 'editar_treino' %} is-active{% endif %}" data-nav-link>
+                                Treinos
+                            </a>
+                            <a href="{% url 'exercicios' %}" class="nav-link{% if current_view == 'exercicios' %} is-active{% endif %}" data-nav-link>
+                                Exerc&iacute;cios
+                            </a>
+                            <a href="{% url 'execucao' %}" class="nav-link{% if current_view == 'execucao' or current_view == 'execucao_detalhe' %} is-active{% endif %}" data-nav-link>
+                                Execu&ccedil;&atilde;o
+                            </a>
+                            <a href="{% url 'perfil' %}" class="nav-link{% if current_view == 'perfil' %} is-active{% endif %}" data-nav-link>
+                                Perfil
+                            </a>
+                            <a href="{% url 'logout' %}" class="nav-link nav-primary" data-nav-link>Sair</a>
+                        </div>
+                    </nav>
+                {% else %}
+                    <nav class="nav" id="primary-navigation" data-nav-root>
+                        <div class="nav-panel">
+                            <a href="{% url 'login' %}" class="nav-link{% if current_view == 'login' %} is-active{% endif %}" data-nav-link>
+                                Entrar
+                            </a>
+                            <a href="{% url 'register' %}" class="nav-link nav-primary{% if current_view == 'register' %} is-active{% endif %}" data-nav-link>
+                                Cadastrar
+                            </a>
+                        </div>
+                    </nav>
+                {% endif %}
+            {% endwith %}
         </div>
     </header>
 
