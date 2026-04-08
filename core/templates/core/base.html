@@ -82,7 +82,7 @@
 {% if messages %}
     <div id="alerts-container">
         {% for message in messages %}
-            <div class="alert alert-success auto-hide">
+            <div class="alert alert-{{ message.tags|default:'success' }}{% if 'success' in message.tags %} auto-hide{% endif %}">
                 {{ message }}
             </div>
         {% endfor %}

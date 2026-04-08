@@ -78,6 +78,27 @@
         {% endif %}
 
         <div class="form-actions">
+            {% if execucao.status != 'concluido' %}
+                <form method="post"
+                      class="submit-once-form"
+                      action="{% url 'confirmar_treino' execucao.id %}"
+                      {% if execucao.esta_parcial %}
+                      onsubmit="if (confirm('Ainda existem exercícios em andamento. Deseja finalizar mesmo assim?')) { this.querySelector('input[name=confirm_partial]').value = '1'; return true; } return false;"
+                      {% endif %}>
+                    {% csrf_token %}
+                    <input type="hidden" name="confirm_partial" value="0">
+                    <button type="submit"
+                            class="btn btn-primary submit-btn"
+                            data-loading-text="Finalizando...">
+                        Confirmar treino
+                    </button>
+                </form>
+            {% else %}
+                <button type="button" class="btn btn-secondary" disabled>
+                    Treino concluído
+                </button>
+            {% endif %}
+
             <a href="{% url 'execucao' %}" class="btn btn-secondary">Voltar</a>
         </div>
     </div>

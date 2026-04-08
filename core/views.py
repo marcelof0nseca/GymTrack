@@ -10,6 +10,12 @@ from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
 from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
 
 
+def _concluir_execucao(execucao):
+    if execucao.status != 'concluido':
+        execucao.status = 'concluido'
+        execucao.save(update_fields=['status'])
+
+
 def register_view(request):
     form = RegisterForm()
 
@@ -223,9 +229,8 @@ def concluir_exercicio_view(request, item_id):
             item.save()
 
             execucao = item.execucao
-            if execucao.itens.filter(concluido=False).count() == 0:
-                execucao.status = 'concluido'
-                execucao.save()
+            if execucao.pode_concluir_automaticamente:
+                _concluir_execucao(execucao)
                 messages.success(request, 'Treino concluído com sucesso!')
             else:
                 messages.success(request, 'Exercício marcado como concluído!')
@@ -233,6 +238,47 @@ def concluir_exercicio_view(request, item_id):
         return redirect('execucao_detalhe', execucao_id=item.execucao.id)
 
     return redirect('execucao')
+
+
+@login_required
+def confirmar_treino_view(request, execucao_id):
+    execucao = get_object_or_404(
+        ExecucaoTreino.objects.select_related('treino'),
+        id=execucao_id,
+        treino__usuario=request.user
+    )
+
+    if request.method != 'POST':
+        return redirect('execucao_detalhe', execucao_id=execucao.id)
+
+    if execucao.status == 'concluido':
+        messages.error(request, 'Este treino já foi concluído.')
+        return redirect('execucao_detalhe', execucao_id=execucao.id)
+
+    if execucao.total_exercicios == 0 or not execucao.tem_exercicios_concluidos:
+        messages.error(
+            request,
+            'Nenhum exercício foi concluído. O treino continua em andamento.'
+        )
+        return redirect('execucao_detalhe', execucao_id=execucao.id)
+
+    confirm_partial = request.POST.get('confirm_partial') == '1'
+
+    if execucao.esta_parcial and not confirm_partial:
+        messages.error(
+            request,
+            'Ainda existem exercícios em andamento. Confirme para finalizar parcialmente.'
+        )
+        return redirect('execucao_detalhe', execucao_id=execucao.id)
+
+    _concluir_execucao(execucao)
+
+    if execucao.esta_parcial:
+        messages.success(request, 'Treino finalizado com exercícios pendentes.')
+    else:
+        messages.success(request, 'Treino concluído com sucesso!')
+
+    return redirect('execucao_detalhe', execucao_id=execucao.id)
 
 
 @login_required

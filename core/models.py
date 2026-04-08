@@ -58,6 +58,22 @@ class ExecucaoTreino(models.Model):
     def exercicios_concluidos(self):
         return self.itens.filter(concluido=True).count()
 
+    @property
+    def tem_exercicios_concluidos(self):
+        return self.exercicios_concluidos > 0
+
+    @property
+    def tem_exercicios_pendentes(self):
+        return self.itens.filter(concluido=False).exists()
+
+    @property
+    def esta_parcial(self):
+        return self.tem_exercicios_concluidos and self.tem_exercicios_pendentes
+
+    @property
+    def pode_concluir_automaticamente(self):
+        return self.total_exercicios > 0 and not self.tem_exercicios_pendentes
+
 
 class ExecucaoExercicio(models.Model):
     execucao = models.ForeignKey(ExecucaoTreino, on_delete=models.CASCADE, related_name='itens')
