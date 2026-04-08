@@ -77,22 +77,49 @@
             </ul>
         {% endif %}
 
+        {% if execucao.status != 'concluido' and execucao.esta_parcial %}
+            <div id="confirmacao-parcial" class="alert alert-error" style="display: none;">
+                Ainda existem exercícios em andamento. Deseja finalizar mesmo assim?
+            </div>
+        {% endif %}
+
         <div class="form-actions">
             {% if execucao.status != 'concluido' %}
-                <form method="post"
-                      class="submit-once-form"
-                      action="{% url 'confirmar_treino' execucao.id %}"
-                      {% if execucao.esta_parcial %}
-                      onsubmit="if (confirm('Ainda existem exercícios em andamento. Deseja finalizar mesmo assim?')) { this.querySelector('input[name=confirm_partial]').value = '1'; return true; } return false;"
-                      {% endif %}>
-                    {% csrf_token %}
-                    <input type="hidden" name="confirm_partial" value="0">
-                    <button type="submit"
-                            class="btn btn-primary submit-btn"
-                            data-loading-text="Finalizando...">
+                {% if execucao.esta_parcial %}
+                    <button type="button" class="btn btn-primary" id="abrir-confirmacao-parcial">
                         Confirmar treino
                     </button>
-                </form>
+
+                    <form method="post"
+                          class="submit-once-form"
+                          id="form-finalizar-parcial"
+                          style="display: none;"
+                          action="{% url 'confirmar_treino' execucao.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="confirm_partial" value="1">
+                        <button type="submit"
+                                class="btn btn-primary submit-btn"
+                                data-loading-text="Finalizando...">
+                            Sim, finalizar treino
+                        </button>
+                    </form>
+
+                    <button type="button" class="btn btn-secondary" id="cancelar-confirmacao-parcial" style="display: none;">
+                        Cancelar
+                    </button>
+                {% else %}
+                    <form method="post"
+                          class="submit-once-form"
+                          action="{% url 'confirmar_treino' execucao.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="confirm_partial" value="0">
+                        <button type="submit"
+                                class="btn btn-primary submit-btn"
+                                data-loading-text="Finalizando...">
+                            Confirmar treino
+                        </button>
+                    </form>
+                {% endif %}
             {% else %}
                 <button type="button" class="btn btn-secondary" disabled>
                     Treino concluído
@@ -103,4 +130,29 @@
         </div>
     </div>
 </section>
+
+{% if execucao.status != 'concluido' and execucao.esta_parcial %}
+<script>
+    const botaoAbrirConfirmacao = document.getElementById('abrir-confirmacao-parcial');
+    const botaoCancelarConfirmacao = document.getElementById('cancelar-confirmacao-parcial');
+    const mensagemConfirmacaoParcial = document.getElementById('confirmacao-parcial');
+    const formularioFinalizarParcial = document.getElementById('form-finalizar-parcial');
+
+    if (botaoAbrirConfirmacao && botaoCancelarConfirmacao && mensagemConfirmacaoParcial && formularioFinalizarParcial) {
+        botaoAbrirConfirmacao.addEventListener('click', () => {
+            mensagemConfirmacaoParcial.style.display = 'block';
+            formularioFinalizarParcial.style.display = 'inline-flex';
+            botaoCancelarConfirmacao.style.display = 'inline-flex';
+            botaoAbrirConfirmacao.style.display = 'none';
+        });
+
+        botaoCancelarConfirmacao.addEventListener('click', () => {
+            mensagemConfirmacaoParcial.style.display = 'none';
+            formularioFinalizarParcial.style.display = 'none';
+            botaoCancelarConfirmacao.style.display = 'none';
+            botaoAbrirConfirmacao.style.display = 'inline-flex';
+        });
+    }
+</script>
+{% endif %}
 {% endblock %}
