@@ -59,6 +59,11 @@ class ExecucaoTreino(models.Model):
         return self.itens.filter(concluido=True).count()
 
     @property
+    def exercicios_pendentes(self):
+        pendentes = self.total_exercicios - self.exercicios_concluidos
+        return pendentes if pendentes > 0 else 0
+
+    @property
     def tem_exercicios_concluidos(self):
         return self.exercicios_concluidos > 0
 
@@ -73,6 +78,10 @@ class ExecucaoTreino(models.Model):
     @property
     def pode_concluir_automaticamente(self):
         return self.total_exercicios > 0 and not self.tem_exercicios_pendentes
+
+    @property
+    def concluido_com_pendencias(self):
+        return self.status == 'concluido' and self.exercicios_pendentes > 0
 
 
 class ExecucaoExercicio(models.Model):

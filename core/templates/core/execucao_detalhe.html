@@ -33,6 +33,12 @@
             Marque cada exercício como concluído para finalizar o treino.
         </p>
 
+        {% if execucao.concluido_com_pendencias %}
+            <div class="alert alert-warning">
+                Este treino foi concluído com {{ execucao.exercicios_pendentes }} exercício(s) pendente(s).
+            </div>
+        {% endif %}
+
         {% if execucao.itens.all %}
             <ul class="items-list">
                 {% for item in execucao.itens.all %}
@@ -56,7 +62,7 @@
                             {% endif %}
                         </div>
 
-                        {% if not item.concluido %}
+                                                {% if not item.concluido and execucao.status != 'concluido' %}
                             <form method="post"
                                   class="submit-once-form"
                                   action="{% url 'concluir_exercicio' item.id %}">
@@ -67,9 +73,13 @@
                                     Concluir exercício
                                 </button>
                             </form>
-                        {% else %}
+                        {% elif item.concluido %}
                             <button type="button" class="btn btn-secondary btn-sm" disabled>
                                 Finalizado
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                Encerrado
                             </button>
                         {% endif %}
                     </li>

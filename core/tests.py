@@ -74,3 +74,39 @@ class ConfirmarTreinoFlowTests(TestCase):
         execucao.refresh_from_db()
         self.assertEqual(execucao.status, 'concluido')
         self.assertContains(resposta, 'Treino concluído com sucesso!')
+
+    def test_nao_permite_concluir_item_apos_treino_ser_finalizado_parcialmente(self):
+        execucao, item_1, item_2 = self._criar_execucao()
+        item_1.concluido = True
+        item_1.save(update_fields=['concluido'])
+
+        self.client.post(
+            reverse('confirmar_treino', args=[execucao.id]),
+            {'confirm_partial': '1'},
+            follow=True
+        )
+
+        resposta = self.client.post(reverse('concluir_exercicio', args=[item_2.id]), {}, follow=True)
+
+        execucao.refresh_from_db()
+        item_2.refresh_from_db()
+        self.assertEqual(execucao.status, 'concluido')
+        self.assertFalse(item_2.concluido)
+        self.assertContains(
+            resposta,
+            'Este treino já foi finalizado. Não é possível concluir exercícios pendentes depois do encerramento.'
+        )
+
+    def test_exibe_aviso_quando_treino_concluido_com_pendencias(self):
+        execucao, item_1, _ = self._criar_execucao()
+        item_1.concluido = True
+        item_1.save(update_fields=['concluido'])
+
+        self.client.post(
+            reverse('confirmar_treino', args=[execucao.id]),
+            {'confirm_partial': '1'},
+            follow=True
+        )
+
+        resposta = self.client.get(reverse('execucao_detalhe', args=[execucao.id]))
+        self.assertContains(resposta, 'Este treino foi concluído com 1 exercício(s) pendente(s).')

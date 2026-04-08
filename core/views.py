@@ -223,6 +223,13 @@ def concluir_exercicio_view(request, item_id):
     )
 
     if request.method == 'POST':
+        if item.execucao.status == 'concluido':
+            messages.error(
+                request,
+                'Este treino já foi finalizado. Não é possível concluir exercícios pendentes depois do encerramento.'
+            )
+            return redirect('execucao_detalhe', execucao_id=item.execucao.id)
+
         if not item.concluido:
             item.concluido = True
             item.data_conclusao = timezone.now()

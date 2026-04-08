@@ -469,6 +469,11 @@ img {
     color: #166534;
 }
 
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
 .items-list {
     list-style: none;
     display: grid;
