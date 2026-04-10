@@ -26,10 +26,6 @@
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 body {
     font-family: "Segoe UI", Arial, sans-serif;
     background:
@@ -75,16 +71,7 @@ img {
     flex-wrap: wrap;
     align-items: center;
     gap: 18px;
-}
 
-.brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    min-width: 0;
-    padding: 8px 10px;
-    border-radius: 18px;
-    transition: background 0.25s ease, transform 0.25s ease;
 }
 
 .brand:hover {
@@ -335,13 +322,28 @@ img {
 }
 
 .btn-secondary {
-    background: #eef2ff;
-    color: #3730a3;
-    border: 1px solid #c7d2fe;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
+    color: #f8fafc;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.16);
 }
 
 .btn-secondary:hover {
-    background: #e0e7ff;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(51, 65, 85, 0.94));
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-execucao {
+    background: linear-gradient(135deg, var(--primary), #6366f1);
+    color: white;
+    border: 1px solid rgba(99, 102, 241, 0.52);
+    box-shadow: 0 12px 24px rgba(79, 70, 229, 0.24);
+}
+
+.btn-execucao:hover {
+    background: linear-gradient(135deg, var(--primary-hover), #4f46e5);
+    color: white;
 }
 
 .btn-danger {
@@ -434,6 +436,31 @@ img {
     font-size: 1rem;
     transition: 0.2s ease;
     outline: none;
+}
+
+.form-group select {
+    color-scheme: dark;
+    appearance: none;
+    background-color: rgba(17, 24, 39, 0.96) !important;
+    color: #f8fafc !important;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #cbd5e1 50%),
+        linear-gradient(135deg, #cbd5e1 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+}
+
+.form-group select option {
+    background-color: #111827 !important;
+    color: #f8fafc !important;
+}
+
+.form-group select option:disabled {
+    color: #94a3b8;
 }
 
 .form-group input:focus,
@@ -723,6 +750,162 @@ img {
     transform: translateY(-2px);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 22px 44px rgba(2, 6, 23, 0.24);
+}
+
+.feature-page .content-card,
+.feature-page .list-card {
+    background:
+        linear-gradient(135deg, rgba(12, 18, 30, 0.95), rgba(24, 34, 50, 0.91)),
+        linear-gradient(135deg, rgba(79, 70, 229, 0.16), rgba(6, 182, 212, 0.09));
+    color: #f8fafc;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    box-shadow: 0 24px 55px rgba(2, 6, 23, 0.30);
+}
+
+.feature-page {
+    color-scheme: dark;
+}
+
+.feature-page .section-title {
+    color: #ffffff;
+}
+
+.feature-page .section-subtitle {
+    color: #cbd5e1;
+}
+
+.feature-page .form-group label {
+    color: #f8fafc;
+}
+
+.feature-page .form-group input,
+.feature-page .form-group select,
+.feature-page .form-group textarea {
+    background: rgba(15, 23, 42, 0.94);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    color: #f8fafc;
+}
+
+.feature-page .form-group select {
+    color-scheme: dark;
+    background-color: rgba(15, 23, 42, 0.96) !important;
+    color: #f8fafc !important;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #e2e8f0 50%),
+        linear-gradient(135deg, #e2e8f0 50%, transparent 50%);
+}
+
+.feature-page .form-group select option {
+    background-color: #111827 !important;
+    color: #f8fafc !important;
+}
+
+.feature-page .form-group input::placeholder,
+.feature-page .form-group textarea::placeholder {
+    color: #94a3b8;
+}
+
+.feature-page .form-group input:focus,
+.feature-page .form-group select:focus,
+.feature-page .form-group textarea:focus {
+    background: rgba(15, 23, 42, 0.98) !important;
+    border-color: rgba(129, 140, 248, 0.70);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.16);
+    color: #f8fafc !important;
+}
+
+.feature-page .btn-secondary {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
+    color: #f8fafc;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.16);
+}
+
+.feature-page .btn-secondary:hover {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(51, 65, 85, 0.94));
+    color: white;
+    transform: translateY(-1px);
+}
+
+.feature-page .item,
+.feature-page .empty-state,
+.feature-page .progress-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(148, 163, 184, 0.10);
+    color: #f8fafc;
+}
+
+.feature-page .item strong,
+.feature-page .item span,
+.feature-page .empty-state,
+.feature-page .exercise-preview-item,
+.feature-page .muscle-group-title,
+.feature-page .progress-header,
+.feature-page .status-badge,
+.feature-page .alert {
+    color: #f8fafc;
+}
+
+.feature-page .item span,
+.feature-page .exercise-preview-item,
+.feature-page .section-subtitle,
+.feature-page .empty-state {
+    color: #cbd5e1;
+}
+
+.feature-page .empty-state {
+    border-style: dashed;
+}
+
+.feature-page .alert {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(148, 163, 184, 0.10);
+}
+
+.feature-page .alert p {
+    color: inherit;
+    margin: 0;
+}
+
+.feature-page .alert-error {
+    background: rgba(239, 68, 68, 0.12);
+    color: #fecaca;
+    border-color: rgba(248, 113, 113, 0.20);
+}
+
+.feature-page .alert-success {
+    background: rgba(34, 197, 94, 0.12);
+    color: #bbf7d0;
+    border-color: rgba(74, 222, 128, 0.20);
+}
+
+.feature-page .alert-warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fde68a;
+    border-color: rgba(251, 191, 36, 0.20);
+}
+
+.feature-page .progress-bar {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.feature-page .progress-header {
+    color: #f8fafc;
+}
+
+.feature-page .execution-complete {
+    border-color: rgba(34, 197, 94, 0.18);
+    background: rgba(34, 197, 94, 0.10);
+}
+
+.feature-page .status-done {
+    background: rgba(34, 197, 94, 0.14);
+    color: #bbf7d0;
+}
+
+.feature-page .status-pending {
+    background: rgba(245, 158, 11, 0.14);
+    color: #fde68a;
 }
 
 .status-chip {

@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<section class="page-grid">
+<section class="page-grid feature-page">
     <div class="content-card">
         <h2 class="section-title">Criar treino</h2>
         <p class="section-subtitle">
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="treino-actions">
-                            <a href="{% url 'editar_treino' treino.id %}" class="btn btn-secondary btn-sm">
+                            <a href="{% url 'editar_treino' treino.id %}" class="btn btn-primary btn-sm">
                                 Editar treino
                             </a>
 

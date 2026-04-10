@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<section class="page-grid">
+<section class="page-grid feature-page">
     <div class="content-card">
         <h2 class="section-title">Iniciar treino</h2>
         <p class="section-subtitle">
@@ -55,7 +55,7 @@
                             </span>
                         </div>
 
-                        <a href="{% url 'execucao_detalhe' execucao.id %}" class="btn btn-secondary btn-sm">
+                        <a href="{% url 'execucao_detalhe' execucao.id %}" class="btn btn-secondary btn-sm btn-execucao">
                             Ver execução
                         </a>
                     </li>
