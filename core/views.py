@@ -75,6 +75,11 @@ def perfil_view(request):
 
 
 @login_required
+def metas_view(request):
+    return render(request, 'core/metas.html')
+
+
+@login_required
 def treinos_view(request):
     if request.method == 'POST':
         form = TreinoForm(request.POST)
