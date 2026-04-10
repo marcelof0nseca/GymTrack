@@ -43,57 +43,72 @@
     </div>
 </section>
 
-<section class="grid-2">
-    <div class="info-card">
-        <h3 class="section-title">O que você pode fazer</h3>
-        <p class="section-subtitle">Principais funcionalidades disponíveis no sistema.</p>
-
-        <ul class="items-list">
-            <li class="item">
-                <div>
-                    <strong>Criar treino</strong>
-                    <span>Cadastre treinos por nome e organize sua rotina.</span>
-                </div>
-            </li>
-            <li class="item">
-                <div>
-                    <strong>Adicionar exercícios</strong>
-                    <span>Associe exercícios, séries e repetições a cada treino.</span>
-                </div>
-            </li>
-            <li class="item">
-                <div>
-                    <strong>Metas</strong>
-                    <span>Defina objetivos para acompanhar sua evolução.</span>
-                </div>
-            </li>
-            <li class="item">
-                <div>
-                    <strong>Registrar execução</strong>
-                    <span>Salve quando um treino foi concluído com sucesso.</span>
-                </div>
-            </li>
-        </ul>
-    </div>
-
-    <div class="info-card">
-        <h3 class="section-title">Seu perfil</h3>
-        <p class="section-subtitle">Informações da conta atualmente logada.</p>
-
-        <div class="help-box">
-            <strong>Nome:</strong>
-            {% if request.user.first_name or request.user.last_name %}
-                {{ request.user.first_name }} {{ request.user.last_name }}
-            {% else %}
-                Não informado
-            {% endif %}
-            <br>
-            <strong>Usuário:</strong> {{ request.user.username }}
-            <br>
-            <strong>E-mail:</strong> {{ request.user.email }}
+<section class="home-profile-section">
+    <div class="home-gradient-card">
+        <div class="section-heading">
+            <h3 class="section-title">Seu perfil</h3>
+            <p class="section-subtitle">Informações da conta atualmente logada.</p>
         </div>
 
-        <a href="{% url 'perfil' %}" class="btn btn-primary">Ver perfil</a>
+        <div class="profile-inline">
+            <div class="profile-item">
+                <span>Nome</span>
+                <strong>
+                    {% if request.user.first_name or request.user.last_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="profile-item">
+                <span>Usuário</span>
+                <strong>{{ request.user.username }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>E-mail</span>
+                <strong>{% if request.user.email %}{{ request.user.email }}{% else %}Não informado{% endif %}</strong>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'perfil' %}" class="btn btn-secondary">Ver perfil</a>
+        </div>
+    </div>
+</section>
+
+<section class="home-features-section">
+    <div class="section-heading">
+        <h3 class="section-title">O que você pode fazer</h3>
+        <p class="section-subtitle">Principais funcionalidades disponíveis no sistema.</p>
+    </div>
+
+    <div class="feature-grid">
+        <article class="feature-card">
+            <span class="feature-badge">Planejamento</span>
+            <strong>Criar treino</strong>
+            <p>Cadastre treinos por nome e organize sua rotina.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="feature-badge">Cadastro</span>
+            <strong>Adicionar exercícios</strong>
+            <p>Associe exercícios, séries e repetições a cada treino.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="feature-badge">Acompanhamento</span>
+            <strong>Metas</strong>
+            <p>Defina objetivos para acompanhar sua evolução.</p>
+        </article>
+
+        <article class="feature-card">
+            <span class="feature-badge">Execução</span>
+            <strong>Registrar execução</strong>
+            <p>Salve quando um treino for concluído com sucesso.</p>
+        </article>
     </div>
 </section>
 {% endblock %}
