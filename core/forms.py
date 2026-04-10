@@ -1,9 +1,13 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.db.models.functions import Lower, Trim
+from django.contrib.auth.models import User
 
 from .models import Treino, Exercicio, ExecucaoTreino, ExercicioBase
+
+
+def _append_widget_class(widget, class_name):
+    current_class = widget.attrs.get('class', '').strip()
+    widget.attrs['class'] = f'{current_class} {class_name}'.strip()
 
 
 class RegisterForm(UserCreationForm):
@@ -57,6 +61,34 @@ class ExercicioForm(forms.ModelForm):
             'repeticoes': 'Repetições',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        treino_field = self.fields['treino']
+        treino_field.empty_label = 'Selecione um treino'
+        treino_field.queryset = treino_field.queryset.order_by('-id')
+        _append_widget_class(treino_field.widget, 'form-select-input')
+        treino_field.widget.attrs.update({
+            'aria-describedby': 'treino-select-hint',
+        })
+
+        exercicio_field = self.fields['exercicio_base']
+        exercicio_field.empty_label = 'Selecione um exercício'
+        exercicio_field.queryset = ExercicioBase.objects.order_by('grupo_muscular', 'nome')
+        _append_widget_class(exercicio_field.widget, 'form-select-input')
+        exercicio_field.widget.attrs.update({
+            'aria-describedby': 'exercicio-select-hint',
+        })
+
+        self.fields['series'].widget.attrs.update({
+            'placeholder': 'Ex.: 4',
+            'inputmode': 'numeric',
+        })
+        self.fields['repeticoes'].widget.attrs.update({
+            'placeholder': 'Ex.: 12',
+            'inputmode': 'numeric',
+        })
+
     def clean(self):
         cleaned_data = super().clean()
         treino = cleaned_data.get('treino')
@@ -86,6 +118,17 @@ class ExecucaoTreinoForm(forms.ModelForm):
         labels = {
             'treino': 'Treino',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        treino_field = self.fields['treino']
+        treino_field.empty_label = 'Selecione um treino'
+        treino_field.queryset = treino_field.queryset.order_by('-id')
+        _append_widget_class(treino_field.widget, 'form-select-input')
+        treino_field.widget.attrs.update({
+            'aria-describedby': 'treino-select-hint',
+        })
 
     def clean_treino(self):
         treino = self.cleaned_data['treino']

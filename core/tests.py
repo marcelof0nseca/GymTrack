@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
+from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio, ExercicioBase
 
 
 class ConfirmarTreinoFlowTests(TestCase):
@@ -110,3 +110,67 @@ class ConfirmarTreinoFlowTests(TestCase):
 
         resposta = self.client.get(reverse('execucao_detalhe', args=[execucao.id]))
         self.assertContains(resposta, 'Este treino foi concluído com 1 exercício(s) pendente(s).')
+
+class FormSelectionUiTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='bob', password='123456')
+        self.client.login(username='bob', password='123456')
+
+        self.treino = Treino.objects.create(usuario=self.user, nome='Treino B')
+        self.exercicio_base = ExercicioBase.objects.create(
+            nome='Supino inclinado',
+            grupo_muscular='Peito'
+        )
+
+    def test_exercicios_page_exibe_hints_e_placeholders_de_selecao(self):
+        resposta = self.client.get(reverse('exercicios'))
+
+        self.assertContains(resposta, 'Selecione um treino')
+        self.assertContains(resposta, 'Selecione um exerc')
+        self.assertContains(resposta, 'Escolha um treino na lista. Esse campo')
+        self.assertContains(resposta, 'Escolha um exerc')
+        self.assertContains(resposta, 'aria-describedby="treino-select-hint"', html=False)
+        self.assertContains(resposta, 'aria-describedby="exercicio-select-hint"', html=False)
+
+    def test_execucao_page_exibe_hint_e_placeholder_de_selecao(self):
+        resposta = self.client.get(reverse('execucao'))
+
+        self.assertContains(resposta, 'Selecione um treino')
+        self.assertContains(resposta, 'Escolha um treino na lista para iniciar. Esse campo')
+        self.assertContains(resposta, 'aria-describedby="treino-select-hint"', html=False)
+
+    def test_exercicios_post_impede_exercicio_duplicado_no_mesmo_treino(self):
+        Exercicio.objects.create(
+            treino=self.treino,
+            exercicio_base=self.exercicio_base,
+            series=4,
+            repeticoes=10
+        )
+
+        resposta = self.client.post(reverse('exercicios'), {
+            'treino': self.treino.id,
+            'exercicio_base': self.exercicio_base.id,
+            'series': 4,
+            'repeticoes': 12,
+        })
+
+        self.assertEqual(
+            Exercicio.objects.filter(
+                treino=self.treino,
+                exercicio_base=self.exercicio_base
+            ).count(),
+            1
+        )
+        self.assertContains(resposta, 'Esse exerc')
+
+    def test_execucao_post_sem_exercicios_mantem_validacao(self):
+        treino_sem_exercicios = Treino.objects.create(usuario=self.user, nome='Treino vazio')
+
+        resposta = self.client.post(reverse('execucao'), {
+            'treino': treino_sem_exercicios.id,
+        })
+
+        self.assertContains(
+            resposta,
+            'Esse treino ainda n'
+        )

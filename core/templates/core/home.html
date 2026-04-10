@@ -18,10 +18,22 @@
         </p>
 
         <div class="hero-actions">
-            <a href="{% url 'metas' %}" class="btn btn-secondary">Metas</a>
-            <a href="{% url 'treinos' %}" class="btn btn-secondary">Criar treino</a>
-            <a href="{% url 'exercicios' %}" class="btn btn-secondary">Adicionar exercícios</a>
-            <a href="{% url 'execucao' %}" class="btn btn-secondary">Registrar execução</a>
+            <a href="{% url 'treinos' %}" class="btn hero-cta hero-cta-primary">
+                <span class="hero-cta-label">Criar treino</span>
+                <small>Comece montando sua rotina</small>
+            </a>
+            <a href="{% url 'exercicios' %}" class="btn hero-cta hero-cta-accent">
+                <span class="hero-cta-label">Adicionar exercícios</span>
+                <small>Escolha os exercícios e vincule ao treino</small>
+            </a>
+            <a href="{% url 'execucao' %}" class="btn hero-cta hero-cta-success">
+                <span class="hero-cta-label">Registrar execução</span>
+                <small>Inicie um treino e acompanhe o progresso</small>
+            </a>
+            <a href="{% url 'metas' %}" class="btn hero-cta hero-cta-ghost">
+                <span class="hero-cta-label">Metas</span>
+                <small>Defina objetivos para manter constância</small>
+            </a>
         </div>
     </div>
 

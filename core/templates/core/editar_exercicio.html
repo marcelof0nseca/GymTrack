@@ -13,11 +13,17 @@
                 <div class="form-group full">
                     <label for="{{ form.treino.id_for_label }}">Treino</label>
                     {{ form.treino }}
+                    <small id="treino-select-hint" class="form-hint form-hint-select">
+                        Escolha um treino na lista. Esse campo é somente para seleção.
+                    </small>
                 </div>
 
                 <div class="form-group full">
                     <label for="{{ form.exercicio_base.id_for_label }}">Exercício</label>
                     {{ form.exercicio_base }}
+                    <small id="exercicio-select-hint" class="form-hint form-hint-select">
+                        Escolha um exercício já cadastrado. Esse campo é somente para seleção.
+                    </small>
                 </div>
 
                 <div class="form-group">

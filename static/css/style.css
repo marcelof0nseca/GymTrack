@@ -292,9 +292,96 @@ img {
 }
 
 .hero-actions {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    flex-wrap: wrap;
+}
+
+.hero-cta {
+    width: 100%;
+    min-height: 92px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+    border: 1px solid transparent;
+    box-shadow: 0 18px 34px rgba(2, 6, 23, 0.16);
+}
+
+.hero-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 55%);
+    pointer-events: none;
+}
+
+.hero-cta-label,
+.hero-cta small {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-cta-label {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.hero-cta small {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.hero-cta:hover {
+    transform: translateY(-2px);
+}
+
+.hero-cta-primary {
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    color: white;
+    border-color: rgba(125, 211, 252, 0.24);
+    box-shadow: 0 20px 38px rgba(37, 99, 235, 0.28);
+}
+
+.hero-cta-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #0891b2);
+}
+
+.hero-cta-accent {
+    background: linear-gradient(135deg, rgba(8, 47, 73, 0.96), rgba(14, 116, 144, 0.92));
+    color: #ecfeff;
+    border-color: rgba(103, 232, 249, 0.26);
+}
+
+.hero-cta-accent:hover {
+    background: linear-gradient(135deg, rgba(12, 74, 110, 0.98), rgba(6, 182, 212, 0.88));
+}
+
+.hero-cta-success {
+    background: linear-gradient(135deg, rgba(6, 95, 70, 0.98), rgba(13, 148, 136, 0.92));
+    color: #ecfdf5;
+    border-color: rgba(94, 234, 212, 0.24);
+}
+
+.hero-cta-success:hover {
+    background: linear-gradient(135deg, rgba(4, 120, 87, 0.98), rgba(15, 118, 110, 0.96));
+}
+
+.hero-cta-ghost {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.9));
+    color: #f8fafc;
+    border-color: rgba(148, 163, 184, 0.18);
+    box-shadow: 0 16px 30px rgba(2, 6, 23, 0.18);
+}
+
+.hero-cta-ghost:hover {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(51, 65, 85, 0.92));
 }
 
 .btn {
@@ -425,7 +512,6 @@ img {
 }
 
 .form-group input,
-.form-group select,
 .form-group textarea {
     width: 100%;
     min-width: 0;
@@ -439,24 +525,48 @@ img {
 }
 
 .form-group select {
-    color-scheme: dark;
-    appearance: none;
-    background-color: rgba(17, 24, 39, 0.96) !important;
-    color: #f8fafc !important;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 52px 14px 14px;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
     background-image:
-        linear-gradient(45deg, transparent 50%, #cbd5e1 50%),
-        linear-gradient(135deg, #cbd5e1 50%, transparent 50%);
+        linear-gradient(90deg, rgba(248, 250, 252, 0) calc(100% - 50px), #e2e8f0 calc(100% - 50px)),
+        linear-gradient(45deg, transparent 50%, #475569 50%),
+        linear-gradient(135deg, #475569 50%, transparent 50%);
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: 0.2s ease;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
     background-position:
+        0 0,
         calc(100% - 18px) calc(50% - 3px),
         calc(100% - 12px) calc(50% - 3px);
-    background-size: 6px 6px, 6px 6px;
+    background-size: 100% 100%, 10px 10px, 10px 10px;
     background-repeat: no-repeat;
-    padding-right: 40px;
+}
+
+.form-group select:hover {
+    border-color: #94a3b8;
+    background-color: #ffffff;
+    background-image:
+        linear-gradient(90deg, rgba(248, 250, 252, 0) calc(100% - 50px), #dbe4ef calc(100% - 50px)),
+        linear-gradient(45deg, transparent 50%, #334155 50%),
+        linear-gradient(135deg, #334155 50%, transparent 50%);
+}
+
+.form-group select:required:invalid {
+    color: #64748b;
+    font-weight: 500;
 }
 
 .form-group select option {
-    background-color: #111827 !important;
-    color: #f8fafc !important;
+    background-color: #ffffff;
+    color: #111827;
 }
 
 .form-group select option:disabled {
@@ -469,6 +579,15 @@ img {
     border-color: var(--primary);
     background: white;
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+.form-group select:focus {
+    background-color: #ffffff;
+    background-image:
+        linear-gradient(90deg, rgba(255, 255, 255, 0) calc(100% - 50px), #dbeafe calc(100% - 50px)),
+        linear-gradient(45deg, transparent 50%, #312e81 50%),
+        linear-gradient(135deg, #312e81 50%, transparent 50%);
+    color: #0f172a;
 }
 
 .form-actions {
@@ -779,7 +898,6 @@ img {
 }
 
 .feature-page .form-group input,
-.feature-page .form-group select,
 .feature-page .form-group textarea {
     background: rgba(15, 23, 42, 0.94);
     border: 1px solid rgba(148, 163, 184, 0.18);
@@ -787,12 +905,27 @@ img {
 }
 
 .feature-page .form-group select {
-    color-scheme: dark;
-    background-color: rgba(15, 23, 42, 0.96) !important;
-    color: #f8fafc !important;
+    background-color: rgba(15, 23, 42, 0.96);
     background-image:
-        linear-gradient(45deg, transparent 50%, #e2e8f0 50%),
-        linear-gradient(135deg, #e2e8f0 50%, transparent 50%);
+        linear-gradient(90deg, rgba(15, 23, 42, 0) calc(100% - 50px), rgba(30, 41, 59, 0.96) calc(100% - 50px)),
+        linear-gradient(45deg, transparent 50%, #f8fafc 50%),
+        linear-gradient(135deg, #f8fafc 50%, transparent 50%);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    color: #f8fafc;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.feature-page .form-group select:hover {
+    border-color: rgba(125, 211, 252, 0.34);
+    background-color: rgba(15, 23, 42, 0.98);
+    background-image:
+        linear-gradient(90deg, rgba(15, 23, 42, 0) calc(100% - 50px), rgba(37, 99, 235, 0.32) calc(100% - 50px)),
+        linear-gradient(45deg, transparent 50%, #ffffff 50%),
+        linear-gradient(135deg, #ffffff 50%, transparent 50%);
+}
+
+.feature-page .form-group select:required:invalid {
+    color: #94a3b8;
 }
 
 .feature-page .form-group select option {
@@ -812,6 +945,14 @@ img {
     border-color: rgba(129, 140, 248, 0.70);
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.16);
     color: #f8fafc !important;
+}
+
+.feature-page .form-group select:focus {
+    background-color: rgba(15, 23, 42, 0.98) !important;
+    background-image:
+        linear-gradient(90deg, rgba(15, 23, 42, 0) calc(100% - 50px), rgba(79, 70, 229, 0.42) calc(100% - 50px)),
+        linear-gradient(45deg, transparent 50%, #ffffff 50%),
+        linear-gradient(135deg, #ffffff 50%, transparent 50%);
 }
 
 .feature-page .btn-secondary {
@@ -1092,8 +1233,7 @@ img {
     }
 
     .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: 1fr;
     }
 
     .hero-actions .btn {
@@ -1283,6 +1423,15 @@ img {
     margin-top: 4px;
     display: block;
     line-height: 1.5;
+}
+
+.form-hint-select {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px dashed rgba(125, 211, 252, 0.26);
+    background: rgba(8, 47, 73, 0.18);
+    color: #dbeafe;
 }
 
 .password-wrapper {
