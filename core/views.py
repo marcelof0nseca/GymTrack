@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models.functions import Lower, Trim
+from django.db.models import Case, When, Value, IntegerField
 from datetime import timedelta
+from django.urls import reverse
 
 from .models import Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
 from .forms import RegisterForm, MetaForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
@@ -110,12 +112,51 @@ def metas_view(request):
     else:
         form = MetaForm()
 
-    metas = Meta.objects.filter(usuario=request.user).order_by('prazo', 'id')
+    metas = Meta.objects.filter(usuario=request.user).annotate(
+        status_order=Case(
+            When(status='em_andamento', then=Value(0)),
+            When(status='vencida', then=Value(1)),
+            When(status='concluida', then=Value(2)),
+            default=Value(3),
+            output_field=IntegerField(),
+        )
+    ).order_by('status_order', 'data_conclusao', 'prazo', 'id')
 
     return render(request, 'core/metas.html', {
         'form': form,
         'metas': metas,
     })
+
+
+@login_required
+def confirmar_meta_view(request, meta_id):
+    meta = get_object_or_404(Meta, id=meta_id, usuario=request.user)
+
+    if request.method != 'POST':
+        return redirect('metas')
+
+    if meta.status == 'concluida':
+        messages.info(request, 'Essa meta já está concluída.')
+        return redirect('metas')
+
+    meta.status = 'concluida'
+    meta.data_conclusao = timezone.now()
+    meta.save(update_fields=['status', 'data_conclusao'])
+
+    messages.success(request, 'Meta confirmada com sucesso!')
+    return redirect(f"{reverse('metas')}?confirmada={meta.id}")
+
+
+@login_required
+def excluir_meta_view(request, meta_id):
+    meta = get_object_or_404(Meta, id=meta_id, usuario=request.user)
+
+    if request.method != 'POST':
+        return redirect('metas')
+
+    meta.delete()
+    messages.success(request, 'Meta removida com sucesso!')
+    return redirect('metas')
 
 
 @login_required

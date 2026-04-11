@@ -421,6 +421,25 @@ img {
     transform: translateY(-1px);
 }
 
+.btn-confirm {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    box-shadow: 0 12px 24px rgba(34, 197, 94, 0.22);
+    min-width: 140px;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.btn-confirm:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    transform: translateY(-1px);
+}
+
 .btn-execucao {
     background: linear-gradient(135deg, var(--primary), #6366f1);
     color: white;
@@ -679,11 +698,12 @@ img {
     background: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
-    padding: 16px 18px;
+    padding: 22px 18px 16px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
+    position: relative;
 }
 
 .item strong {
@@ -702,11 +722,154 @@ img {
     gap: 2px;
 }
 
+.meta-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.meta-actions form {
+    margin: 0;
+}
+
+.meta-remove-form {
+    display: none;
+}
+
+.meta-remove-button {
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    z-index: 2;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #6b7280;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-block;
+    transition: color 0.2s ease, transform 0.2s ease;
+    box-shadow: none;
+}
+
+.meta-remove-button:hover {
+    background: transparent;
+    color: #4b5563;
+    transform: scale(1.05);
+}
+
+.meta-remove-button:focus-visible {
+    outline: 2px solid rgba(107, 114, 128, 0.35);
+    outline-offset: 2px;
+}
+
+.meta-delete-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 120;
+}
+
+.meta-delete-modal.is-open {
+    display: flex;
+}
+
+.meta-delete-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(6, 182, 212, 0.16), transparent 24%),
+        rgba(11, 16, 32, 0.78);
+    backdrop-filter: blur(10px);
+}
+
+.meta-delete-dialog {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    padding: 28px;
+    border-radius: 24px;
+    background:
+        linear-gradient(145deg, rgba(11, 16, 32, 0.98), rgba(19, 28, 51, 0.96)),
+        linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(6, 182, 212, 0.08));
+    color: #f8fafc;
+    border: 1px solid rgba(125, 211, 252, 0.18);
+    box-shadow: 0 28px 70px rgba(2, 6, 23, 0.46);
+}
+
+.meta-delete-kicker {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(6, 182, 212, 0.14));
+    color: #dbeafe;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.meta-delete-dialog h3 {
+    font-size: 1.3rem;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.meta-delete-dialog p {
+    color: #cbd5e1;
+    margin-bottom: 22px;
+}
+
+.meta-delete-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.meta-delete-dialog .btn-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    box-shadow: 0 12px 24px rgba(220, 38, 38, 0.28);
+}
+
+.meta-delete-dialog .btn-danger:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626);
+}
+
+.meta-delete-dialog .btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e2e8f0;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: none;
+}
+
+.meta-delete-dialog .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.has-modal-open {
+    overflow: hidden;
+}
+
 .meta-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 140px;
+    min-height: 44px;
     padding: 10px 16px;
     border-radius: 14px;
     font-size: 0.92rem;
@@ -737,6 +900,24 @@ img {
     color: #b91c1c;
     border-color: rgba(220, 38, 38, 0.2);
     box-shadow: 0 10px 22px rgba(220, 38, 38, 0.14);
+}
+
+.meta-status--confirmed {
+    animation: meta-confirmed-pop 0.8s ease;
+}
+
+@keyframes meta-confirmed-pop {
+    0% {
+        transform: scale(0.96);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.30);
+    }
+    60% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 14px rgba(34, 197, 94, 0);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .empty-state {

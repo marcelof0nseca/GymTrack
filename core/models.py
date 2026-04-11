@@ -23,6 +23,7 @@ class Meta(models.Model):
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     prazo = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='em_andamento')
+    data_conclusao = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['prazo', 'id']

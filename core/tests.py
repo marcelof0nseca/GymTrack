@@ -243,6 +243,70 @@ class MetasFeatureTests(TestCase):
         self.assertContains(resposta, 'Minha meta')
         self.assertNotContains(resposta, 'Meta de outro usuário')
 
+    def test_confirma_meta_e_exibe_tag_concluida_animada(self):
+        prazo = timezone.localdate() + timedelta(days=4)
+        meta = Meta.objects.create(usuario=self.user, nome='Meta para confirmar', valor='12.00', prazo=prazo)
+
+        resposta = self.client.post(reverse('confirmar_meta', args=[meta.id]), {}, follow=True)
+
+        meta.refresh_from_db()
+        self.assertEqual(meta.status, 'concluida')
+        self.assertIsNotNone(meta.data_conclusao)
+        self.assertContains(resposta, 'Meta confirmada com sucesso!')
+        self.assertContains(resposta, 'meta-status--concluida', html=False)
+        self.assertContains(resposta, 'meta-status--confirmed', html=False)
+        self.assertNotContains(resposta, 'Confirmar meta')
+
+    def test_remove_meta_com_o_x_do_card(self):
+        prazo = timezone.localdate() + timedelta(days=6)
+        meta = Meta.objects.create(usuario=self.user, nome='Meta para remover', valor='8.00', prazo=prazo)
+
+        resposta_inicial = self.client.get(reverse('metas'))
+        self.assertContains(resposta_inicial, 'Tem certeza que deseja remover esta meta?')
+        self.assertContains(resposta_inicial, 'Remoção de meta')
+        self.assertContains(resposta_inicial, 'aria-label="Remover meta"', html=False)
+
+        resposta = self.client.post(reverse('excluir_meta', args=[meta.id]), {}, follow=True)
+
+        self.assertEqual(Meta.objects.filter(id=meta.id).count(), 0)
+        self.assertContains(resposta, 'Meta removida com sucesso!')
+        self.assertNotContains(resposta, 'Meta para remover')
+
+    def test_metas_confirmadas_vao_para_o_final_da_pilha(self):
+        hoje = timezone.localdate()
+        meta_antiga = Meta.objects.create(
+            usuario=self.user,
+            nome='Meta antiga concluída',
+            valor='5.00',
+            prazo=hoje + timedelta(days=8),
+            status='concluida',
+            data_conclusao=timezone.now() - timedelta(days=2),
+        )
+        meta_nova = Meta.objects.create(
+            usuario=self.user,
+            nome='Meta nova concluída',
+            valor='7.00',
+            prazo=hoje + timedelta(days=8),
+            status='concluida',
+            data_conclusao=timezone.now() - timedelta(hours=1),
+        )
+        meta_pendente = Meta.objects.create(
+            usuario=self.user,
+            nome='Meta pendente',
+            valor='9.00',
+            prazo=hoje + timedelta(days=1),
+        )
+
+        resposta = self.client.get(reverse('metas'))
+
+        pos_pendente = resposta.content.decode().find(meta_pendente.nome)
+        pos_antiga = resposta.content.decode().find(meta_antiga.nome)
+        pos_nova = resposta.content.decode().find(meta_nova.nome)
+
+        self.assertGreater(pos_antiga, pos_pendente)
+        self.assertGreater(pos_nova, pos_antiga)
+        self.assertContains(resposta, 'Confirmar meta')
+
     def test_exibe_tags_coloridas_para_status_da_meta(self):
         prazo_futuro = timezone.localdate() + timedelta(days=5)
         prazo_passado = timezone.localdate() - timedelta(days=2)
@@ -289,7 +353,7 @@ class HomeMetasCardTests(TestCase):
 
         resposta = self.client.get(reverse('home'))
 
-        self.assertContains(resposta, 'Metas próximas de expirar')
+        self.assertContains(resposta, 'Metas próximas')
         self.assertContains(resposta, 'Meta próxima 1')
         self.assertContains(resposta, 'Meta próxima 2')
         self.assertNotContains(resposta, 'Meta distante')
@@ -314,7 +378,7 @@ class HomeMetasCardTests(TestCase):
 
         resposta = self.client.get(reverse('home'))
 
-        self.assertContains(resposta, 'Metas próximas de expirar')
+        self.assertContains(resposta, 'Metas próximas')
         self.assertContains(resposta, 'Meta distante 2')
         self.assertContains(resposta, 'Meta distante 1')
         self.assertContains(resposta, 'Vence em 15 dias')

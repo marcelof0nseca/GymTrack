@@ -46,15 +46,41 @@
             <ul class="items-list">
                 {% for meta in metas %}
                     <li class="item">
+                        <button
+                            type="button"
+                            class="meta-remove-button"
+                            aria-label="Remover meta"
+                            data-meta-name="{{ meta.nome|escape }}"
+                            data-delete-url="{% url 'excluir_meta' meta.id %}"
+                        >
+                            ×
+                        </button>
+
                         <div class="meta-content">
                             <strong>{{ meta.nome }}</strong>
                             <span>Valor alvo: {{ meta.valor|floatformat:2 }}</span>
                             <span>Prazo: {{ meta.prazo|date:'d/m/Y' }}</span>
+                            {% if meta.status == 'concluida' and meta.data_conclusao %}
+                                <span>Concluída em {{ meta.data_conclusao|date:'d/m/Y H:i' }}</span>
+                            {% endif %}
                         </div>
 
-                        <span class="meta-status meta-status--{{ meta.status_css_slug }}">
-                            {{ meta.status_label }}
-                        </span>
+                        <div class="meta-actions">
+                            {% with confirmada_id=request.GET.confirmada meta_id=meta.id|stringformat:'s' %}
+                                <span class="meta-status meta-status--{{ meta.status_css_slug }}{% if confirmada_id == meta_id %} meta-status--confirmed{% endif %}">
+                                    {{ meta.status_label }}
+                                </span>
+                            {% endwith %}
+
+                            {% if meta.status != 'concluida' %}
+                                <form method="post" action="{% url 'confirmar_meta' meta.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-confirm btn-sm">
+                                        Confirmar meta
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
@@ -65,4 +91,74 @@
         {% endif %}
     </div>
 </section>
+
+<div class="meta-delete-modal" id="meta-delete-modal" aria-hidden="true">
+    <div class="meta-delete-backdrop" data-meta-cancel></div>
+
+    <div class="meta-delete-dialog" role="dialog" aria-modal="true" aria-labelledby="meta-delete-title">
+        <span class="meta-delete-kicker">Remoção de meta</span>
+        <h3 id="meta-delete-title">Tem certeza que deseja remover esta meta?</h3>
+        <p id="meta-delete-message">Essa ação não pode ser desfeita.</p>
+
+        <div class="meta-delete-actions">
+            <button type="button" class="btn btn-secondary btn-sm" data-meta-cancel>Cancelar</button>
+
+            <form method="post" id="meta-delete-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Remover meta</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('meta-delete-modal');
+        const form = document.getElementById('meta-delete-form');
+        const message = document.getElementById('meta-delete-message');
+        const title = document.getElementById('meta-delete-title');
+        const triggers = document.querySelectorAll('.meta-remove-button[data-delete-url]');
+        const cancelButtons = modal.querySelectorAll('[data-meta-cancel]');
+
+        const closeModal = () => {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('has-modal-open');
+        };
+
+        const openModal = (deleteUrl, metaName) => {
+            form.action = deleteUrl;
+            title.textContent = 'Tem certeza que deseja remover esta meta?';
+            message.textContent = metaName
+                ? `Você está prestes a remover a meta "${metaName}".`
+                : 'Essa ação não pode ser desfeita.';
+
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('has-modal-open');
+        };
+
+        triggers.forEach((button) => {
+            button.addEventListener('click', () => {
+                openModal(button.dataset.deleteUrl, button.dataset.metaName);
+            });
+        });
+
+        cancelButtons.forEach((button) => {
+            button.addEventListener('click', closeModal);
+        });
+
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal || event.target.classList.contains('meta-delete-backdrop')) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+                closeModal();
+            }
+        });
+    });
+</script>
 {% endblock %}
