@@ -13,9 +13,11 @@ ENV/
 .env
 .env.*
 
-# Django local database and artifacts
-db.sqlite3
-db.sqlite3-journal
+# Django local database and SQLite artifacts
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
 
 # Django collected/static/media output
 staticfiles/
