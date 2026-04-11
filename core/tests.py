@@ -1,8 +1,11 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
-from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio, ExercicioBase
+from .models import Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio, ExercicioBase
 
 
 class ConfirmarTreinoFlowTests(TestCase):
@@ -174,3 +177,68 @@ class FormSelectionUiTests(TestCase):
             resposta,
             'Esse treino ainda n'
         )
+
+
+class MetasFeatureTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='carol', password='123456')
+        self.client.login(username='carol', password='123456')
+
+    def test_metas_get_exibe_formulario_e_lista_vazia(self):
+        resposta = self.client.get(reverse('metas'))
+
+        self.assertContains(resposta, 'Criar meta')
+        self.assertContains(resposta, 'Nome da meta')
+        self.assertContains(resposta, 'Nenhuma meta cadastrada até o momento.')
+
+    def test_cria_meta_com_sucesso(self):
+        prazo = timezone.localdate() + timedelta(days=7)
+
+        resposta = self.client.post(reverse('metas'), {
+            'nome': 'Perder 5 kg',
+            'valor': '5.00',
+            'prazo': prazo.isoformat(),
+        }, follow=True)
+
+        self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 1)
+        meta = Meta.objects.get(usuario=self.user)
+        self.assertEqual(meta.nome, 'Perder 5 kg')
+        self.assertEqual(str(meta.valor), '5.00')
+        self.assertEqual(meta.prazo, prazo)
+        self.assertContains(resposta, 'Meta criada com sucesso!')
+
+    def test_rejeita_valor_zero_ou_negativo(self):
+        prazo = timezone.localdate() + timedelta(days=7)
+
+        resposta = self.client.post(reverse('metas'), {
+            'nome': 'Meta inválida',
+            'valor': '0',
+            'prazo': prazo.isoformat(),
+        })
+
+        self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
+        self.assertContains(resposta, 'O valor da meta deve ser maior que zero.')
+
+    def test_rejeita_prazo_no_passado(self):
+        prazo = timezone.localdate() - timedelta(days=1)
+
+        resposta = self.client.post(reverse('metas'), {
+            'nome': 'Meta atrasada',
+            'valor': '10.00',
+            'prazo': prazo.isoformat(),
+        })
+
+        self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
+        self.assertContains(resposta, 'O prazo da meta não pode estar no passado.')
+
+    def test_lista_apenas_metas_do_usuario_logado(self):
+        outro_usuario = User.objects.create_user(username='dave', password='123456')
+        prazo = timezone.localdate() + timedelta(days=3)
+
+        Meta.objects.create(usuario=outro_usuario, nome='Meta de outro usuário', valor='8.00', prazo=prazo)
+        Meta.objects.create(usuario=self.user, nome='Minha meta', valor='4.00', prazo=prazo)
+
+        resposta = self.client.get(reverse('metas'))
+
+        self.assertContains(resposta, 'Minha meta')
+        self.assertNotContains(resposta, 'Meta de outro usuário')

@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.utils import timezone
 
-from .models import Treino, Exercicio, ExecucaoTreino, ExercicioBase
+from .models import Meta, Treino, Exercicio, ExecucaoTreino, ExercicioBase
 
 
 def _append_widget_class(widget, class_name):
@@ -48,6 +49,54 @@ class TreinoForm(forms.ModelForm):
     def clean_nome(self):
         nome = self.cleaned_data['nome'].strip()
         return nome
+
+
+class MetaForm(forms.ModelForm):
+    class Meta:
+        model = Meta
+        fields = ['nome', 'valor', 'prazo']
+        labels = {
+            'nome': 'Nome da meta',
+            'valor': 'Valor',
+            'prazo': 'Prazo',
+        }
+        widgets = {
+            'prazo': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['nome'].widget.attrs.update({
+            'placeholder': 'Ex.: Perder 5 kg',
+        })
+        self.fields['valor'].widget.attrs.update({
+            'placeholder': 'Ex.: 5.00',
+            'step': '0.01',
+            'min': '0.01',
+            'inputmode': 'decimal',
+        })
+        self.fields['prazo'].widget.attrs.update({
+            'min': timezone.localdate().isoformat(),
+        })
+
+    def clean_nome(self):
+        nome = self.cleaned_data['nome'].strip()
+        if not nome:
+            raise forms.ValidationError('O nome da meta não pode ser vazio.')
+        return nome
+
+    def clean_valor(self):
+        valor = self.cleaned_data['valor']
+        if valor <= 0:
+            raise forms.ValidationError('O valor da meta deve ser maior que zero.')
+        return valor
+
+    def clean_prazo(self):
+        prazo = self.cleaned_data['prazo']
+        if prazo < timezone.localdate():
+            raise forms.ValidationError('O prazo da meta não pode estar no passado.')
+        return prazo
 
 
 class ExercicioForm(forms.ModelForm):

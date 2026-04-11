@@ -10,6 +10,25 @@ class Treino(models.Model):
         return self.nome
 
 
+class Meta(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='metas')
+    nome = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    prazo = models.DateField()
+
+    class Meta:
+        ordering = ['prazo', 'id']
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(valor__gt=0),
+                name='meta_valor_positivo',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.nome} - {self.usuario.username}'
+
+
 class ExercicioBase(models.Model):
     nome = models.CharField(max_length=100, unique=True)
     grupo_muscular = models.CharField(max_length=50)

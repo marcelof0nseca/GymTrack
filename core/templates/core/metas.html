@@ -3,12 +3,62 @@
 {% block content %}
 <section class="page-grid feature-page">
     <div class="content-card">
-        <h2 class="section-title">Metas</h2>
-        <p class="section-subtitle">Acompanhe seus objetivos e mantenha sua evolução organizada.</p>
+        <h2 class="section-title">Criar meta</h2>
+        <p class="section-subtitle">Cadastre uma meta de treino ou evolução para acompanhar seu progresso.</p>
 
-        <div class="empty-state">
-            Nesta área você pode evoluir seus treinos com metas mais claras e acompanháveis.
-        </div>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="{{ form.nome.id_for_label }}">Nome da meta</label>
+                    {{ form.nome }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.valor.id_for_label }}">Valor</label>
+                    {{ form.valor }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.prazo.id_for_label }}">Prazo</label>
+                    {{ form.prazo }}
+                </div>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    Verifique os dados informados antes de salvar a meta.
+                </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Criar meta</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="list-card">
+        <h3 class="section-title">Metas cadastradas</h3>
+        <p class="section-subtitle">Acompanhe os objetivos que você já definiu.</p>
+
+        {% if metas %}
+            <ul class="items-list">
+                {% for meta in metas %}
+                    <li class="item">
+                        <div>
+                            <strong>{{ meta.nome }}</strong>
+                            <span>Valor alvo: {{ meta.valor|floatformat:2 }}</span>
+                            <span>Prazo: {{ meta.prazo|date:'d/m/Y' }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state">
+                Nenhuma meta cadastrada até o momento.
+            </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}
