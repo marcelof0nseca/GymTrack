@@ -3,12 +3,35 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from .models import Meta, Treino, Exercicio, ExecucaoTreino, ExercicioBase
+from .models import (
+    Atleta,
+    Exercicio,
+    ExercicioBase,
+    ExecucaoTreino,
+    MedicaoAtleta,
+    Meta,
+    Treino,
+)
 
 
 def _append_widget_class(widget, class_name):
     current_class = widget.attrs.get('class', '').strip()
     widget.attrs['class'] = f'{current_class} {class_name}'.strip()
+
+
+def _configure_decimal_field(field, placeholder):
+    field.widget.attrs.update({
+        'placeholder': placeholder,
+        'step': '0.01',
+        'min': '0.01',
+        'inputmode': 'decimal',
+    })
+
+
+def _validate_positive_optional(form, field_name, label):
+    value = form.cleaned_data.get(field_name)
+    if value is not None and value <= 0:
+        form.add_error(field_name, f'{label} deve ser maior que zero.')
 
 
 class RegisterForm(UserCreationForm):
@@ -49,6 +72,85 @@ class TreinoForm(forms.ModelForm):
     def clean_nome(self):
         nome = self.cleaned_data['nome'].strip()
         return nome
+
+
+class AtletaForm(forms.ModelForm):
+    class Meta:
+        model = Atleta
+        fields = ['objetivo_principal', 'objetivo_descricao', 'altura_cm']
+        labels = {
+            'objetivo_principal': 'Objetivo principal',
+            'objetivo_descricao': 'Detalhes do objetivo',
+            'altura_cm': 'Altura (cm)',
+        }
+        widgets = {
+            'objetivo_descricao': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        objetivo_field = self.fields['objetivo_principal']
+        objetivo_field.choices = [('', 'Selecione o objetivo principal'), *Atleta.OBJETIVO_CHOICES]
+        _append_widget_class(objetivo_field.widget, 'form-select-input')
+        objetivo_field.widget.attrs.update({
+            'aria-describedby': 'objetivo-select-hint',
+        })
+
+        self.fields['objetivo_descricao'].widget.attrs.update({
+            'placeholder': 'Ex.: reduzir gordura corporal e melhorar o condicionamento.',
+        })
+        _configure_decimal_field(self.fields['altura_cm'], 'Ex.: 175.00')
+
+    def clean_altura_cm(self):
+        altura_cm = self.cleaned_data['altura_cm']
+        if altura_cm <= 0:
+            raise forms.ValidationError('A altura deve ser maior que zero.')
+        return altura_cm
+
+
+class MedicaoAtletaForm(forms.ModelForm):
+    class Meta:
+        model = MedicaoAtleta
+        fields = ['peso_kg', 'braco_cm', 'cintura_cm', 'peito_cm', 'coxa_cm']
+        labels = {
+            'peso_kg': 'Peso (kg)',
+            'braco_cm': 'Braço (cm)',
+            'cintura_cm': 'Cintura (cm)',
+            'peito_cm': 'Peito (cm)',
+            'coxa_cm': 'Coxa (cm)',
+        }
+
+    def __init__(self, *args, medicao_referencia=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if medicao_referencia and not self.is_bound:
+            for field_name in self.fields:
+                self.fields[field_name].initial = getattr(medicao_referencia, field_name)
+
+        _configure_decimal_field(self.fields['peso_kg'], 'Ex.: 78.50')
+        _configure_decimal_field(self.fields['braco_cm'], 'Ex.: 34.00')
+        _configure_decimal_field(self.fields['cintura_cm'], 'Ex.: 82.00')
+        _configure_decimal_field(self.fields['peito_cm'], 'Ex.: 98.00')
+        _configure_decimal_field(self.fields['coxa_cm'], 'Ex.: 56.00')
+
+        self.fields['peso_kg'].widget.attrs.update({
+            'aria-describedby': 'medidas-atleta-hint',
+        })
+
+    def clean_peso_kg(self):
+        peso_kg = self.cleaned_data['peso_kg']
+        if peso_kg <= 0:
+            raise forms.ValidationError('O peso deve ser maior que zero.')
+        return peso_kg
+
+    def clean(self):
+        cleaned_data = super().clean()
+        _validate_positive_optional(self, 'braco_cm', 'O braço')
+        _validate_positive_optional(self, 'cintura_cm', 'A cintura')
+        _validate_positive_optional(self, 'peito_cm', 'O peito')
+        _validate_positive_optional(self, 'coxa_cm', 'A coxa')
+        return cleaned_data
 
 
 class MetaForm(forms.ModelForm):

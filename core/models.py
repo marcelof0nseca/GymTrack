@@ -77,6 +77,78 @@ class Meta(models.Model):
         return f'Vence em {dias} dias'
 
 
+class Atleta(models.Model):
+    OBJETIVO_CHOICES = [
+        ('emagrecimento', 'Emagrecimento'),
+        ('ganho_massa', 'Ganho de massa'),
+        ('reducao_cintura', 'Redução de cintura'),
+    ]
+
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='atleta')
+    objetivo_principal = models.CharField(max_length=30, choices=OBJETIVO_CHOICES)
+    objetivo_descricao = models.CharField(max_length=200, blank=True)
+    altura_cm = models.DecimalField(max_digits=5, decimal_places=2)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(altura_cm__gt=0),
+                name='atleta_altura_positiva',
+            ),
+        ]
+
+    def __str__(self):
+        return f'Atleta de {self.usuario.username}'
+
+    @property
+    def ultima_medicao(self):
+        return self.medicoes.order_by('-data_registro', '-id').first()
+
+    @property
+    def total_medicoes(self):
+        return self.medicoes.count()
+
+
+class MedicaoAtleta(models.Model):
+    atleta = models.ForeignKey(Atleta, on_delete=models.CASCADE, related_name='medicoes')
+    peso_kg = models.DecimalField(max_digits=5, decimal_places=2)
+    braco_cm = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    cintura_cm = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    peito_cm = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    coxa_cm = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    data_registro = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-data_registro', '-id']
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(peso_kg__gt=0),
+                name='medicao_peso_positivo',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(braco_cm__gt=0) | models.Q(braco_cm__isnull=True),
+                name='medicao_braco_positivo_ou_nulo',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(cintura_cm__gt=0) | models.Q(cintura_cm__isnull=True),
+                name='medicao_cintura_positiva_ou_nula',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(peito_cm__gt=0) | models.Q(peito_cm__isnull=True),
+                name='medicao_peito_positivo_ou_nulo',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(coxa_cm__gt=0) | models.Q(coxa_cm__isnull=True),
+                name='medicao_coxa_positiva_ou_nula',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.atleta.usuario.username} - {self.data_registro:%d/%m/%Y %H:%M}'
+
+
 class ExercicioBase(models.Model):
     nome = models.CharField(max_length=100, unique=True)
     grupo_muscular = models.CharField(max_length=50)

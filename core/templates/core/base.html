@@ -58,8 +58,11 @@
                             <a href="{% url 'execucao' %}" class="nav-link{% if current_view == 'execucao' or current_view == 'execucao_detalhe' %} is-active{% endif %}" data-nav-link>
                                 Execu&ccedil;&atilde;o
                             </a>
-                            <a href="{% url 'perfil' %}" class="nav-link{% if current_view == 'perfil' %} is-active{% endif %}" data-nav-link>
-                                Perfil
+                            <a href="{% url 'atleta' %}" class="nav-link{% if current_view == 'atleta' %} is-active{% endif %}" data-nav-link>
+                                Perfil do Atleta
+                            </a>
+                            <a href="{% url 'conta' %}" class="nav-link{% if current_view == 'conta' or current_view == 'perfil' %} is-active{% endif %}" data-nav-link>
+                                Conta
                             </a>
                             <a href="{% url 'logout' %}" class="nav-link nav-primary" data-nav-link>Sair</a>
                         </div>

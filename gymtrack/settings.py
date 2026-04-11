@@ -1,4 +1,6 @@
 import os
+import shutil
+import sys
 from pathlib import Path
 import dj_database_url
 
@@ -54,9 +56,38 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gymtrack.wsgi.application'
 
+
+PROJECT_DB_PATH = BASE_DIR / 'db.sqlite3'
+
+
+def _resolve_sqlite_db_path():
+    custom_path = os.environ.get('GYMTRACK_DB_PATH')
+    if custom_path:
+        return Path(custom_path)
+
+    command = sys.argv[1] if len(sys.argv) > 1 else ''
+    if command == 'test':
+        return PROJECT_DB_PATH
+
+    if os.name == 'nt' and 'RENDER' not in os.environ:
+        local_app_data = os.environ.get('LOCALAPPDATA')
+        if local_app_data:
+            return Path(local_app_data) / 'GymTrack' / 'db.sqlite3'
+
+    return PROJECT_DB_PATH
+
+
+SQLITE_DB_PATH = _resolve_sqlite_db_path()
+
+if SQLITE_DB_PATH != PROJECT_DB_PATH:
+    SQLITE_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    if not SQLITE_DB_PATH.exists() and PROJECT_DB_PATH.exists():
+        shutil.copy2(PROJECT_DB_PATH, SQLITE_DB_PATH)
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=f"sqlite:///{SQLITE_DB_PATH.as_posix()}",
         conn_max_age=600
     )
 }

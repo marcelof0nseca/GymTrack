@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid feature-page account-page">
+    <div class="content-card">
+        <h2 class="section-title">Minha conta</h2>
+        <p class="section-subtitle">Dados de acesso e identificação da conta logada no GymTrack.</p>
+
+        <div class="profile-inline account-summary-grid">
+            <div class="profile-item">
+                <span>Nome completo</span>
+                <strong>
+                    {% if request.user.first_name or request.user.last_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="profile-item">
+                <span>Nome de usuário</span>
+                <strong>{{ request.user.username }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>E-mail</span>
+                <strong>{% if request.user.email %}{{ request.user.email }}{% else %}Não informado{% endif %}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-card">
+        <h3 class="section-title">Atalhos da conta</h3>
+        <p class="section-subtitle">Acesse rapidamente as áreas mais relacionadas ao seu acompanhamento pessoal.</p>
+
+        <div class="items-list">
+            <div class="item">
+                <div>
+                    <strong>Perfil do atleta</strong>
+                    <span>
+                        {% if atleta %}
+                            Perfil ativo com {{ atleta.total_medicoes }} atualização{{ atleta.total_medicoes|pluralize }} registrada{{ atleta.total_medicoes|pluralize }}.
+                        {% else %}
+                            Você ainda não criou seu perfil do atleta.
+                        {% endif %}
+                    </span>
+                </div>
+
+                <a href="{% url 'atleta' %}" class="btn btn-secondary btn-sm">
+                    {% if atleta %}Abrir perfil do atleta{% else %}Criar perfil do atleta{% endif %}
+                </a>
+            </div>
+
+            <div class="item">
+                <div>
+                    <strong>Metas</strong>
+                    <span>Defina objetivos de treino e acompanhe sua constância junto da evolução física.</span>
+                </div>
+
+                <a href="{% url 'metas' %}" class="btn btn-secondary btn-sm">Ver metas</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,10 +1,44 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<section class="page-grid feature-page">
+<section class="page-grid feature-page metas-page">
     <div class="content-card">
-        <h2 class="section-title">Criar meta</h2>
+        <div class="page-intro-panel metas-intro-panel">
+            <div class="page-intro-copy">
+                <span class="page-kicker metas-kicker">Planejamento da rotina</span>
+                <h2 class="section-title">Criar meta</h2>
+        <div class="metas-callout">
+            <strong>Defina um objetivo claro.</strong>
+            Informe nome, valor e prazo para transformar sua rotina em uma meta acompanhavel dentro do sistema.
+        </div>
+            </div>
+
+            <div class="metas-summary-grid">
+                <div class="metas-summary-card">
+                    <span>Em andamento</span>
+                    <strong>{{ metas_em_andamento }}</strong>
+                    <small>objetivos ativos</small>
+                </div>
+
+                <div class="metas-summary-card">
+                    <span>ConcluÃ­das</span>
+                    <strong>{{ metas_concluidas }}</strong>
+                    <small>metas jÃ¡ entregues</small>
+                </div>
+
+                <div class="metas-summary-card">
+                    <span>Vencidas</span>
+                    <strong>{{ metas_vencidas }}</strong>
+                    <small>pontos que pedem atenÃ§Ã£o</small>
+                </div>
+            </div>
+        </div>
         <p class="section-subtitle">Cadastre uma meta de treino ou evolução para acompanhar seu progresso.</p>
+
+        <div class="metas-callout">
+            <strong>Defina um objetivo claro.</strong>
+            Informe nome, valor e prazo para transformar sua rotina em uma meta acompanhavel dentro do sistema.
+        </div>
 
         <form method="post">
             {% csrf_token %}
@@ -39,13 +73,28 @@
     </div>
 
     <div class="list-card">
-        <h3 class="section-title">Metas cadastradas</h3>
+        <div class="metas-list-header">
+            <div>
+                <span class="page-kicker metas-kicker">Painel de objetivos</span>
+                <h3 class="section-title">Metas cadastradas</h3>
         <p class="section-subtitle">Acompanhe os objetivos que você já definiu.</p>
 
+                <p class="section-subtitle">Acompanhe os objetivos que voce ja definiu.</p>
+            </div>
+
+            {% if proxima_meta %}
+                <div class="metas-next-card">
+                    <span>Proxima prioridade</span>
+                    <strong>{{ proxima_meta.nome }}</strong>
+                    <small>Prazo {{ proxima_meta.prazo|date:'d/m/Y' }}</small>
+                </div>
+            {% endif %}
+        </div>
+
         {% if metas %}
-            <ul class="items-list">
+            <ul class="items-list metas-items-list">
                 {% for meta in metas %}
-                    <li class="item">
+                    <li class="item meta-item-card">
                         <button
                             type="button"
                             class="meta-remove-button"
@@ -57,7 +106,12 @@
                         </button>
 
                         <div class="meta-content">
-                            <strong>{{ meta.nome }}</strong>
+                            <div class="meta-heading-row">
+                                <strong>{{ meta.nome }}</strong>
+                                <span class="meta-deadline-chip meta-deadline-chip--{{ meta.status_css_slug }}">
+                                    Prazo {{ meta.prazo|date:'d/m/Y' }}
+                                </span>
+                            </div>
                             <span>Valor alvo: {{ meta.valor|floatformat:2 }}</span>
                             <span>Prazo: {{ meta.prazo|date:'d/m/Y' }}</span>
                             {% if meta.status == 'concluida' and meta.data_conclusao %}

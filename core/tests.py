@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio, ExercicioBase
+from .models import Atleta, Exercicio, ExercicioBase, ExecucaoExercicio, ExecucaoTreino, MedicaoAtleta, Meta, Treino
 
 
 class ConfirmarTreinoFlowTests(TestCase):
@@ -383,3 +383,180 @@ class HomeMetasCardTests(TestCase):
         self.assertContains(resposta, 'Meta distante 1')
         self.assertContains(resposta, 'Vence em 15 dias')
         self.assertContains(resposta, 'Vence em 30 dias')
+
+
+class PerfilAtletaFeatureTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='athleteuser', password='123456')
+        self.client.login(username='athleteuser', password='123456')
+
+    def _criar_atleta_com_medicao(self, objetivo='emagrecimento', peso='90.00', cintura='100.00'):
+        atleta = Atleta.objects.create(
+            usuario=self.user,
+            objetivo_principal=objetivo,
+            objetivo_descricao='Quero acompanhar minha evolução física.',
+            altura_cm='175.00',
+        )
+        medicao = MedicaoAtleta.objects.create(
+            atleta=atleta,
+            peso_kg=peso,
+            braco_cm='34.00',
+            cintura_cm=cintura,
+            peito_cm='98.00',
+            coxa_cm='58.00',
+        )
+        return atleta, medicao
+
+    def test_atleta_get_sem_perfil_exibe_formulario_de_criacao(self):
+        resposta = self.client.get(reverse('atleta'))
+
+        self.assertContains(resposta, 'Criar perfil do atleta')
+        self.assertContains(resposta, 'Objetivo principal')
+        self.assertContains(resposta, 'Peso inicial (kg)')
+
+    def test_atleta_post_cria_perfil_com_sucesso(self):
+        resposta = self.client.post(reverse('atleta'), {
+            'objetivo_principal': 'emagrecimento',
+            'objetivo_descricao': 'Perder gordura e melhorar o condicionamento.',
+            'altura_cm': '172.00',
+            'peso_kg': '84.50',
+            'braco_cm': '33.00',
+            'cintura_cm': '88.00',
+            'peito_cm': '97.00',
+            'coxa_cm': '57.00',
+        }, follow=True)
+
+        self.assertEqual(Atleta.objects.filter(usuario=self.user).count(), 1)
+        atleta = Atleta.objects.get(usuario=self.user)
+        self.assertEqual(MedicaoAtleta.objects.filter(atleta=atleta).count(), 1)
+        self.assertContains(resposta, 'Perfil do atleta criado com sucesso!')
+        self.assertContains(resposta, 'Emagrecimento')
+        self.assertContains(resposta, '84,50 kg')
+
+    def test_atleta_post_rejeita_campos_obrigatorios_ausentes(self):
+        resposta = self.client.post(reverse('atleta'), {
+            'objetivo_principal': '',
+            'objetivo_descricao': '',
+            'altura_cm': '',
+            'peso_kg': '',
+        })
+
+        self.assertEqual(Atleta.objects.filter(usuario=self.user).count(), 0)
+        self.assertContains(resposta, 'Este campo é obrigatório.')
+
+    def test_atleta_post_rejeita_dados_invalidos(self):
+        resposta = self.client.post(reverse('atleta'), {
+            'objetivo_principal': 'ganho_massa',
+            'objetivo_descricao': 'Ganhar massa muscular.',
+            'altura_cm': '-170.00',
+            'peso_kg': '-82.00',
+            'braco_cm': '-33.00',
+            'cintura_cm': '0',
+            'peito_cm': '95.00',
+            'coxa_cm': '55.00',
+        })
+
+        self.assertEqual(Atleta.objects.filter(usuario=self.user).count(), 0)
+        self.assertContains(resposta, 'A altura deve ser maior que zero.')
+        self.assertContains(resposta, 'O peso deve ser maior que zero.')
+        self.assertContains(resposta, 'O braço deve ser maior que zero.')
+        self.assertContains(resposta, 'A cintura deve ser maior que zero.')
+
+    def test_atleta_post_cria_nova_medicao_sem_apagar_historico(self):
+        atleta, _ = self._criar_atleta_com_medicao()
+
+        resposta = self.client.post(reverse('atleta'), {
+            'form_type': 'medidas_atleta',
+            'peso_kg': '88.00',
+            'braco_cm': '34.50',
+            'cintura_cm': '96.00',
+            'peito_cm': '98.50',
+            'coxa_cm': '58.50',
+        }, follow=True)
+
+        self.assertEqual(MedicaoAtleta.objects.filter(atleta=atleta).count(), 2)
+        self.assertContains(resposta, 'Histórico de medições')
+        self.assertContains(resposta, '88,00 kg')
+
+    def test_atleta_post_exibe_mensagem_de_parabens_quando_ha_evolucao(self):
+        atleta, _ = self._criar_atleta_com_medicao(objetivo='emagrecimento', peso='90.00', cintura='100.00')
+
+        resposta = self.client.post(reverse('atleta'), {
+            'form_type': 'medidas_atleta',
+            'peso_kg': '87.50',
+            'braco_cm': '34.00',
+            'cintura_cm': '96.00',
+            'peito_cm': '98.00',
+            'coxa_cm': '58.00',
+        }, follow=True)
+
+        self.assertEqual(MedicaoAtleta.objects.filter(atleta=atleta).count(), 2)
+        self.assertContains(resposta, 'Parabéns!')
+        self.assertContains(resposta, 'redução em Peso e Cintura')
+
+    def test_atleta_post_exibe_mensagem_neutra_quando_nao_ha_evolucao(self):
+        atleta, _ = self._criar_atleta_com_medicao(objetivo='emagrecimento', peso='90.00', cintura='100.00')
+
+        resposta = self.client.post(reverse('atleta'), {
+            'form_type': 'medidas_atleta',
+            'peso_kg': '91.00',
+            'braco_cm': '34.00',
+            'cintura_cm': '101.00',
+            'peito_cm': '98.00',
+            'coxa_cm': '58.00',
+        }, follow=True)
+
+        self.assertEqual(MedicaoAtleta.objects.filter(atleta=atleta).count(), 2)
+        self.assertContains(resposta, 'Medidas atualizadas com sucesso! Continue acompanhando sua evolução.')
+
+    def test_atleta_alias_perfil_redireciona_para_conta(self):
+        resposta = self.client.get(reverse('perfil'))
+
+        self.assertRedirects(resposta, reverse('conta'))
+
+
+class ContaENavegacaoTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='navuser', password='123456', email='nav@example.com')
+        self.client.login(username='navuser', password='123456')
+
+    def test_home_exibe_cta_para_criar_perfil_do_atleta_quando_nao_existe(self):
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Criar perfil do atleta')
+        self.assertContains(resposta, 'Sua conta')
+
+    def test_home_exibe_resumo_do_atleta_quando_perfil_existe(self):
+        atleta = Atleta.objects.create(
+            usuario=self.user,
+            objetivo_principal='ganho_massa',
+            objetivo_descricao='Ganhar massa muscular com consistência.',
+            altura_cm='180.00',
+        )
+        MedicaoAtleta.objects.create(
+            atleta=atleta,
+            peso_kg='79.50',
+            braco_cm='35.00',
+            cintura_cm='84.00',
+            peito_cm='101.00',
+            coxa_cm='59.00',
+        )
+
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Perfil do atleta')
+        self.assertContains(resposta, 'Ganho de massa')
+        self.assertContains(resposta, 'Ver perfil do atleta')
+
+    def test_base_nav_exibe_conta_e_perfil_do_atleta(self):
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Conta')
+        self.assertContains(resposta, 'Perfil do Atleta')
+
+    def test_conta_exibe_dados_da_conta_e_atalho_do_atleta(self):
+        resposta = self.client.get(reverse('conta'))
+
+        self.assertContains(resposta, 'Minha conta')
+        self.assertContains(resposta, self.user.username)
+        self.assertContains(resposta, 'Criar perfil do atleta')

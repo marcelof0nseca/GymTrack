@@ -1,0 +1,344 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid feature-page athlete-page">
+    <div class="content-card">
+        {% if atleta %}
+            <div class="page-intro-panel athlete-intro-panel">
+                <div class="page-intro-copy">
+                    <span class="page-kicker athlete-kicker">Evolucao fisica</span>
+                    <h2 class="section-title">Perfil do atleta</h2>
+                    <p class="section-subtitle">Atualize suas medidas, acompanhe seu objetivo fisico e veja a evolucao do seu historico.</p>
+                </div>
+
+                <div class="athlete-focus-card">
+                    <span>Objetivo em foco</span>
+                    <strong>{{ atleta.get_objetivo_principal_display }}</strong>
+                    <small>
+                        {% if ultima_evolucao %}
+                            Ultima evolucao detectada em {{ ultima_evolucao_resumo }}.
+                        {% else %}
+                            Continue registrando suas medidas para comparar seu progresso ao longo do tempo.
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+            <h2 class="section-title">Perfil do atleta</h2>
+            <p class="section-subtitle">Atualize suas medidas, acompanhe seu objetivo físico e veja a evolução do seu histórico.</p>
+
+            <div class="athlete-overview">
+                <div class="athlete-goal-row">
+                    <span class="status-chip athlete-goal-chip">{{ atleta.get_objetivo_principal_display }}</span>
+                    {% if ultima_evolucao %}
+                        <span class="status-chip athlete-goal-chip athlete-goal-chip--success">
+                            Evolução recente em {{ ultima_evolucao_resumo }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if atleta.objetivo_descricao %}
+                    <p class="athlete-note">{{ atleta.objetivo_descricao }}</p>
+                {% endif %}
+
+                <div class="profile-inline athlete-summary-grid">
+                    <div class="profile-item">
+                        <span>Altura</span>
+                        <strong>{{ atleta.altura_cm|floatformat:2 }} cm</strong>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Peso atual</span>
+                        <strong>{{ medicao_atual.peso_kg|floatformat:2 }} kg</strong>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Última atualização</span>
+                        <strong>{{ medicao_atual.data_registro|date:"d/m/Y H:i" }}</strong>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Histórico</span>
+                        <strong>{{ atleta.total_medicoes }} registro{{ atleta.total_medicoes|pluralize }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="athlete-form-block">
+                <div class="section-heading">
+                    <h3 class="section-title">Dados do atleta</h3>
+                    <p class="section-subtitle">Mantenha seu objetivo principal e sua altura sempre atualizados.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="dados_atleta">
+
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label for="{{ atleta_form.objetivo_principal.id_for_label }}">Objetivo principal</label>
+                            {{ atleta_form.objetivo_principal }}
+                            <small id="objetivo-select-hint" class="form-hint form-hint-select">
+                                Escolha o foco principal para o sistema interpretar sua evolução física.
+                            </small>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="{{ atleta_form.objetivo_descricao.id_for_label }}">Detalhes do objetivo</label>
+                            {{ atleta_form.objetivo_descricao }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ atleta_form.altura_cm.id_for_label }}">Altura (cm)</label>
+                            {{ atleta_form.altura_cm }}
+                        </div>
+                    </div>
+
+                    {% if atleta_form.errors %}
+                        <div class="alert alert-error">
+                            Verifique os dados do atleta antes de salvar.
+                        </div>
+                    {% endif %}
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar dados do atleta</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="athlete-form-block athlete-form-block--last">
+                <div class="section-heading">
+                    <h3 class="section-title">Atualizar medidas</h3>
+                    <p class="section-subtitle">Registre novas medidas para criar um novo ponto no seu histórico de evolução.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="medidas_atleta">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="{{ medicao_form.peso_kg.id_for_label }}">Peso (kg)</label>
+                            {{ medicao_form.peso_kg }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ medicao_form.braco_cm.id_for_label }}">Braço (cm)</label>
+                            {{ medicao_form.braco_cm }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ medicao_form.cintura_cm.id_for_label }}">Cintura (cm)</label>
+                            {{ medicao_form.cintura_cm }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ medicao_form.peito_cm.id_for_label }}">Peito (cm)</label>
+                            {{ medicao_form.peito_cm }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ medicao_form.coxa_cm.id_for_label }}">Coxa (cm)</label>
+                            {{ medicao_form.coxa_cm }}
+                        </div>
+                    </div>
+
+                    <small id="medidas-atleta-hint" class="form-hint form-hint-select">
+                        Sempre que você salvar essas medidas, um novo registro será criado no seu histórico.
+                    </small>
+
+                    {% if medicao_form.errors %}
+                        <div class="alert alert-error">
+                            Verifique as medidas informadas antes de registrar a atualização.
+                        </div>
+                    {% endif %}
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Registrar nova medição</button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div class="page-intro-panel athlete-intro-panel athlete-intro-panel--setup">
+                <div class="page-intro-copy">
+                    <span class="page-kicker athlete-kicker">Cadastro fisico</span>
+                    <h2 class="section-title">Criar perfil do atleta</h2>
+                    <p class="section-subtitle">Cadastre suas informacoes fisicas e registre seu ponto de partida para acompanhar sua evolucao.</p>
+                </div>
+
+                <div class="athlete-setup-highlights">
+                    <span class="athlete-setup-pill">Objetivo de treino</span>
+                    <span class="athlete-setup-pill">Medidas iniciais</span>
+                    <span class="athlete-setup-pill">Historico continuo</span>
+                </div>
+            </div>
+            <h2 class="section-title">Criar perfil do atleta</h2>
+            <p class="section-subtitle">Cadastre suas informações físicas e registre seu ponto de partida para acompanhar a evolução.</p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label for="{{ atleta_form.objetivo_principal.id_for_label }}">Objetivo principal</label>
+                        {{ atleta_form.objetivo_principal }}
+                        <small id="objetivo-select-hint" class="form-hint form-hint-select">
+                            Escolha o foco principal para o sistema acompanhar sua evolução.
+                        </small>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="{{ atleta_form.objetivo_descricao.id_for_label }}">Detalhes do objetivo</label>
+                        {{ atleta_form.objetivo_descricao }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ atleta_form.altura_cm.id_for_label }}">Altura (cm)</label>
+                        {{ atleta_form.altura_cm }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ medicao_form.peso_kg.id_for_label }}">Peso inicial (kg)</label>
+                        {{ medicao_form.peso_kg }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ medicao_form.braco_cm.id_for_label }}">Braço (cm)</label>
+                        {{ medicao_form.braco_cm }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ medicao_form.cintura_cm.id_for_label }}">Cintura (cm)</label>
+                        {{ medicao_form.cintura_cm }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ medicao_form.peito_cm.id_for_label }}">Peito (cm)</label>
+                        {{ medicao_form.peito_cm }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ medicao_form.coxa_cm.id_for_label }}">Coxa (cm)</label>
+                        {{ medicao_form.coxa_cm }}
+                    </div>
+                </div>
+
+                <small id="medidas-atleta-hint" class="form-hint form-hint-select">
+                    Peso é obrigatório para criar o perfil. As demais medidas ajudam a acompanhar sua evolução com mais contexto.
+                </small>
+
+                {% if atleta_form.errors or medicao_form.errors %}
+                    <div class="alert alert-error">
+                        Preencha corretamente os dados do atleta antes de continuar.
+                    </div>
+                {% endif %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Criar perfil do atleta</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="list-card">
+        {% if atleta %}
+            <h3 class="section-title">Histórico de medições</h3>
+            <p class="section-subtitle">Acompanhe suas medidas do registro mais recente para o mais antigo.</p>
+
+            <div class="athlete-list-header">
+                <div>
+                    <span class="page-kicker athlete-kicker">Linha do tempo fisica</span>
+                    <h3 class="section-title">Historico de medicoes</h3>
+                    <p class="section-subtitle">Acompanhe suas medidas do registro mais recente para o mais antigo.</p>
+                </div>
+
+                <div class="athlete-history-total">
+                    <span>Registros</span>
+                    <strong>{{ atleta.total_medicoes }}</strong>
+                </div>
+            </div>
+
+            {% if historico_medicoes %}
+                <div class="athlete-history-list">
+                    {% for item in historico_medicoes %}
+                        <article class="item athlete-history-item{% if forloop.first %} athlete-history-item--current{% endif %}">
+                            <div class="athlete-history-header">
+                                <div>
+                                    <strong>{% if forloop.first %}Medidas atuais{% else %}Registro anterior{% endif %}</strong>
+                                    <span>{{ item.medicao.data_registro|date:"d/m/Y H:i" }}</span>
+                                </div>
+
+                                {% if item.houve_evolucao %}
+                                    <span class="status-chip athlete-goal-chip athlete-goal-chip--success">Evolução</span>
+                                {% elif not item.medicao_anterior %}
+                                    <span class="status-chip athlete-goal-chip">Base inicial</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="athlete-metric-grid">
+                                {% for metrica in item.metricas %}
+                                    <div class="athlete-metric-card">
+                                        <span>{{ metrica.rotulo }}</span>
+                                        <strong>{{ metrica.valor|floatformat:2 }} {{ metrica.unidade }}</strong>
+
+                                        {% if metrica.delta %}
+                                            <small class="athlete-delta athlete-delta--{{ metrica.delta_direction }}">
+                                                {% if metrica.delta_direction == 'up' %}+{% else %}-{% endif %}{{ metrica.delta_abs|floatformat:2 }} {{ metrica.unidade }}
+                                                em rela&ccedil;&atilde;o ao registro anterior
+                                            </small>
+                                        {% elif item.medicao_anterior %}
+                                            <small class="athlete-delta athlete-delta--neutral">Sem altera&ccedil;&atilde;o registrada.</small>
+                                        {% else %}
+                                            <small class="athlete-delta athlete-delta--neutral">Primeiro registro salvo.</small>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">Nenhuma medição registrada até o momento.</div>
+            {% endif %}
+        {% else %}
+            <h3 class="section-title">O que será salvo</h3>
+            <p class="section-subtitle">Seu perfil do atleta vai organizar a base do seu acompanhamento físico.</p>
+
+            <div class="athlete-list-header">
+                <div>
+                    <span class="page-kicker athlete-kicker">Base do cadastro</span>
+                    <h3 class="section-title">O que sera salvo</h3>
+                    <p class="section-subtitle">Seu perfil do atleta vai organizar a base do seu acompanhamento fisico.</p>
+                </div>
+
+                <div class="athlete-history-total athlete-history-total--info">
+                    <span>Primeiro passo</span>
+                    <strong>Peso + objetivo</strong>
+                </div>
+            </div>
+
+            <ul class="items-list">
+                <li class="item">
+                    <div>
+                        <strong>Objetivo principal</strong>
+                        <span>Define como o sistema interpreta sua evolução e quando exibe a mensagem de parabéns.</span>
+                    </div>
+                </li>
+
+                <li class="item">
+                    <div>
+                        <strong>Medidas físicas</strong>
+                        <span>Peso, braço, cintura, peito e coxa ficam registrados em histórico para comparação futura.</span>
+                    </div>
+                </li>
+
+                <li class="item">
+                    <div>
+                        <strong>Evolução contínua</strong>
+                        <span>Cada atualização gera um novo registro para você acompanhar sua trajetória como atleta.</span>
+                    </div>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
