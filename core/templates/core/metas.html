@@ -6,8 +6,45 @@
         <h2 class="section-title">Metas</h2>
         <p class="section-subtitle">Acompanhe seus objetivos e mantenha sua evolução organizada.</p>
 
-        <div class="empty-state">
-            Nesta área você pode evoluir seus treinos com metas mais claras e acompanháveis.
+        <form method="post" class="form-card">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.nome.id_for_label }}">Nome da meta</label>
+                {{ form.nome }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.valor.id_for_label }}">Valor</label>
+                {{ form.valor }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.prazo.id_for_label }}">Prazo</label>
+                {{ form.prazo }}
+            </div>
+
+            <button type="submit" class="primary-button">Criar meta</button>
+        </form>
+
+        <div class="content-section">
+            <h3 class="section-title">Minhas metas</h3>
+
+            {% if metas %}
+                <div class="list-stack">
+                    {% for meta in metas %}
+                        <div class="item-card">
+                            <strong>{{ meta.nome }}</strong><br>
+                            Valor: {{ meta.valor }}<br>
+                            Prazo: {{ meta.prazo|date:"d/m/Y" }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    Nenhuma meta cadastrada ainda.
+                </div>
+            {% endif %}
         </div>
     </div>
 </section>

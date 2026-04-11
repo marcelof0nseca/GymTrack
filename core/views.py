@@ -6,8 +6,8 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db.models.functions import Lower, Trim
 
-from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
-from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
+from .models import Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio, Meta
+from .forms import RegisterForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm, MetaForm
 
 
 def _concluir_execucao(execucao):
@@ -76,7 +76,29 @@ def perfil_view(request):
 
 @login_required
 def metas_view(request):
-    return render(request, 'core/metas.html')
+    if request.method == 'POST':   #criacao
+        form = MetaForm(request.POST)
+
+        if form.is_valid():  #validacao
+            meta = form.save(commit=False)
+            meta.usuario = request.user
+            meta.save()
+
+            messages.success(request, 'Meta criada com sucesso!')
+            return redirect('metas')
+        else:
+            for errors in form.errors.values():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = MetaForm()
+
+    metas = Meta.objects.filter(usuario=request.user).order_by('prazo')
+
+    return render(request, 'core/metas.html', { #Redirecionamento para a mesma pagina
+        'form': form,
+        'metas': metas
+    })
 
 
 @login_required

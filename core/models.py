@@ -93,3 +93,14 @@ class ExecucaoExercicio(models.Model):
     def __str__(self):
         nome_exercicio = self.exercicio.exercicio_base.nome if self.exercicio.exercicio_base else self.exercicio.nome
         return f"{nome_exercicio} - {self.execucao.treino.nome}"
+    
+
+class Meta(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='metas')
+    nome = models.CharField(max_length=110)
+    valor = models.DecimalField(max_digits=8, decimal_places=2)
+    prazo = models.DateField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nome} - {self.usuario.username}"

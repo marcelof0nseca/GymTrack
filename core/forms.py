@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Treino, Exercicio, ExecucaoTreino, ExercicioBase
+from .models import Treino, Exercicio, ExecucaoTreino, ExercicioBase, Meta
 
 
 def _append_widget_class(widget, class_name):
@@ -137,3 +137,49 @@ class ExecucaoTreinoForm(forms.ModelForm):
                 'Esse treino ainda não possui exercícios cadastrados. Adicione pelo menos um exercício antes de iniciar.'
             )
         return treino
+    
+
+
+
+class MetaForm(forms.ModelForm):
+    class Meta:
+        model = Meta
+        fields = ['nome', 'valor', 'prazo']
+        labels = {
+            'nome': 'Nome da meta',
+            'valor': 'Valor',
+            'prazo': 'Prazo',
+        }
+        widgets = {
+            'prazo': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) #*   **kwargs new
+
+        # seguindo padrão leve de UX 
+        self.fields['nome'].widget.attrs.update({
+            'placeholder': 'Ex.: Perder 5kg'
+        })
+
+        self.fields['valor'].widget.attrs.update({
+            'placeholder': 'Ex.: 5',
+            'inputmode': 'numeric',
+        })
+
+    def clean_valor(self):
+        valor = self.cleaned_data.get('valor')
+        if valor is None or valor <= 0:
+            raise forms.ValidationError('Informe um valor positivo.')
+        return valor
+
+    def clean_prazo(self):
+        prazo = self.cleaned_data.get('prazo')
+        if prazo is None:
+            return prazo
+
+        from datetime import date
+        if prazo < date.today():
+            raise forms.ValidationError('Informe um prazo válido (futuro).')
+
+        return prazo
