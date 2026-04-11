@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models.functions import Lower, Trim
+from datetime import timedelta
 
 from .models import Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
 from .forms import RegisterForm, MetaForm, TreinoForm, ExercicioForm, ExecucaoTreinoForm
@@ -59,6 +60,22 @@ def home(request):
     execucoes = ExecucaoTreino.objects.filter(
         treino__usuario=request.user
     ).select_related('treino').order_by('-id')
+    hoje = timezone.localdate()
+    limite_expiracao = hoje + timedelta(days=7)
+    metas_proximas_expirar = Meta.objects.filter(
+        usuario=request.user,
+        prazo__gte=hoje,
+        prazo__lte=limite_expiracao,
+    ).exclude(
+        status='concluida'
+    ).order_by('prazo', 'id')[:3]
+
+    if not metas_proximas_expirar:
+        metas_proximas_expirar = Meta.objects.filter(
+            usuario=request.user,
+        ).exclude(
+            status='concluida'
+        ).order_by('prazo', 'id')[:3]
 
     return render(request, 'core/home.html', {
         'total_treinos': treinos.count(),
@@ -66,6 +83,7 @@ def home(request):
         'total_execucoes': execucoes.filter(status='concluido').count(),
         'ultimo_treino': treinos.first(),
         'ultima_execucao': execucoes.first(),
+        'metas_proximas_expirar': metas_proximas_expirar,
     })
 
 

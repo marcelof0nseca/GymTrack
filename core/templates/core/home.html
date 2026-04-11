@@ -43,9 +43,25 @@
             <strong>{{ total_treinos }}</strong>
         </div>
 
-        <div class="mini-stat">
-            <span>Exercícios adicionados</span>
-            <strong>{{ total_exercicios }}</strong>
+        <div class="mini-stat mini-stat-goals">
+            <span>Metas próximas</span>
+
+            {% if metas_proximas_expirar %}
+                <div class="mini-goals-list">
+                    {% for meta in metas_proximas_expirar %}
+                        <div class="mini-goal-item">
+                            <div>
+                                <strong>{{ meta.nome }}</strong>
+                                <small>{{ meta.prazo|date:'d/m/Y' }}</small>
+                            </div>
+
+                            <span class="mini-goal-chip">{{ meta.prazo_resumo }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="mini-goals-empty">Nenhuma meta próxima do prazo.</p>
+            {% endif %}
         </div>
 
         <div class="mini-stat">

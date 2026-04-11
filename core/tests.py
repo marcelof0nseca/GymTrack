@@ -242,3 +242,80 @@ class MetasFeatureTests(TestCase):
 
         self.assertContains(resposta, 'Minha meta')
         self.assertNotContains(resposta, 'Meta de outro usuário')
+
+    def test_exibe_tags_coloridas_para_status_da_meta(self):
+        prazo_futuro = timezone.localdate() + timedelta(days=5)
+        prazo_passado = timezone.localdate() - timedelta(days=2)
+
+        Meta.objects.create(usuario=self.user, nome='Meta em andamento', valor='5.00', prazo=prazo_futuro)
+        Meta.objects.create(usuario=self.user, nome='Meta concluída', valor='10.00', prazo=prazo_futuro, status='concluida')
+        Meta.objects.create(usuario=self.user, nome='Meta vencida', valor='15.00', prazo=prazo_passado)
+
+        resposta = self.client.get(reverse('metas'))
+
+        self.assertContains(resposta, 'Em andamento')
+        self.assertContains(resposta, 'Concluída')
+        self.assertContains(resposta, 'Vencida')
+        self.assertContains(resposta, 'meta-status--em-andamento', html=False)
+        self.assertContains(resposta, 'meta-status--concluida', html=False)
+        self.assertContains(resposta, 'meta-status--vencida', html=False)
+
+
+class HomeMetasCardTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='homeuser', password='123456')
+        self.client.login(username='homeuser', password='123456')
+
+    def test_home_exibe_metas_proximas_de_expirar_no_lugar_dos_exercicios(self):
+        hoje = timezone.localdate()
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta próxima 1',
+            valor='5.00',
+            prazo=hoje + timedelta(days=2),
+        )
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta próxima 2',
+            valor='7.00',
+            prazo=hoje + timedelta(days=1),
+        )
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta distante',
+            valor='10.00',
+            prazo=hoje + timedelta(days=20),
+        )
+
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Metas próximas de expirar')
+        self.assertContains(resposta, 'Meta próxima 1')
+        self.assertContains(resposta, 'Meta próxima 2')
+        self.assertNotContains(resposta, 'Meta distante')
+        self.assertNotContains(resposta, 'Exercícios adicionados')
+        self.assertContains(resposta, 'Vence em 2 dias')
+        self.assertContains(resposta, 'Vence amanhã')
+
+    def test_home_mostra_metas_mais_proximas_quando_nao_ha_prazo_imediato(self):
+        hoje = timezone.localdate()
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta distante 1',
+            valor='5.00',
+            prazo=hoje + timedelta(days=30),
+        )
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta distante 2',
+            valor='8.00',
+            prazo=hoje + timedelta(days=15),
+        )
+
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Metas próximas de expirar')
+        self.assertContains(resposta, 'Meta distante 2')
+        self.assertContains(resposta, 'Meta distante 1')
+        self.assertContains(resposta, 'Vence em 15 dias')
+        self.assertContains(resposta, 'Vence em 30 dias')

@@ -46,11 +46,15 @@
             <ul class="items-list">
                 {% for meta in metas %}
                     <li class="item">
-                        <div>
+                        <div class="meta-content">
                             <strong>{{ meta.nome }}</strong>
                             <span>Valor alvo: {{ meta.valor|floatformat:2 }}</span>
                             <span>Prazo: {{ meta.prazo|date:'d/m/Y' }}</span>
                         </div>
+
+                        <span class="meta-status meta-status--{{ meta.status_css_slug }}">
+                            {{ meta.status_label }}
+                        </span>
                     </li>
                 {% endfor %}
             </ul>

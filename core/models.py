@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Treino(models.Model):
@@ -11,10 +12,17 @@ class Treino(models.Model):
 
 
 class Meta(models.Model):
+    STATUS_CHOICES = [
+        ('em_andamento', 'Em andamento'),
+        ('concluida', 'Concluída'),
+        ('vencida', 'Vencida'),
+    ]
+
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='metas')
     nome = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     prazo = models.DateField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='em_andamento')
 
     class Meta:
         ordering = ['prazo', 'id']
@@ -27,6 +35,45 @@ class Meta(models.Model):
 
     def __str__(self):
         return f'{self.nome} - {self.usuario.username}'
+
+    @property
+    def status_visual(self):
+        if self.status == 'concluida':
+            return 'concluida'
+
+        if self.prazo < timezone.localdate():
+            return 'vencida'
+
+        return 'em_andamento'
+
+    @property
+    def status_label(self):
+        labels = dict(self.STATUS_CHOICES)
+        return labels[self.status_visual]
+
+    @property
+    def status_css_slug(self):
+        return {
+            'em_andamento': 'em-andamento',
+            'concluida': 'concluida',
+            'vencida': 'vencida',
+        }[self.status_visual]
+
+    @property
+    def dias_restantes(self):
+        return (self.prazo - timezone.localdate()).days
+
+    @property
+    def prazo_resumo(self):
+        dias = self.dias_restantes
+
+        if dias == 0:
+            return 'Vence hoje'
+
+        if dias == 1:
+            return 'Vence amanhã'
+
+        return f'Vence em {dias} dias'
 
 
 class ExercicioBase(models.Model):
