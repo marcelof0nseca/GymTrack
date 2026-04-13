@@ -4,11 +4,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from django.db import transaction
+from django.db import DatabaseError, transaction
 from django.db.models.functions import Lower, Trim
 from django.db.models import Case, When, Value, IntegerField
 from datetime import timedelta
 from django.urls import reverse
+import logging
 
 from .models import Atleta, MedicaoAtleta, Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
 from .forms import (
@@ -20,6 +21,9 @@ from .forms import (
     RegisterForm,
     TreinoForm,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 def _concluir_execucao(execucao):
@@ -356,11 +360,19 @@ def metas_view(request):
         form = MetaForm(request.POST)
 
         if form.is_valid():
-            meta = form.save(commit=False)
-            meta.usuario = request.user
-            meta.save()
-            messages.success(request, 'Meta criada com sucesso!')
-            return redirect('metas')
+            try:
+                meta = form.save(commit=False)
+                meta.usuario = request.user
+                meta.save()
+            except DatabaseError:
+                logger.exception('Erro ao salvar meta para o usuario %s', request.user.id)
+                messages.error(
+                    request,
+                    'Nao foi possivel salvar a meta agora. Verifique se as migracoes do banco foram aplicadas no deploy.'
+                )
+            else:
+                messages.success(request, 'Meta criada com sucesso!')
+                return redirect('metas')
 
         for errors in form.errors.values():
             for error in errors:
@@ -368,15 +380,23 @@ def metas_view(request):
     else:
         form = MetaForm()
 
-    metas = list(Meta.objects.filter(usuario=request.user).annotate(
-        status_order=Case(
-            When(status='em_andamento', then=Value(0)),
-            When(status='vencida', then=Value(1)),
-            When(status='concluida', then=Value(2)),
-            default=Value(3),
-            output_field=IntegerField(),
+    try:
+        metas = list(Meta.objects.filter(usuario=request.user).annotate(
+            status_order=Case(
+                When(status='em_andamento', then=Value(0)),
+                When(status='vencida', then=Value(1)),
+                When(status='concluida', then=Value(2)),
+                default=Value(3),
+                output_field=IntegerField(),
+            )
+        ).order_by('status_order', 'data_conclusao', 'prazo', 'id'))
+    except DatabaseError:
+        logger.exception('Erro ao carregar metas para o usuario %s', request.user.id)
+        messages.error(
+            request,
+            'Nao foi possivel carregar as metas agora. Verifique se as migracoes do banco foram aplicadas no deploy.'
         )
-    ).order_by('status_order', 'data_conclusao', 'prazo', 'id'))
+        metas = []
 
     metas_em_andamento = sum(1 for meta in metas if meta.status_visual == 'em_andamento')
     metas_concluidas = sum(1 for meta in metas if meta.status_visual == 'concluida')

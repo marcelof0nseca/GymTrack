@@ -1,9 +1,11 @@
 from datetime import timedelta
 
 from django.contrib.auth.models import User
+from django.db import DatabaseError
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from unittest.mock import patch
 
 from .models import Atleta, Exercicio, ExercicioBase, ExecucaoExercicio, ExecucaoTreino, MedicaoAtleta, Meta, Treino
 
@@ -207,6 +209,23 @@ class MetasFeatureTests(TestCase):
         self.assertEqual(meta.prazo, prazo)
         self.assertContains(resposta, 'Meta criada com sucesso!')
 
+    def test_criar_meta_trata_falha_de_banco_sem_500(self):
+        prazo = timezone.localdate() + timedelta(days=7)
+
+        with patch('core.views.Meta.save', side_effect=DatabaseError('falha simulada')):
+            resposta = self.client.post(reverse('metas'), {
+                'nome': 'Perder 5 kg',
+                'valor': '5.00',
+                'prazo': prazo.isoformat(),
+            })
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(
+            resposta,
+            'Nao foi possivel salvar a meta agora. Verifique se as migracoes do banco foram aplicadas no deploy.'
+        )
+        self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
+
     def test_rejeita_valor_zero_ou_negativo(self):
         prazo = timezone.localdate() + timedelta(days=7)
 
@@ -242,6 +261,16 @@ class MetasFeatureTests(TestCase):
 
         self.assertContains(resposta, 'Minha meta')
         self.assertNotContains(resposta, 'Meta de outro usuário')
+
+    def test_metas_get_trata_falha_de_banco_sem_500(self):
+        with patch('core.views.Meta.objects.filter', side_effect=DatabaseError('falha simulada')):
+            resposta = self.client.get(reverse('metas'))
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(
+            resposta,
+            'Nao foi possivel carregar as metas agora. Verifique se as migracoes do banco foram aplicadas no deploy.'
+        )
 
     def test_confirma_meta_e_exibe_tag_concluida_animada(self):
         prazo = timezone.localdate() + timedelta(days=4)
