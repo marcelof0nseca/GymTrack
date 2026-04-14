@@ -191,14 +191,18 @@ class MetasFeatureTests(TestCase):
 
         self.assertContains(resposta, 'Criar meta')
         self.assertContains(resposta, 'Nome da meta')
+        self.assertContains(resposta, 'Data inicial')
+        self.assertContains(resposta, 'Data final')
         self.assertContains(resposta, 'Nenhuma meta cadastrada até o momento.')
 
     def test_cria_meta_com_sucesso(self):
+        data_inicio = timezone.localdate()
         prazo = timezone.localdate() + timedelta(days=7)
 
         resposta = self.client.post(reverse('metas'), {
             'nome': 'Perder 5 kg',
             'valor': '5.00',
+            'data_inicio': data_inicio.isoformat(),
             'prazo': prazo.isoformat(),
         }, follow=True)
 
@@ -206,16 +210,19 @@ class MetasFeatureTests(TestCase):
         meta = Meta.objects.get(usuario=self.user)
         self.assertEqual(meta.nome, 'Perder 5 kg')
         self.assertEqual(str(meta.valor), '5.00')
+        self.assertEqual(meta.data_inicio, data_inicio)
         self.assertEqual(meta.prazo, prazo)
         self.assertContains(resposta, 'Meta criada com sucesso!')
 
     def test_criar_meta_trata_falha_de_banco_sem_500(self):
+        data_inicio = timezone.localdate()
         prazo = timezone.localdate() + timedelta(days=7)
 
         with patch('core.views.Meta.save', side_effect=DatabaseError('falha simulada')):
             resposta = self.client.post(reverse('metas'), {
                 'nome': 'Perder 5 kg',
                 'valor': '5.00',
+                'data_inicio': data_inicio.isoformat(),
                 'prazo': prazo.isoformat(),
             })
 
@@ -227,11 +234,13 @@ class MetasFeatureTests(TestCase):
         self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
 
     def test_rejeita_valor_zero_ou_negativo(self):
+        data_inicio = timezone.localdate()
         prazo = timezone.localdate() + timedelta(days=7)
 
         resposta = self.client.post(reverse('metas'), {
             'nome': 'Meta inválida',
             'valor': '0',
+            'data_inicio': data_inicio.isoformat(),
             'prazo': prazo.isoformat(),
         })
 
@@ -239,16 +248,32 @@ class MetasFeatureTests(TestCase):
         self.assertContains(resposta, 'O valor da meta deve ser maior que zero.')
 
     def test_rejeita_prazo_no_passado(self):
+        data_inicio = timezone.localdate()
         prazo = timezone.localdate() - timedelta(days=1)
 
         resposta = self.client.post(reverse('metas'), {
             'nome': 'Meta atrasada',
             'valor': '10.00',
+            'data_inicio': data_inicio.isoformat(),
             'prazo': prazo.isoformat(),
         })
 
         self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
         self.assertContains(resposta, 'O prazo da meta não pode estar no passado.')
+
+    def test_rejeita_data_final_igual_a_data_inicial(self):
+        data_inicio = timezone.localdate() + timedelta(days=10)
+        prazo = data_inicio
+
+        resposta = self.client.post(reverse('metas'), {
+            'nome': 'Meta com datas invalidas',
+            'valor': '10.00',
+            'data_inicio': data_inicio.isoformat(),
+            'prazo': prazo.isoformat(),
+        })
+
+        self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
+        self.assertContains(resposta, 'A data final deve ser posterior à data inicial.')
 
     def test_lista_apenas_metas_do_usuario_logado(self):
         outro_usuario = User.objects.create_user(username='dave', password='123456')

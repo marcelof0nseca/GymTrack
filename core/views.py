@@ -374,9 +374,6 @@ def metas_view(request):
                 messages.success(request, 'Meta criada com sucesso!')
                 return redirect('metas')
 
-        for errors in form.errors.values():
-            for error in errors:
-                messages.error(request, error)
     else:
         form = MetaForm()
 

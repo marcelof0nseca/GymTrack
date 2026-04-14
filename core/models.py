@@ -21,6 +21,7 @@ class Meta(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='metas')
     nome = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
+    data_inicio = models.DateField(default=timezone.localdate)
     prazo = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='em_andamento')
     data_conclusao = models.DateTimeField(null=True, blank=True)

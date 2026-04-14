@@ -156,18 +156,21 @@ class MedicaoAtletaForm(forms.ModelForm):
 class MetaForm(forms.ModelForm):
     class Meta:
         model = Meta
-        fields = ['nome', 'valor', 'prazo']
+        fields = ['nome', 'valor', 'data_inicio', 'prazo']
         labels = {
             'nome': 'Nome da meta',
             'valor': 'Valor',
-            'prazo': 'Prazo',
+            'data_inicio': 'Data inicial',
+            'prazo': 'Data final',
         }
         widgets = {
+            'data_inicio': forms.DateInput(attrs={'type': 'date'}),
             'prazo': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        hoje = timezone.localdate().isoformat()
 
         self.fields['nome'].widget.attrs.update({
             'placeholder': 'Ex.: Perder 5 kg',
@@ -178,8 +181,11 @@ class MetaForm(forms.ModelForm):
             'min': '0.01',
             'inputmode': 'decimal',
         })
+        self.fields['data_inicio'].widget.attrs.update({
+            'min': hoje,
+        })
         self.fields['prazo'].widget.attrs.update({
-            'min': timezone.localdate().isoformat(),
+            'min': hoje,
         })
 
     def clean_nome(self):
@@ -194,11 +200,27 @@ class MetaForm(forms.ModelForm):
             raise forms.ValidationError('O valor da meta deve ser maior que zero.')
         return valor
 
+    def clean_data_inicio(self):
+        data_inicio = self.cleaned_data['data_inicio']
+        if data_inicio < timezone.localdate():
+            raise forms.ValidationError('A data de início não pode estar no passado.')
+        return data_inicio
+
     def clean_prazo(self):
         prazo = self.cleaned_data['prazo']
         if prazo < timezone.localdate():
             raise forms.ValidationError('O prazo da meta não pode estar no passado.')
         return prazo
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data_inicio = cleaned_data.get('data_inicio')
+        prazo = cleaned_data.get('prazo')
+
+        if data_inicio and prazo and prazo <= data_inicio:
+            self.add_error('prazo', 'A data final deve ser posterior à data inicial.')
+
+        return cleaned_data
 
 
 class ExercicioForm(forms.ModelForm):

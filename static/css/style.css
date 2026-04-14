@@ -1296,6 +1296,18 @@ img {
     color: #ffffff;
 }
 
+.metas-page .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metas-page .alert-error p {
+    margin: 0;
+}
+
+.metas-page .alert-error p + p {
+    margin-top: 8px;
+}
+
 .metas-list-header,
 .athlete-list-header {
     display: flex;

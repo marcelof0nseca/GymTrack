@@ -9,7 +9,7 @@
                 <h2 class="section-title">Criar meta</h2>
         <div class="metas-callout">
             <strong>Defina um objetivo claro.</strong>
-            Informe nome, valor e prazo para transformar sua rotina em uma meta acompanhavel dentro do sistema.
+            Informe nome, valor, data inicial e data final para transformar sua rotina em uma meta acompanhavel dentro do sistema.
         </div>
             </div>
 
@@ -37,7 +37,7 @@
 
         <div class="metas-callout">
             <strong>Defina um objetivo claro.</strong>
-            Informe nome, valor e prazo para transformar sua rotina em uma meta acompanhavel dentro do sistema.
+            Informe nome, valor, data inicial e data final para transformar sua rotina em uma meta acompanhavel dentro do sistema.
         </div>
 
         <form method="post">
@@ -55,14 +55,26 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="{{ form.prazo.id_for_label }}">Prazo</label>
+                    <label for="{{ form.data_inicio.id_for_label }}">Data inicial</label>
+                    {{ form.data_inicio }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.prazo.id_for_label }}">Data final</label>
                     {{ form.prazo }}
                 </div>
             </div>
 
             {% if form.errors %}
                 <div class="alert alert-error">
-                    Verifique os dados informados antes de salvar a meta.
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
                 </div>
             {% endif %}
 
@@ -86,7 +98,7 @@
                 <div class="metas-next-card">
                     <span>Proxima prioridade</span>
                     <strong>{{ proxima_meta.nome }}</strong>
-                    <small>Prazo {{ proxima_meta.prazo|date:'d/m/Y' }}</small>
+                    <small>De {{ proxima_meta.data_inicio|date:'d/m/Y' }} ate {{ proxima_meta.prazo|date:'d/m/Y' }}</small>
                 </div>
             {% endif %}
         </div>
@@ -109,11 +121,12 @@
                             <div class="meta-heading-row">
                                 <strong>{{ meta.nome }}</strong>
                                 <span class="meta-deadline-chip meta-deadline-chip--{{ meta.status_css_slug }}">
-                                    Prazo {{ meta.prazo|date:'d/m/Y' }}
+                                    Final {{ meta.prazo|date:'d/m/Y' }}
                                 </span>
                             </div>
                             <span>Valor alvo: {{ meta.valor|floatformat:2 }}</span>
-                            <span>Prazo: {{ meta.prazo|date:'d/m/Y' }}</span>
+                            <span>Inicio: {{ meta.data_inicio|date:'d/m/Y' }}</span>
+                            <span>Data final: {{ meta.prazo|date:'d/m/Y' }}</span>
                             {% if meta.status == 'concluida' and meta.data_conclusao %}
                                 <span>Concluída em {{ meta.data_conclusao|date:'d/m/Y H:i' }}</span>
                             {% endif %}
