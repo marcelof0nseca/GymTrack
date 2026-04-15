@@ -119,3 +119,56 @@ Conteúdo da entrega final.
 
 Projeto acadêmico desenvolvido para fins educacionais.  
 Disciplina: **Fundamentos de Software**
+
+---
+
+## CI/CD e Testes E2E
+
+### Pipeline no GitHub
+
+O projeto possui uma pipeline de `CI/CD` em [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) com quatro etapas:
+
+1. `tests`: executa os testes unitarios e de integracao do Django.
+2. `build`: valida migracoes pendentes, configuracao do projeto e `collectstatic`.
+3. `e2e`: executa testes de sistema automatizados com Playwright em navegador real.
+4. `deploy`: dispara o deploy continuo no Render somente quando o `push` para `main` passa em todas as verificacoes anteriores.
+
+### Testes de Sistema Automatizados
+
+Os testes `E2E` foram implementados em [core/tests_e2e.py](core/tests_e2e.py) e cobrem fluxos reais do usuario:
+
+- cadastro de conta
+- criacao de treino
+- adicao de exercicio ao treino
+- inicio e conclusao de execucao
+- criacao e confirmacao de meta
+
+### Como rodar localmente
+
+```bash
+pip install -r requirements-dev.txt
+python -m playwright install chromium
+python manage.py test --exclude-tag=e2e
+python manage.py test --tag=e2e
+```
+
+### Configuracao necessaria
+
+No GitHub, configure o secret:
+
+- `RENDER_DEPLOY_HOOK_URL`
+
+No Render, configure as variaveis de ambiente do servico:
+
+- `DATABASE_URL`
+- `DJANGO_SECRET_KEY`
+- `ADMIN_USERNAME`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+
+### Screencasts da Entrega 3
+
+Substitua os links abaixo pelos videos reais publicados no YouTube antes da entrega:
+
+- [Screencast do processo de build e deployment](https://www.youtube.com/)
+- [Screencast da execucao dos testes E2E](https://www.youtube.com/)

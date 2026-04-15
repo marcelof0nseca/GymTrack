@@ -117,7 +117,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 if not DEBUG:
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    static_root = os.environ.get('GYMTRACK_STATIC_ROOT')
+    STATIC_ROOT = Path(static_root) if static_root else BASE_DIR / 'staticfiles'
     STORAGES = {
         'default': {
             'BACKEND': 'django.core.files.storage.FileSystemStorage',

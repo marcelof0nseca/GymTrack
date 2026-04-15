@@ -28,6 +28,7 @@ media/
 coverage.xml
 htmlcov/
 .pytest_cache/
+test-artifacts/
 
 # IDE/editor files
 .vscode/

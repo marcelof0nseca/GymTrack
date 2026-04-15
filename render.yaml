@@ -3,6 +3,7 @@ services:
     name: gymtrack
     runtime: python
     plan: free
+    autoDeployTrigger: off
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
     preDeployCommand: python manage.py migrate && python manage.py criar_admin && python manage.py popular_exercicios
     startCommand: gunicorn gymtrack.wsgi:application --bind 0.0.0.0:$PORT
@@ -11,3 +12,9 @@ services:
         sync: false
       - key: DJANGO_SECRET_KEY
         generateValue: true
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
