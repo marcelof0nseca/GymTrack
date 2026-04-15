@@ -86,9 +86,9 @@
     <main class="main-container">
 
 {% if messages %}
-    <div id="alerts-container">
+    <div id="alerts-container" data-cy="alerts-container">
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags|default:'success' }}{% if 'success' in message.tags %} auto-hide{% endif %}">
+            <div class="alert alert-{{ message.tags|default:'success' }}{% if 'success' in message.tags %} auto-hide{% endif %}" data-cy="alert-message">
                 {{ message }}
             </div>
         {% endfor %}

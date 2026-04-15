@@ -1,0 +1,27 @@
+{
+  "name": "gymtrack",
+  "version": "1.0.0",
+  "description": "Sistema web para gerenciamento de treinos de academia.",
+  "scripts": {
+    "test": "node scripts/run-python.js manage.py test --exclude-tag=e2e",
+    "start:test-server": "node scripts/run-python-e2e.js manage.py runserver 127.0.0.1:8000",
+    "e2e:prepare": "node scripts/run-python-e2e.js manage.py migrate && node scripts/run-python-e2e.js manage.py popular_exercicios",
+    "cy:open": "node scripts/run-cypress.js open",
+    "cy:run": "node scripts/run-cypress-with-server.js",
+    "cy:run:specs": "node scripts/run-cypress.js run --e2e --browser chrome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcelof0nseca/GymTrack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcelof0nseca/GymTrack/issues"
+  },
+  "homepage": "https://github.com/marcelof0nseca/GymTrack#readme",
+  "devDependencies": {
+    "cypress": "^15.13.1"
+  }
+}

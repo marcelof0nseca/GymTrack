@@ -79,7 +79,7 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Criar meta</button>
+                <button type="submit" class="btn btn-primary" data-cy="create-meta">Criar meta</button>
             </div>
         </form>
     </div>
@@ -134,7 +134,7 @@
 
                         <div class="meta-actions">
                             {% with confirmada_id=request.GET.confirmada meta_id=meta.id|stringformat:'s' %}
-                                <span class="meta-status meta-status--{{ meta.status_css_slug }}{% if confirmada_id == meta_id %} meta-status--confirmed{% endif %}">
+                                <span class="meta-status meta-status--{{ meta.status_css_slug }}{% if confirmada_id == meta_id %} meta-status--confirmed{% endif %}" data-cy="meta-status">
                                     {{ meta.status_label }}
                                 </span>
                             {% endwith %}
@@ -142,7 +142,7 @@
                             {% if meta.status != 'concluida' %}
                                 <form method="post" action="{% url 'confirmar_meta' meta.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-confirm btn-sm">
+                                    <button type="submit" class="btn btn-confirm btn-sm" data-cy="confirm-meta">
                                         Confirmar meta
                                     </button>
                                 </form>

@@ -69,6 +69,7 @@
                                 {% csrf_token %}
                                 <button type="submit"
                                         class="btn btn-primary btn-sm submit-btn"
+                                        data-cy="complete-exercise"
                                         data-loading-text="Marcando...">
                                     Concluir exercício
                                 </button>
@@ -131,7 +132,7 @@
                     </form>
                 {% endif %}
             {% else %}
-                <button type="button" class="btn btn-secondary" disabled>
+                <button type="button" class="btn btn-secondary" data-cy="training-completed" disabled>
                     Treino concluído
                 </button>
             {% endif %}
