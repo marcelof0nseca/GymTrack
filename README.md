@@ -91,7 +91,16 @@ Mesmo com a divisão de responsabilidades, houve constante interação entre os 
 
 <details>
 <summary>Entrega 3 — Implementação 2</summary>
+
+
+
+## Relato de Pair programming -- Entrega 3
+
+Na Entrega 3, a programação em pares aconteceu principalmente entre eu e um colega da equipe, com foco em alinhamento técnico, revisão de funcionalidades e validação da sprint. A implementação ficou concentrada em nós dois, mas de forma desigual: meu colega desenvolveu a história de metas, enquanto eu fiquei responsável pelas demais histórias da sprint, além da configuração de CI/CD, testes E2E, deployment, versionamento e atualização do bug tracker. Mesmo assim, houve colaboração nas decisões, na revisão dos fluxos e na conferência final da entrega, o que manteve a prática de pair programming como apoio importante ao desenvolvimento.
 <details>
+
+
+
 <summary>CI/CD e Testes E2E</summary>
 
 
