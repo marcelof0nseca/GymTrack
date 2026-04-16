@@ -69,6 +69,14 @@ class Meta(models.Model):
     def prazo_resumo(self):
         dias = self.dias_restantes
 
+        if dias < 0:
+            dias_vencida = abs(dias)
+
+            if dias_vencida == 1:
+                return 'Vencida h\u00e1 1 dia'
+
+            return f'Vencida h\u00e1 {dias_vencida} dias'
+
         if dias == 0:
             return 'Vence hoje'
 

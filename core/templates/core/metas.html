@@ -140,7 +140,7 @@
                                 </span>
                             {% endwith %}
 
-                            {% if meta.status != 'concluida' %}
+                            {% if meta.status_visual == 'em_andamento' %}
                                 <form method="post" action="{% url 'confirmar_meta' meta.id %}">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-confirm btn-sm" data-cy="confirm-meta">

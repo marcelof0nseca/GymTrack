@@ -311,6 +311,27 @@ class MetasFeatureTests(TestCase):
         self.assertContains(resposta, 'meta-status--confirmed', html=False)
         self.assertNotContains(resposta, 'Confirmar meta')
 
+    def test_meta_vencida_nao_exibe_botao_de_confirmacao(self):
+        prazo = timezone.localdate() - timedelta(days=2)
+        Meta.objects.create(usuario=self.user, nome='Meta vencida', valor='12.00', prazo=prazo)
+
+        resposta = self.client.get(reverse('metas'))
+
+        self.assertContains(resposta, 'Meta vencida')
+        self.assertContains(resposta, 'Vencida')
+        self.assertNotContains(resposta, 'Confirmar meta')
+
+    def test_meta_vencida_nao_pode_ser_confirmada_por_post(self):
+        prazo = timezone.localdate() - timedelta(days=2)
+        meta = Meta.objects.create(usuario=self.user, nome='Meta vencida', valor='12.00', prazo=prazo)
+
+        resposta = self.client.post(reverse('confirmar_meta', args=[meta.id]), {}, follow=True)
+
+        meta.refresh_from_db()
+        self.assertEqual(meta.status, 'em_andamento')
+        self.assertIsNone(meta.data_conclusao)
+        self.assertContains(resposta, 'Essa meta venceu e nao pode mais ser confirmada.')
+
     def test_remove_meta_com_o_x_do_card(self):
         prazo = timezone.localdate() + timedelta(days=6)
         meta = Meta.objects.create(usuario=self.user, nome='Meta para remover', valor='8.00', prazo=prazo)
@@ -437,6 +458,21 @@ class HomeMetasCardTests(TestCase):
         self.assertContains(resposta, 'Meta distante 1')
         self.assertContains(resposta, 'Vence em 15 dias')
         self.assertContains(resposta, 'Vence em 30 dias')
+
+    def test_home_exibe_resumo_de_meta_vencida_sem_dias_negativos(self):
+        hoje = timezone.localdate()
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta vencida',
+            valor='5.00',
+            prazo=hoje - timedelta(days=2),
+        )
+
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Meta vencida')
+        self.assertContains(resposta, 'Vencida h\u00e1 2 dias')
+        self.assertNotContains(resposta, 'Vence em -2 dias')
 
 
 class PerfilAtletaFeatureTests(TestCase):

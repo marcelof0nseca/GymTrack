@@ -377,13 +377,14 @@ def metas_view(request):
     else:
         form = MetaForm()
 
+    hoje = timezone.localdate()
+
     try:
         metas = list(Meta.objects.filter(usuario=request.user).annotate(
             status_order=Case(
-                When(status='em_andamento', then=Value(0)),
-                When(status='vencida', then=Value(1)),
                 When(status='concluida', then=Value(2)),
-                default=Value(3),
+                When(prazo__lt=hoje, then=Value(1)),
+                default=Value(0),
                 output_field=IntegerField(),
             )
         ).order_by('status_order', 'data_conclusao', 'prazo', 'id'))
@@ -419,6 +420,10 @@ def confirmar_meta_view(request, meta_id):
 
     if meta.status == 'concluida':
         messages.info(request, 'Essa meta já está concluída.')
+        return redirect('metas')
+
+    if meta.status_visual == 'vencida':
+        messages.error(request, 'Essa meta venceu e nao pode mais ser confirmada.')
         return redirect('metas')
 
     meta.status = 'concluida'
