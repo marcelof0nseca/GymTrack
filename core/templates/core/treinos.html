@@ -8,7 +8,7 @@
             Cadastre um treino para organizar seus exercícios por objetivo ou categoria.
         </p>
 
-        <form method="post">
+        <form method="post" novalidate data-cy="training-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -20,7 +20,14 @@
 
             {% if form.errors %}
                 <div class="alert alert-error">
-                    Verifique os dados informados antes de salvar.
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
                 </div>
             {% endif %}
 
@@ -66,7 +73,7 @@
                         </div>
 
                         <div class="treino-actions">
-                            <a href="{% url 'editar_treino' treino.id %}" class="btn btn-primary btn-sm">
+                            <a href="{% url 'editar_treino' treino.id %}" class="btn btn-primary btn-sm" data-cy="edit-training">
                                 Editar treino
                             </a>
 
@@ -74,7 +81,7 @@
                                   action="{% url 'excluir_treino' treino.id %}"
                                   onsubmit="return confirm('Tem certeza que deseja excluir este treino? Todos os exercícios vinculados a ele também serão removidos.');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">
+                                <button type="submit" class="btn btn-danger btn-sm" data-cy="delete-training">
                                     Excluir treino
                                 </button>
                             </form>

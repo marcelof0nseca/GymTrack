@@ -103,7 +103,7 @@
             </div>
 
             <div class="profile-actions">
-                <a href="{% url 'conta' %}" class="btn btn-secondary">Ver conta</a>
+                <a href="{% url 'conta' %}" class="btn btn-secondary" data-cy="home-account-link">Ver conta</a>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
                 </p>
 
                 <div class="profile-actions home-athlete-actions">
-                    <a href="{% url 'atleta' %}" class="btn btn-secondary">Ver perfil do atleta</a>
+                    <a href="{% url 'atleta' %}" class="btn btn-secondary" data-cy="home-athlete-link">Ver perfil do atleta</a>
                 </div>
             {% else %}
                 <div class="empty-state home-athlete-empty">
@@ -154,7 +154,7 @@
                 </div>
 
                 <div class="profile-actions home-athlete-actions">
-                    <a href="{% url 'atleta' %}" class="btn btn-primary">Criar perfil do atleta</a>
+                    <a href="{% url 'atleta' %}" class="btn btn-primary" data-cy="home-create-athlete">Criar perfil do atleta</a>
                 </div>
             {% endif %}
         </div>

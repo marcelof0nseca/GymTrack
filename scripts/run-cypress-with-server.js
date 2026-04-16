@@ -91,6 +91,7 @@ function stopProcessTree(child) {
 async function main() {
   let server;
   let exitCode = 1;
+  const cypressArgs = process.argv.slice(2);
 
   try {
     await runPythonCommand(['migrate']);
@@ -105,7 +106,7 @@ async function main() {
 
     exitCode = await new Promise((resolve, reject) => {
       const env = { ...process.env, CYPRESS_baseUrl: baseUrl };
-      const cypress = spawn(process.execPath, [cypressScript, 'run', '--e2e', '--browser', 'chrome'], {
+      const cypress = spawn(process.execPath, [cypressScript, 'run', '--e2e', '--browser', 'chrome', ...cypressArgs], {
         stdio: 'inherit',
         env,
       });

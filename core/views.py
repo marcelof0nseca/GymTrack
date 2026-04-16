@@ -464,6 +464,8 @@ def treinos_view(request):
                 treino.save()
                 messages.success(request, 'Treino criado com sucesso!')
                 return redirect('treinos')
+        else:
+            _adicionar_erros_formulario(request, form)
     else:
         form = TreinoForm()
 

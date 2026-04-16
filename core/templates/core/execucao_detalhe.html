@@ -97,7 +97,7 @@
         <div class="form-actions">
             {% if execucao.status != 'concluido' %}
                 {% if execucao.esta_parcial %}
-                    <button type="button" class="btn btn-primary" id="abrir-confirmacao-parcial">
+                    <button type="button" class="btn btn-primary" id="abrir-confirmacao-parcial" data-cy="open-partial-confirm">
                         Confirmar treino
                     </button>
 
@@ -110,6 +110,7 @@
                         <input type="hidden" name="confirm_partial" value="1">
                         <button type="submit"
                                 class="btn btn-primary submit-btn"
+                                data-cy="confirm-partial-training"
                                 data-loading-text="Finalizando...">
                             Sim, finalizar treino
                         </button>
@@ -126,6 +127,7 @@
                         <input type="hidden" name="confirm_partial" value="0">
                         <button type="submit"
                                 class="btn btn-primary submit-btn"
+                                data-cy="confirm-training"
                                 data-loading-text="Finalizando...">
                             Confirmar treino
                         </button>

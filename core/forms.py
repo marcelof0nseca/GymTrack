@@ -68,6 +68,11 @@ class TreinoForm(forms.ModelForm):
         labels = {
             'nome': 'Nome do treino',
         }
+        error_messages = {
+            'nome': {
+                'required': 'O nome do treino é obrigatório.',
+            }
+        }
 
     def clean_nome(self):
         nome = self.cleaned_data['nome'].strip()
@@ -218,7 +223,7 @@ class MetaForm(forms.ModelForm):
         prazo = cleaned_data.get('prazo')
 
         if data_inicio and prazo and prazo <= data_inicio:
-            self.add_error('prazo', 'A data final deve ser posterior à data inicial.')
+            self.add_error('prazo', 'A data de término não pode ser anterior à data de início.')
 
         return cleaned_data
 

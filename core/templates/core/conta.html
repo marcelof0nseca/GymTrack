@@ -47,7 +47,7 @@
                     </span>
                 </div>
 
-                <a href="{% url 'atleta' %}" class="btn btn-secondary btn-sm">
+                <a href="{% url 'atleta' %}" class="btn btn-secondary btn-sm" data-cy="account-athlete-link">
                     {% if atleta %}Abrir perfil do atleta{% else %}Criar perfil do atleta{% endif %}
                 </a>
             </div>
@@ -58,7 +58,7 @@
                     <span>Defina objetivos de treino e acompanhe sua constância junto da evolução física.</span>
                 </div>
 
-                <a href="{% url 'metas' %}" class="btn btn-secondary btn-sm">Ver metas</a>
+                <a href="{% url 'metas' %}" class="btn btn-secondary btn-sm" data-cy="account-goals-link">Ver metas</a>
             </div>
         </div>
     </div>

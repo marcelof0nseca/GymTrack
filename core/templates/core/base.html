@@ -43,37 +43,37 @@
                 {% if user.is_authenticated %}
                     <nav class="nav" id="primary-navigation" data-nav-root>
                         <div class="nav-panel">
-                            <a href="{% url 'home' %}" class="nav-link{% if current_view == 'home' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'home' %}" class="nav-link{% if current_view == 'home' %} is-active{% endif %}" data-nav-link data-cy="nav-home">
                                 In&iacute;cio
                             </a>
-                            <a href="{% url 'treinos' %}" class="nav-link{% if current_view == 'treinos' or current_view == 'editar_treino' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'treinos' %}" class="nav-link{% if current_view == 'treinos' or current_view == 'editar_treino' %} is-active{% endif %}" data-nav-link data-cy="nav-treinos">
                                 Treinos
                             </a>
-                            <a href="{% url 'exercicios' %}" class="nav-link{% if current_view == 'exercicios' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'exercicios' %}" class="nav-link{% if current_view == 'exercicios' %} is-active{% endif %}" data-nav-link data-cy="nav-exercicios">
                                 Exerc&iacute;cios
                             </a>
-                            <a href="{% url 'metas' %}" class="nav-link{% if current_view == 'metas' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'metas' %}" class="nav-link{% if current_view == 'metas' %} is-active{% endif %}" data-nav-link data-cy="nav-metas">
                                 Metas
                             </a>
-                            <a href="{% url 'execucao' %}" class="nav-link{% if current_view == 'execucao' or current_view == 'execucao_detalhe' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'execucao' %}" class="nav-link{% if current_view == 'execucao' or current_view == 'execucao_detalhe' %} is-active{% endif %}" data-nav-link data-cy="nav-execucao">
                                 Execu&ccedil;&atilde;o
                             </a>
-                            <a href="{% url 'atleta' %}" class="nav-link{% if current_view == 'atleta' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'atleta' %}" class="nav-link{% if current_view == 'atleta' %} is-active{% endif %}" data-nav-link data-cy="nav-atleta">
                                 Perfil do Atleta
                             </a>
-                            <a href="{% url 'conta' %}" class="nav-link{% if current_view == 'conta' or current_view == 'perfil' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'conta' %}" class="nav-link{% if current_view == 'conta' or current_view == 'perfil' %} is-active{% endif %}" data-nav-link data-cy="nav-conta">
                                 Conta
                             </a>
-                            <a href="{% url 'logout' %}" class="nav-link nav-primary" data-nav-link>Sair</a>
+                            <a href="{% url 'logout' %}" class="nav-link nav-primary" data-nav-link data-cy="logout-link">Sair</a>
                         </div>
                     </nav>
                 {% else %}
                     <nav class="nav" id="primary-navigation" data-nav-root>
                         <div class="nav-panel">
-                            <a href="{% url 'login' %}" class="nav-link{% if current_view == 'login' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'login' %}" class="nav-link{% if current_view == 'login' %} is-active{% endif %}" data-nav-link data-cy="nav-login">
                                 Entrar
                             </a>
-                            <a href="{% url 'register' %}" class="nav-link nav-primary{% if current_view == 'register' %} is-active{% endif %}" data-nav-link>
+                            <a href="{% url 'register' %}" class="nav-link nav-primary{% if current_view == 'register' %} is-active{% endif %}" data-nav-link data-cy="nav-register">
                                 Cadastrar
                             </a>
                         </div>

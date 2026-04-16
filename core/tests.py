@@ -273,7 +273,7 @@ class MetasFeatureTests(TestCase):
         })
 
         self.assertEqual(Meta.objects.filter(usuario=self.user).count(), 0)
-        self.assertContains(resposta, 'A data final deve ser posterior à data inicial.')
+        self.assertContains(resposta, 'A data de término não pode ser anterior à data de início.')
 
     def test_lista_apenas_metas_do_usuario_logado(self):
         outro_usuario = User.objects.create_user(username='dave', password='123456')

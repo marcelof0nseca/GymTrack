@@ -25,7 +25,7 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary submit-btn" data-loading-text="Salvando...">
+                <button type="submit" class="btn btn-primary submit-btn" data-cy="save-training-changes" data-loading-text="Salvando...">
                     Salvar alterações
                 </button>
                 <a href="{% url 'treinos' %}" class="btn btn-secondary">Cancelar</a>
@@ -63,6 +63,7 @@
                             {% csrf_token %}
                             <button type="submit"
                                     class="btn btn-danger btn-sm submit-btn"
+                                    data-cy="delete-exercise"
                                     data-loading-text="Excluindo...">
                                 Excluir exercício
                             </button>
@@ -77,7 +78,7 @@
         {% endif %}
 
         <div class="form-actions">
-            <a href="{% url 'exercicios' %}" class="btn btn-primary">Adicionar exercício</a>
+            <a href="{% url 'exercicios' %}" class="btn btn-primary" data-cy="go-add-exercise">Adicionar exercício</a>
             <a href="{% url 'treinos' %}" class="btn btn-secondary">Voltar</a>
         </div>
     </div>

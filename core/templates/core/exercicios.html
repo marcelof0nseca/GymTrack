@@ -6,7 +6,7 @@
         <h2 class="section-title">Adicionar exercícios ao treino</h2>
         <p class="section-subtitle">Selecione um exercício já cadastrado no sistema e associe ao treino.</p>
 
-        <form method="post">
+        <form method="post" novalidate data-cy="exercise-form">
             {% csrf_token %}
 
             <div class="form-grid">

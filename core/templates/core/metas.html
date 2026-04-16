@@ -40,7 +40,7 @@
             Informe nome, valor, data inicial e data final para transformar sua rotina em uma meta acompanhavel dentro do sistema.
         </div>
 
-        <form method="post">
+        <form method="post" novalidate data-cy="goal-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -111,6 +111,7 @@
                             type="button"
                             class="meta-remove-button"
                             aria-label="Remover meta"
+                            data-cy="remove-meta-trigger"
                             data-meta-name="{{ meta.nome|escape }}"
                             data-delete-url="{% url 'excluir_meta' meta.id %}"
                         >
@@ -172,7 +173,7 @@
 
             <form method="post" id="meta-delete-form">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm">Remover meta</button>
+                <button type="submit" class="btn btn-danger btn-sm" data-cy="confirm-remove-meta">Remover meta</button>
             </form>
         </div>
     </div>
