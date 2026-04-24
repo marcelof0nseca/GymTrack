@@ -6,7 +6,7 @@
         <h2 class="auth-title">Criar conta</h2>
         <p class="auth-subtitle">Cadastre-se para começar a organizar sua rotina de treinos.</p>
 
-        <form method="post">
+        <form method="post" class="submit-once-form">
             {% csrf_token %}
 
             <div class="form-group">
@@ -65,7 +65,14 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary" data-cy="register-submit">Criar conta</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                    data-cy="register-submit"
+                    data-loading-text="Criando conta..."
+                >
+                    Criar conta
+                </button>
             </div>
         </form>
 

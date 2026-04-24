@@ -6,7 +6,7 @@
         <h2 class="section-title">Adicionar exercícios ao treino</h2>
         <p class="section-subtitle">Selecione um exercício já cadastrado no sistema e associe ao treino.</p>
 
-        <form method="post" novalidate data-cy="exercise-form">
+        <form method="post" novalidate class="submit-once-form" data-cy="exercise-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -44,7 +44,14 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary" data-cy="add-exercise">Adicionar exercício</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                    data-cy="add-exercise"
+                    data-loading-text="Adicionando exercício..."
+                >
+                    Adicionar exercício
+                </button>
             </div>
         </form>
     </div>

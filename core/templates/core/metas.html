@@ -40,7 +40,7 @@
             Informe nome, valor, data inicial e data final para transformar sua rotina em uma meta acompanhavel dentro do sistema.
         </div>
 
-        <form method="post" novalidate data-cy="goal-form">
+        <form method="post" novalidate class="submit-once-form" data-cy="goal-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -79,7 +79,14 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary" data-cy="create-meta">Criar meta</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                    data-cy="create-meta"
+                    data-loading-text="Criando meta..."
+                >
+                    Criar meta
+                </button>
             </div>
         </form>
     </div>

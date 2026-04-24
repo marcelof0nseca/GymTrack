@@ -6,7 +6,7 @@
         <h2 class="section-title">Editar exercício</h2>
         <p class="section-subtitle">Atualize os dados do exercício cadastrado.</p>
 
-        <form method="post">
+        <form method="post" class="submit-once-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -44,7 +44,13 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                    data-loading-text="Salvando..."
+                >
+                    Salvar alterações
+                </button>
                 <a href="{% url 'treinos' %}" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>

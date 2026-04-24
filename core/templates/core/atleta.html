@@ -69,7 +69,7 @@
                     <p class="section-subtitle">Mantenha seu objetivo principal e sua altura sempre atualizados.</p>
                 </div>
 
-                <form method="post" novalidate data-cy="athlete-data-form">
+                <form method="post" novalidate class="submit-once-form" data-cy="athlete-data-form">
                     {% csrf_token %}
                     <input type="hidden" name="form_type" value="dados_atleta">
 
@@ -100,7 +100,14 @@
                     {% endif %}
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" data-cy="save-athlete-data">Salvar dados do atleta</button>
+                        <button
+                            type="submit"
+                            class="btn btn-primary submit-btn"
+                            data-cy="save-athlete-data"
+                            data-loading-text="Salvando dados..."
+                        >
+                            Salvar dados do atleta
+                        </button>
                     </div>
                 </form>
             </div>
@@ -111,7 +118,7 @@
                     <p class="section-subtitle">Registre novas medidas para criar um novo ponto no seu histórico de evolução.</p>
                 </div>
 
-                <form method="post" novalidate data-cy="athlete-measurement-form">
+                <form method="post" novalidate class="submit-once-form" data-cy="athlete-measurement-form">
                     {% csrf_token %}
                     <input type="hidden" name="form_type" value="medidas_atleta">
 
@@ -153,7 +160,14 @@
                     {% endif %}
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" data-cy="register-measurement">Registrar nova medição</button>
+                        <button
+                            type="submit"
+                            class="btn btn-primary submit-btn"
+                            data-cy="register-measurement"
+                            data-loading-text="Registrando medição..."
+                        >
+                            Registrar nova medição
+                        </button>
                     </div>
                 </form>
             </div>
@@ -174,7 +188,7 @@
             <h2 class="section-title">Criar perfil do atleta</h2>
             <p class="section-subtitle">Cadastre suas informações físicas e registre seu ponto de partida para acompanhar a evolução.</p>
 
-            <form method="post" novalidate data-cy="athlete-create-form">
+            <form method="post" novalidate class="submit-once-form" data-cy="athlete-create-form">
                 {% csrf_token %}
 
                 <div class="form-grid">
@@ -233,7 +247,14 @@
                 {% endif %}
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" data-cy="create-athlete-profile">Criar perfil do atleta</button>
+                    <button
+                        type="submit"
+                        class="btn btn-primary submit-btn"
+                        data-cy="create-athlete-profile"
+                        data-loading-text="Criando perfil..."
+                    >
+                        Criar perfil do atleta
+                    </button>
                 </div>
             </form>
         {% endif %}

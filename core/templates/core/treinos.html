@@ -8,7 +8,7 @@
             Cadastre um treino para organizar seus exercícios por objetivo ou categoria.
         </p>
 
-        <form method="post" novalidate data-cy="training-form">
+        <form method="post" novalidate class="submit-once-form" data-cy="training-form">
             {% csrf_token %}
 
             <div class="form-grid">
@@ -32,7 +32,14 @@
             {% endif %}
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary" data-cy="create-training">Criar treino</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                    data-cy="create-training"
+                    data-loading-text="Criando treino..."
+                >
+                    Criar treino
+                </button>
             </div>
         </form>
     </div>
