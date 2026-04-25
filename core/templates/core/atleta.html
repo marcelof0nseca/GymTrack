@@ -93,11 +93,7 @@
                         </div>
                     </div>
 
-                    {% if atleta_form.errors %}
-                        <div class="alert alert-error">
-                            Verifique os dados do atleta antes de salvar.
-                        </div>
-                    {% endif %}
+                    {% include 'core/includes/form_errors.html' with form=atleta_form %}
 
                     <div class="form-actions">
                         <button
@@ -153,11 +149,7 @@
                         Sempre que você salvar essas medidas, um novo registro será criado no seu histórico.
                     </small>
 
-                    {% if medicao_form.errors %}
-                        <div class="alert alert-error">
-                            Verifique as medidas informadas antes de registrar a atualização.
-                        </div>
-                    {% endif %}
+                    {% include 'core/includes/form_errors.html' with form=medicao_form %}
 
                     <div class="form-actions">
                         <button
@@ -240,11 +232,8 @@
                     Peso é obrigatório para criar o perfil. As demais medidas ajudam a acompanhar sua evolução com mais contexto.
                 </small>
 
-                {% if atleta_form.errors or medicao_form.errors %}
-                    <div class="alert alert-error">
-                        Preencha corretamente os dados do atleta antes de continuar.
-                    </div>
-                {% endif %}
+                {% include 'core/includes/form_errors.html' with form=atleta_form %}
+                {% include 'core/includes/form_errors.html' with form=medicao_form %}
 
                 <div class="form-actions">
                     <button

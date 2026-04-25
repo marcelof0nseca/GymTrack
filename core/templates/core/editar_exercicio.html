@@ -37,11 +37,7 @@
                 </div>
             </div>
 
-            {% if form.errors %}
-                <div class="alert alert-error">
-                    Verifique os dados informados antes de salvar.
-                </div>
-            {% endif %}
+            {% include 'core/includes/form_errors.html' with form=form %}
 
             <div class="form-actions">
                 <button

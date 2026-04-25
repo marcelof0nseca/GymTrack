@@ -37,11 +37,7 @@
                 </div>
             </div>
 
-            {% if form.errors %}
-                <div class="alert alert-error">
-                    Preencha corretamente os campos do exercício.
-                </div>
-            {% endif %}
+            {% include 'core/includes/form_errors.html' with form=form %}
 
             <div class="form-actions">
                 <button

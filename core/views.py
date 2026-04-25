@@ -41,13 +41,6 @@ ATLETA_METRICAS = [
 ]
 
 
-def _adicionar_erros_formulario(request, *forms):
-    for form in forms:
-        for errors in form.errors.values():
-            for error in errors:
-                messages.error(request, error)
-
-
 def _listar_rotulos(rotulos):
     unicos = list(dict.fromkeys(rotulos))
 
@@ -280,7 +273,6 @@ def atleta_view(request):
                 )
                 return redirect('atleta')
 
-            _adicionar_erros_formulario(request, atleta_form, medicao_form)
         else:
             atleta_form = AtletaForm()
             medicao_form = MedicaoAtletaForm()
@@ -308,7 +300,6 @@ def atleta_view(request):
                 messages.success(request, 'Perfil do atleta atualizado com sucesso!')
                 return redirect('atleta')
 
-            _adicionar_erros_formulario(request, atleta_form)
         elif form_type == 'medidas_atleta':
             atleta_form = AtletaForm(instance=atleta)
             medicao_form = MedicaoAtletaForm(request.POST, medicao_referencia=medicao_atual)
@@ -330,7 +321,6 @@ def atleta_view(request):
 
                 return redirect('atleta')
 
-            _adicionar_erros_formulario(request, medicao_form)
         else:
             return redirect('atleta')
     else:
@@ -469,8 +459,6 @@ def treinos_view(request):
                 treino.save()
                 messages.success(request, 'Treino criado com sucesso!')
                 return redirect('treinos')
-        else:
-            _adicionar_erros_formulario(request, form)
     else:
         form = TreinoForm()
 
@@ -500,10 +488,6 @@ def exercicios_view(request):
             exercicio.save()
             messages.success(request, 'Exercício adicionado com sucesso!')
             return redirect('exercicios')
-        else:
-            for errors in form.errors.values():
-                for error in errors:
-                    messages.error(request, error)
     else:
         form = ExercicioForm()
         form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
@@ -557,10 +541,6 @@ def execucao_view(request):
 
             messages.success(request, 'Treino iniciado com sucesso!')
             return redirect('execucao_detalhe', execucao_id=execucao.id)
-        else:
-            for errors in form.errors.values():
-                for error in errors:
-                    messages.error(request, error)
     else:
         form = ExecucaoTreinoForm()
         form.fields['treino'].queryset = Treino.objects.filter(usuario=request.user).order_by('-id')
