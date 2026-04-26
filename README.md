@@ -105,69 +105,14 @@ Mesmo com a divisão de responsabilidades, houve constante interação entre os 
 
 ## Relato de Pair programming -- Entrega 3
 Na Entrega 3, a programação em pares aconteceu principalmente entre eu e um colega da equipe, com foco em alinhamento técnico, revisão de funcionalidades e validação da sprint. A implementação ficou concentrada em nós dois, mas de forma desigual: meu colega desenvolveu a história de metas, enquanto eu fiquei responsável pelas demais histórias da sprint, além da configuração de CI/CD, testes E2E, deployment, versionamento e atualização do bug tracker. Mesmo assim, houve colaboração nas decisões, na revisão dos fluxos e na conferência final da entrega, o que manteve a prática de pair programming como apoio importante ao desenvolvimento.
-<details>
-
-
-
-<summary>CI/CD e Testes E2E</summary>
-
-
-
-## Pipeline no GitHub
-
-O projeto possui uma pipeline de `CI/CD` em [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) com quatro etapas:
-
-1. `tests`: executa os testes unitarios e de integracao do Django.
-2. `build`: valida migracoes pendentes, configuracao do projeto e `collectstatic`.
-3. `e2e`: executa testes de sistema automatizados com Cypress.
-4. `deploy`: dispara o deploy continuo no Render somente quando o `push` para `main` passa em todas as verificacoes anteriores.
-
-### Testes de Sistema Automatizados
-
-Os testes `E2E` foram implementados com Cypress na pasta [`cypress/e2e`](cypress/e2e) e cobrem fluxos reais do usuario:
-
-- cadastro de conta
-- criacao de treino
-- adicao de exercicio ao treino
-- inicio e conclusao de execucao
-- criacao e confirmacao de meta
-
-### Como rodar localmente
-
-1. Preparar banco e exercicios base:
-
-```bash
-python manage.py migrate
-python manage.py popular_exercicios
-```
-
-2. Para abrir o Cypress com interface visual, iniciar o servidor em um terminal:
-
-```bash
-npm run start:test-server
-```
-
-3. Em outro terminal, abrir o Cypress:
-
-```bash
-npm run cy:open
-```
-
-4. Na janela do Cypress, escolher `E2E Testing` e clicar na spec que deseja executar.
-
-Para rodar tudo automaticamente em modo sem interface, com o script subindo o servidor em background e aguardando a aplicacao responder antes de testar, use:
-
-```bash
-npm run cy:run
-```
 
 
 ### Screencasts da Entrega 3
 
 
 
-- [Screencast do processo de build e deployment](https://www.youtube.com/)
-- [Screencast da execucao dos testes E2E](https://www.youtube.com/)
+- [Screencast do site + novas histórias implementadas](https://youtu.be/9RKOmRppmXM?si=QZKgYGiNSu1qlP7y)
+- [Screencast da execucao dos testes E2E](https://youtu.be/SGcX9BOhHVE?si=UhcdOZcY-aiOSd0J)
 </details>
 
 
