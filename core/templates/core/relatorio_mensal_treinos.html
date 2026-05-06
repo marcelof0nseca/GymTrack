@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid feature-page">
+    <div class="content-card">
+        <h2 class="section-title">Relatório mensal de treinos</h2>
+        <p class="section-subtitle">
+            Consulte suas execuções por mês e filtre por treino ou status.
+        </p>
+
+        <form method="get">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.mes.id_for_label }}">Mês</label>
+                    {{ form.mes }}
+                    <small id="mes-relatorio-hint" class="form-hint form-hint-select">
+                        Selecione o mês do relatório.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.treino.id_for_label }}">Treino</label>
+                    {{ form.treino }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.status.id_for_label }}">Status</label>
+                    {{ form.status }}
+                </div>
+            </div>
+
+            {% include 'core/includes/form_errors.html' with form=form %}
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" data-cy="filter-monthly-report">
+                    Filtrar relatório
+                </button>
+                <a href="{% url 'relatorio_mensal_treinos' %}" class="btn btn-secondary">
+                    Limpar filtros
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="list-card">
+        <div class="report-summary">
+            <div>
+                <h3 class="section-title">Treinos do mês</h3>
+                <p class="section-subtitle">{{ mes_inicio|date:"m/Y" }}</p>
+            </div>
+
+            <div class="mini-stat report-total">
+                <span>Total de treinos</span>
+                <strong>{{ total_treinos }}</strong>
+            </div>
+        </div>
+
+        {% if mes_anterior_cadastro %}
+            <div class="empty-state" data-cy="report-before-registration">
+                <strong>Não há dados disponíveis.</strong>
+                O mês selecionado é anterior ao cadastro da sua conta.
+            </div>
+        {% elif sem_treinos_no_mes %}
+            <div class="empty-state" data-cy="report-empty-month">
+                <strong>Não houve treinos registrados.</strong>
+                Nenhuma execução foi encontrada no período selecionado.
+            </div>
+        {% elif execucoes %}
+            <ul class="items-list" data-cy="monthly-report-list">
+                {% for execucao in execucoes %}
+                    <li class="item execution-item">
+                        <div>
+                            <strong>{{ execucao.treino.nome }}</strong>
+                            <span>
+                                {{ execucao.data_execucao|date:"d/m/Y H:i" }} •
+                                {{ execucao.total_exercicios }} exercício{{ execucao.total_exercicios|pluralize }}
+                            </span>
+                            <span class="status-badge {% if execucao.status == 'concluido' %}status-done{% else %}status-pending{% endif %}">
+                                {{ execucao.get_status_display }}
+                            </span>
+                        </div>
+
+                        <a href="{% url 'execucao_detalhe' execucao.id %}" class="btn btn-secondary btn-sm btn-execucao">
+                            Ver execução
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

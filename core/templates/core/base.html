@@ -58,6 +58,9 @@
                             <a href="{% url 'execucao' %}" class="nav-link{% if current_view == 'execucao' or current_view == 'execucao_detalhe' %} is-active{% endif %}" data-nav-link data-cy="nav-execucao">
                                 Execu&ccedil;&atilde;o
                             </a>
+                            <a href="{% url 'relatorio_mensal_treinos' %}" class="nav-link{% if current_view == 'relatorio_mensal_treinos' %} is-active{% endif %}" data-nav-link data-cy="nav-relatorio-treinos">
+                                Relat&oacute;rios
+                            </a>
                             <a href="{% url 'atleta' %}" class="nav-link{% if current_view == 'atleta' %} is-active{% endif %}" data-nav-link data-cy="nav-atleta">
                                 Perfil do Atleta
                             </a>

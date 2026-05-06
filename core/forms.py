@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -315,3 +317,51 @@ class ExecucaoTreinoForm(forms.ModelForm):
                 'Esse treino ainda não possui exercícios cadastrados. Adicione pelo menos um exercício antes de iniciar.'
             )
         return treino
+
+
+class RelatorioMensalTreinosForm(forms.Form):
+    mes = forms.CharField(
+        label='Mês',
+        widget=forms.TextInput(attrs={'type': 'month'}),
+    )
+    treino = forms.ModelChoiceField(
+        label='Treino',
+        queryset=Treino.objects.none(),
+        required=False,
+        empty_label='Todos os treinos',
+    )
+    status = forms.ChoiceField(
+        label='Status',
+        required=False,
+        choices=[
+            ('', 'Todos os status'),
+            *ExecucaoTreino.STATUS_CHOICES,
+        ],
+    )
+
+    def __init__(self, *args, usuario=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.is_bound:
+            hoje = timezone.localdate()
+            self.fields['mes'].initial = hoje.strftime('%Y-%m')
+
+        self.fields['mes'].widget.attrs.update({
+            'aria-describedby': 'mes-relatorio-hint',
+        })
+
+        treino_field = self.fields['treino']
+        treino_field.queryset = Treino.objects.filter(usuario=usuario).order_by('nome') if usuario else Treino.objects.none()
+        _append_widget_class(treino_field.widget, 'form-select-input')
+
+        status_field = self.fields['status']
+        _append_widget_class(status_field.widget, 'form-select-input')
+
+    def clean_mes(self):
+        mes = self.cleaned_data['mes']
+
+        try:
+            ano, numero_mes = [int(parte) for parte in mes.split('-', 1)]
+            return date(ano, numero_mes, 1)
+        except (TypeError, ValueError):
+            raise forms.ValidationError('Informe um mês válido.')

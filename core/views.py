@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.db import DatabaseError, transaction
 from django.db.models.functions import Lower, Trim
 from django.db.models import Case, When, Value, IntegerField
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 from django.urls import reverse
 import logging
 
@@ -18,6 +18,7 @@ from .forms import (
     ExecucaoTreinoForm,
     MedicaoAtletaForm,
     MetaForm,
+    RelatorioMensalTreinosForm,
     RegisterForm,
     TreinoForm,
 )
@@ -30,6 +31,13 @@ def _concluir_execucao(execucao):
     if execucao.status != 'concluido':
         execucao.status = 'concluido'
         execucao.save(update_fields=['status'])
+
+
+def _proximo_mes(data):
+    if data.month == 12:
+        return data.replace(year=data.year + 1, month=1)
+
+    return data.replace(month=data.month + 1)
 
 
 ATLETA_METRICAS = [
@@ -552,6 +560,60 @@ def execucao_view(request):
     return render(request, 'core/execucao.html', {
         'form': form,
         'execucoes': execucoes
+    })
+
+
+@login_required
+def relatorio_mensal_treinos_view(request):
+    hoje = timezone.localdate()
+    mes_inicio = hoje.replace(day=1)
+    dados_filtro = request.GET.copy()
+
+    if not dados_filtro:
+        dados_filtro = {'mes': mes_inicio.strftime('%Y-%m')}
+
+    form = RelatorioMensalTreinosForm(dados_filtro, usuario=request.user)
+    execucoes = ExecucaoTreino.objects.none()
+    total_treinos = 0
+    mes_anterior_cadastro = False
+
+    if form.is_valid():
+        mes_inicio = form.cleaned_data['mes']
+        cadastro = timezone.localtime(request.user.date_joined).date().replace(day=1)
+        mes_anterior_cadastro = mes_inicio < cadastro
+
+        if not mes_anterior_cadastro:
+            fuso_horario = timezone.get_current_timezone()
+            inicio_periodo = timezone.make_aware(datetime.combine(mes_inicio, time.min), fuso_horario)
+            fim_periodo = timezone.make_aware(datetime.combine(_proximo_mes(mes_inicio), time.min), fuso_horario)
+
+            execucoes = ExecucaoTreino.objects.select_related('treino').prefetch_related(
+                'itens__exercicio__exercicio_base'
+            ).filter(
+                treino__usuario=request.user,
+                data_execucao__gte=inicio_periodo,
+                data_execucao__lt=fim_periodo,
+            ).order_by('-data_execucao', '-id')
+
+            treino = form.cleaned_data.get('treino')
+            status = form.cleaned_data.get('status')
+
+            if treino:
+                execucoes = execucoes.filter(treino=treino)
+
+            if status:
+                execucoes = execucoes.filter(status=status)
+
+            total_treinos = execucoes.count()
+
+    return render(request, 'core/relatorio_mensal_treinos.html', {
+        'form': form,
+        'execucoes': execucoes,
+        'total_treinos': total_treinos,
+        'mes_inicio': mes_inicio,
+        'mes_input_value': mes_inicio.strftime('%Y-%m'),
+        'mes_anterior_cadastro': mes_anterior_cadastro,
+        'sem_treinos_no_mes': form.is_valid() and not mes_anterior_cadastro and total_treinos == 0,
     })
 
 
