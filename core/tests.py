@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 
 from django.contrib.auth.models import User
 from django.db import DatabaseError
@@ -473,6 +473,71 @@ class HomeMetasCardTests(TestCase):
         self.assertContains(resposta, 'Meta vencida')
         self.assertContains(resposta, 'Vencida h\u00e1 2 dias')
         self.assertNotContains(resposta, 'Vence em -2 dias')
+
+
+class RelatorioMensalTreinosTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='reportuser', password='123456')
+        self.user.date_joined = timezone.make_aware(datetime(2026, 1, 10, 9, 0))
+        self.user.save(update_fields=['date_joined'])
+        self.client.login(username='reportuser', password='123456')
+
+        self.treino_a = Treino.objects.create(usuario=self.user, nome='Treino A')
+        self.treino_b = Treino.objects.create(usuario=self.user, nome='Treino B')
+        self.exercicio_a = Exercicio.objects.create(treino=self.treino_a, nome='Supino', series=3, repeticoes=10)
+        self.exercicio_b = Exercicio.objects.create(treino=self.treino_b, nome='Agachamento', series=4, repeticoes=8)
+
+    def _criar_execucao(self, treino, data_execucao, status='concluido'):
+        execucao = ExecucaoTreino.objects.create(treino=treino, status=status)
+        exercicio = self.exercicio_a if treino == self.treino_a else self.exercicio_b
+        ExecucaoExercicio.objects.create(execucao=execucao, exercicio=exercicio, concluido=status == 'concluido')
+        execucao.data_execucao = timezone.make_aware(datetime.combine(data_execucao, time(hour=10)))
+        execucao.save(update_fields=['data_execucao'])
+        return execucao
+
+    def test_mes_com_treinos_exibe_lista_total_e_filtros(self):
+        self._criar_execucao(self.treino_a, datetime(2026, 5, 5).date())
+        self._criar_execucao(self.treino_b, datetime(2026, 5, 20).date(), status='em_andamento')
+        self._criar_execucao(self.treino_a, datetime(2026, 4, 20).date())
+
+        resposta = self.client.get(reverse('relatorio_mensal_treinos'), {'mes': '2026-05'})
+
+        self.assertContains(resposta, 'Relatório mensal de treinos')
+        self.assertContains(resposta, 'Treino A')
+        self.assertContains(resposta, 'Treino B')
+        self.assertContains(resposta, 'Total de treinos')
+        self.assertContains(resposta, '<strong>2</strong>', html=False)
+        self.assertContains(resposta, 'Todos os treinos')
+        self.assertContains(resposta, 'Todos os status')
+
+    def test_filtros_atualizam_lista_e_total(self):
+        self._criar_execucao(self.treino_a, datetime(2026, 5, 5).date())
+        self._criar_execucao(self.treino_b, datetime(2026, 5, 20).date(), status='em_andamento')
+
+        resposta = self.client.get(reverse('relatorio_mensal_treinos'), {
+            'mes': '2026-05',
+            'treino': self.treino_b.id,
+            'status': 'em_andamento',
+        })
+
+        self.assertContains(resposta, '<strong>Treino B</strong>', html=False)
+        self.assertNotContains(resposta, '<strong>Treino A</strong>', html=False)
+        self.assertContains(resposta, '<strong>1</strong>', html=False)
+
+    def test_mes_valido_sem_treinos_informa_ausencia(self):
+        resposta = self.client.get(reverse('relatorio_mensal_treinos'), {'mes': '2026-06'})
+
+        self.assertContains(resposta, 'Não houve treinos registrados.')
+        self.assertContains(resposta, 'Nenhuma execução foi encontrada no período selecionado.')
+
+    def test_mes_anterior_ao_cadastro_informa_sem_dados(self):
+        self._criar_execucao(self.treino_a, datetime(2026, 1, 20).date())
+
+        resposta = self.client.get(reverse('relatorio_mensal_treinos'), {'mes': '2025-12'})
+
+        self.assertContains(resposta, 'Não há dados disponíveis.')
+        self.assertContains(resposta, 'O mês selecionado é anterior ao cadastro da sua conta.')
+        self.assertNotContains(resposta, '<strong>Treino A</strong>', html=False)
 
 
 class PerfilAtletaFeatureTests(TestCase):
