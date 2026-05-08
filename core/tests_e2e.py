@@ -9,7 +9,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import tag
 from django.utils import timezone
 
-from .models import ExecucaoTreino, ExercicioBase, Meta, Treino
+from .models import ExecucaoTreino, ExercicioBase, Lembrete, Meta, Treino
 
 os.environ.setdefault('DJANGO_ALLOW_ASYNC_UNSAFE', 'true')
 
@@ -126,3 +126,28 @@ class GymTrackE2ETests(StaticLiveServerTestCase):
         self.assertEqual(meta.status, 'concluida')
         expect(body).to_contain_text('Meta confirmada com sucesso!')
         expect(self.page.locator('form[action*="/confirmar/"] button[type="submit"]')).to_have_count(0)
+
+    def test_fluxo_e2e_de_lembrete_com_validacao(self):
+        self._registrar_usuario(username='reminder_user', email='reminder@example.com')
+
+        self.page.goto(self._url('/lembretes/'))
+        self.page.locator('[name="titulo"]').fill('Lembrete E2E')
+        self.page.locator('[name="data_hora"]').fill('2000-01-01T10:00')
+        self.page.locator('.content-card form button[type="submit"]').click()
+
+        body = self.page.locator('body')
+        expect(body).to_contain_text('A data e o horário do lembrete não podem estar no passado.')
+
+        data_futura = (timezone.localtime(timezone.now()) + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M')
+        self.page.locator('[name="data_hora"]').fill(data_futura)
+        self.page.locator('.content-card form button[type="submit"]').click()
+
+        expect(body).to_contain_text('Lembrete criado com sucesso!')
+        expect(body).to_contain_text('Lembrete E2E')
+
+        lembrete = Lembrete.objects.get(titulo='Lembrete E2E')
+        self.assertEqual(lembrete.usuario.username, 'reminder_user')
+
+        self.page.goto(self._url('/'))
+        expect(body).to_contain_text('Lembretes próximos')
+        expect(body).to_contain_text('Lembrete E2E')
