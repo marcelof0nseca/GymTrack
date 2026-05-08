@@ -86,6 +86,19 @@ class Meta(models.Model):
         return f'Vence em {dias} dias'
 
 
+class Lembrete(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lembretes')
+    titulo = models.CharField(max_length=120)
+    data_hora = models.DateTimeField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['data_hora', 'id']
+
+    def __str__(self):
+        return f'{self.titulo} - {self.data_hora:%d/%m/%Y %H:%M}'
+
+
 class Atleta(models.Model):
     OBJETIVO_CHOICES = [
         ('emagrecimento', 'Emagrecimento'),
