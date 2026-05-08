@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="page-grid feature-page metas-page reminders-page">
+    <div class="content-card">
+        <div class="page-intro-panel metas-intro-panel">
+            <div class="page-intro-copy">
+                <span class="page-kicker metas-kicker">Organização da rotina</span>
+                <h2 class="section-title">Criar lembrete</h2>
+                <p class="section-subtitle">Cadastre um título, uma data e um horário para lembrar treinos e atividades importantes.</p>
+            </div>
+
+            <div class="metas-summary-grid">
+                <div class="metas-summary-card">
+                    <span>Agendados</span>
+                    <strong>{{ lembretes_em_andamento }}</strong>
+                    <small>para os próximos dias</small>
+                </div>
+
+                <div class="metas-summary-card">
+                    <span>Hoje</span>
+                    <strong>{{ lembretes_hoje }}</strong>
+                    <small>itens para hoje</small>
+                </div>
+
+                <div class="metas-summary-card">
+                    <span>Atrasados</span>
+                    <strong>{{ lembretes_atrasados }}</strong>
+                    <small>pedem atenção</small>
+                </div>
+            </div>
+        </div>
+
+        <p class="section-subtitle">Registre lembretes rápidos e acompanhe os que estão mais próximos.</p>
+
+        <form method="post" novalidate class="submit-once-form" data-cy="reminder-form">
+            {% csrf_token %}
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label for="{{ form.titulo.id_for_label }}">Título</label>
+                    {{ form.titulo }}
+                </div>
+
+                <div class="form-group full">
+                    <label for="{{ form.data_hora.id_for_label }}">Data e horário</label>
+                    {{ form.data_hora }}
+                </div>
+            </div>
+
+            {% include 'core/includes/form_errors.html' with form=form %}
+
+            <div class="form-actions">
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                    data-cy="create-reminder"
+                    data-loading-text="Criando lembrete..."
+                >
+                    Criar lembrete
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="list-card">
+        <div class="metas-list-header">
+            <div>
+                <span class="page-kicker metas-kicker">Painel de alertas</span>
+                <h3 class="section-title">Lembretes cadastrados</h3>
+                <p class="section-subtitle">Veja os próximos compromissos e o que já passou do horário.</p>
+            </div>
+
+            {% if proximo_lembrete %}
+                <div class="metas-next-card">
+                    <span>Próximo lembrete</span>
+                    <strong>{{ proximo_lembrete.titulo }}</strong>
+                    <small>{{ proximo_lembrete.data_hora_resumo }}</small>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if lembretes %}
+            <ul class="items-list metas-items-list">
+                {% for lembrete in lembretes %}
+                    <li class="item meta-item-card">
+                        <div class="meta-content">
+                            <div class="meta-heading-row">
+                                <strong>{{ lembrete.titulo }}</strong>
+                                <span class="meta-deadline-chip meta-deadline-chip--{{ lembrete.status_visual }}">
+                                    {{ lembrete.status_label }}
+                                </span>
+                            </div>
+
+                            <span>Data e horário: {{ lembrete.data_hora_resumo }}</span>
+
+                            {% if lembrete.status_visual == 'vencida' %}
+                                <span>Esse lembrete já passou do horário definido.</span>
+                            {% elif lembrete.status_visual == 'concluida' %}
+                                <span>Esse lembrete está previsto para hoje.</span>
+                            {% else %}
+                                <span>Esse lembrete ainda está agendado.</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-state">
+                Nenhum lembrete cadastrado até o momento.
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -10,6 +10,7 @@ from .models import (
     Exercicio,
     ExercicioBase,
     ExecucaoTreino,
+    Lembrete,
     MedicaoAtleta,
     Meta,
     Treino,
@@ -228,6 +229,47 @@ class MetaForm(forms.ModelForm):
             self.add_error('prazo', 'A data de término não pode ser anterior à data de início.')
 
         return cleaned_data
+
+
+class LembreteForm(forms.ModelForm):
+    class Meta:
+        model = Lembrete
+        fields = ['titulo', 'data_hora']
+        labels = {
+            'titulo': 'Título',
+            'data_hora': 'Data e horário',
+        }
+        widgets = {
+            'data_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        agora = timezone.localtime(timezone.now()).strftime('%Y-%m-%dT%H:%M')
+
+        self.fields['titulo'].widget.attrs.update({
+            'placeholder': 'Ex.: Lembrar do treino de pernas',
+        })
+        self.fields['data_hora'].widget.attrs.update({
+            'min': agora,
+        })
+
+    def clean_titulo(self):
+        titulo = self.cleaned_data['titulo'].strip()
+
+        if not titulo:
+            raise forms.ValidationError('O título do lembrete não pode ser vazio.')
+
+        return titulo
+
+    def clean_data_hora(self):
+        data_hora = self.cleaned_data['data_hora']
+        agora = timezone.localtime(timezone.now())
+
+        if data_hora < agora:
+            raise forms.ValidationError('A data e o horário do lembrete não podem estar no passado.')
+
+        return data_hora
 
 
 class ExercicioForm(forms.ModelForm):

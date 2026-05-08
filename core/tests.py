@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 from unittest.mock import patch
 
-from .models import Atleta, Exercicio, ExercicioBase, ExecucaoExercicio, ExecucaoTreino, MedicaoAtleta, Meta, Treino
+from .models import Atleta, Exercicio, ExercicioBase, ExecucaoExercicio, ExecucaoTreino, Lembrete, MedicaoAtleta, Meta, Treino
 
 
 class ConfirmarTreinoFlowTests(TestCase):
@@ -715,3 +715,40 @@ class ContaENavegacaoTests(TestCase):
         self.assertContains(resposta, 'Minha conta')
         self.assertContains(resposta, self.user.username)
         self.assertContains(resposta, 'Criar perfil do atleta')
+
+
+class LembretesPageTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='reminderuser', password='123456')
+        self.client.login(username='reminderuser', password='123456')
+
+    def test_pagina_de_lembretes_exibe_formulario_e_lista_vazia(self):
+        resposta = self.client.get(reverse('lembretes'))
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertContains(resposta, 'Criar lembrete')
+        self.assertContains(resposta, 'Título')
+        self.assertContains(resposta, 'Data e horário')
+        self.assertContains(resposta, 'Nenhum lembrete cadastrado até o momento.')
+
+    def test_criar_lembrete_sucesso_basico(self):
+        data_hora = timezone.localtime(timezone.now()) + timedelta(days=1)
+
+        resposta = self.client.post(reverse('lembretes'), {
+            'titulo': 'Lembrar do treino',
+            'data_hora': data_hora.strftime('%Y-%m-%dT%H:%M'),
+        }, follow=True)
+
+        self.assertEqual(Lembrete.objects.filter(usuario=self.user).count(), 1)
+        self.assertContains(resposta, 'Lembrete criado com sucesso!')
+
+    def test_rejeita_data_passada(self):
+        data_hora = timezone.localtime(timezone.now()) - timedelta(hours=2)
+
+        resposta = self.client.post(reverse('lembretes'), {
+            'titulo': 'Lembrete antigo',
+            'data_hora': data_hora.strftime('%Y-%m-%dT%H:%M'),
+        })
+
+        self.assertEqual(Lembrete.objects.filter(usuario=self.user).count(), 0)
+        self.assertContains(resposta, 'A data e o horário do lembrete não podem estar no passado.')

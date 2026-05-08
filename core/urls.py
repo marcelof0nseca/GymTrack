@@ -10,6 +10,7 @@ urlpatterns = [
     path('perfil/', views.perfil_view, name='perfil'),
     path('atleta/', views.atleta_view, name='atleta'),
     path('metas/', views.metas_view, name='metas'),
+    path('lembretes/', views.lembretes_view, name='lembretes'),
     path('metas/<int:meta_id>/confirmar/', views.confirmar_meta_view, name='confirmar_meta'),
     path('metas/<int:meta_id>/excluir/', views.excluir_meta_view, name='excluir_meta'),
 

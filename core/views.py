@@ -11,11 +11,12 @@ from datetime import datetime, time, timedelta
 from django.urls import reverse
 import logging
 
-from .models import Atleta, MedicaoAtleta, Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio
+from .models import Atleta, MedicaoAtleta, Meta, Treino, Exercicio, ExecucaoTreino, ExecucaoExercicio, Lembrete
 from .forms import (
     AtletaForm,
     ExercicioForm,
     ExecucaoTreinoForm,
+    LembreteForm,
     MedicaoAtletaForm,
     MetaForm,
     RelatorioMensalTreinosForm,
@@ -406,6 +407,64 @@ def metas_view(request):
         'metas_concluidas': metas_concluidas,
         'metas_vencidas': metas_vencidas,
         'proxima_meta': proxima_meta,
+    })
+
+
+@login_required
+def lembretes_view(request):
+    if request.method == 'POST':
+        form = LembreteForm(request.POST)
+
+        if form.is_valid():
+            lembrete = form.save(commit=False)
+            lembrete.usuario = request.user
+            lembrete.save()
+            messages.success(request, 'Lembrete criado com sucesso!')
+            return redirect('lembretes')
+    else:
+        form = LembreteForm()
+
+    lembretes = list(Lembrete.objects.filter(usuario=request.user).order_by('data_hora', 'id'))
+    agora_local = timezone.localtime(timezone.now())
+    hoje_local = timezone.localdate()
+
+    lembretes_em_andamento = sum(1 for lembrete in lembretes if timezone.localtime(lembrete.data_hora) > agora_local)
+    lembretes_hoje = sum(1 for lembrete in lembretes if timezone.localtime(lembrete.data_hora).date() == hoje_local)
+    lembretes_atrasados = sum(1 for lembrete in lembretes if timezone.localtime(lembrete.data_hora) < agora_local)
+
+    lembretes_formatados = []
+
+    for lembrete in lembretes:
+        data_hora_local = timezone.localtime(lembrete.data_hora)
+
+        if data_hora_local < agora_local:
+            status_visual = 'vencida'
+            status_label = 'Atrasado'
+        elif data_hora_local.date() == hoje_local:
+            status_visual = 'concluida'
+            status_label = 'Hoje'
+        else:
+            status_visual = 'em_andamento'
+            status_label = 'Agendado'
+
+        lembretes_formatados.append({
+            'id': lembrete.id,
+            'titulo': lembrete.titulo,
+            'data_hora': data_hora_local,
+            'data_hora_resumo': data_hora_local.strftime('%d/%m/%Y %H:%M'),
+            'status_visual': status_visual,
+            'status_label': status_label,
+        })
+
+    proximo_lembrete = next((item for item in lembretes_formatados if item['status_visual'] == 'em_andamento'), None)
+
+    return render(request, 'core/lembretes.html', {
+        'form': form,
+        'lembretes': lembretes_formatados,
+        'lembretes_em_andamento': lembretes_em_andamento,
+        'lembretes_hoje': lembretes_hoje,
+        'lembretes_atrasados': lembretes_atrasados,
+        'proximo_lembrete': proximo_lembrete,
     })
 
 

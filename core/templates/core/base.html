@@ -55,6 +55,9 @@
                             <a href="{% url 'metas' %}" class="nav-link{% if current_view == 'metas' %} is-active{% endif %}" data-nav-link data-cy="nav-metas">
                                 Metas
                             </a>
+                            <a href="{% url 'lembretes' %}" class="nav-link{% if current_view == 'lembretes' %} is-active{% endif %}" data-nav-link data-cy="nav-lembretes">
+                                Lembretes
+                            </a>
                             <a href="{% url 'execucao' %}" class="nav-link{% if current_view == 'execucao' or current_view == 'execucao_detalhe' %} is-active{% endif %}" data-nav-link data-cy="nav-execucao">
                                 Execu&ccedil;&atilde;o
                             </a>
