@@ -230,6 +230,16 @@ def home(request):
             status='concluida'
         ).order_by('prazo', 'id')[:3]
 
+    lembretes_proximos = Lembrete.objects.filter(
+        usuario=request.user,
+        data_hora__gte=timezone.now(),
+    ).order_by('data_hora', 'id')[:3]
+
+    if not lembretes_proximos:
+        lembretes_proximos = Lembrete.objects.filter(
+            usuario=request.user,
+        ).order_by('data_hora', 'id')[:3]
+
     return render(request, 'core/home.html', {
         'total_treinos': treinos.count(),
         'total_exercicios': exercicios.count(),
@@ -237,6 +247,7 @@ def home(request):
         'ultimo_treino': treinos.first(),
         'ultima_execucao': execucoes.first(),
         'metas_proximas_expirar': metas_proximas_expirar,
+        'lembretes_proximos': lembretes_proximos,
         'atleta': atleta,
         'medicao_atual_atleta': medicao_atual_atleta,
     })

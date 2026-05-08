@@ -716,6 +716,29 @@ class ContaENavegacaoTests(TestCase):
         self.assertContains(resposta, self.user.username)
         self.assertContains(resposta, 'Criar perfil do atleta')
 
+    def test_home_exibe_lembretes_no_lugar_de_execucoes(self):
+        Lembrete.objects.create(
+            usuario=self.user,
+            titulo='Lembrar do treino de pernas',
+            data_hora=timezone.localtime(timezone.now()) + timedelta(days=1),
+        )
+
+        Meta.objects.create(
+            usuario=self.user,
+            nome='Meta semanal',
+            valor='5.00',
+            prazo=timezone.localdate() + timedelta(days=3),
+        )
+
+        resposta = self.client.get(reverse('home'))
+
+        self.assertContains(resposta, 'Lembretes próximos')
+        self.assertContains(resposta, 'Lembrar do treino de pernas')
+        self.assertContains(resposta, 'Metas próximas')
+        self.assertContains(resposta, 'Meta semanal')
+        self.assertNotContains(resposta, 'Execuções realizadas')
+        self.assertNotContains(resposta, 'total_execucoes')
+
 
 class LembretesPageTests(TestCase):
     def setUp(self):

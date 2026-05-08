@@ -44,6 +44,27 @@
         </div>
 
         <div class="mini-stat mini-stat-goals">
+            <span>Lembretes próximos</span>
+
+            {% if lembretes_proximos %}
+                <div class="mini-goals-list">
+                    {% for lembrete in lembretes_proximos %}
+                        <div class="mini-goal-item">
+                            <div>
+                                <strong>{{ lembrete.titulo }}</strong>
+                                <small>{{ lembrete.data_hora|date:'d/m/Y H:i' }}</small>
+                            </div>
+
+                            <span class="mini-goal-chip">Lembrete</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="mini-goals-empty">Nenhum lembrete cadastrado.</p>
+            {% endif %}
+        </div>
+
+        <div class="mini-stat mini-stat-goals">
             <span>Metas próximas</span>
 
             {% if metas_proximas_expirar %}
@@ -62,11 +83,6 @@
             {% else %}
                 <p class="mini-goals-empty">Nenhuma meta próxima do prazo.</p>
             {% endif %}
-        </div>
-
-        <div class="mini-stat">
-            <span>Execuções realizadas</span>
-            <strong>{{ total_execucoes }}</strong>
         </div>
     </div>
 </section>
