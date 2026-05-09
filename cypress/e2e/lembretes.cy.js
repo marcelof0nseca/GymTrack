@@ -18,7 +18,7 @@ const registerUser = (user) => {
   cy.get('[name="password2"]').type(user.password);
   cy.get('[data-cy="register-submit"]').click();
 
-  cy.url().should('eq', `${Cypress.config('baseUrl')}/`);
+  cy.location('pathname', { timeout: 10000 }).should('eq', '/');
 };
 
 const formatDateTime = (offsetDays) => {
@@ -30,7 +30,7 @@ const formatDateTime = (offsetDays) => {
 };
 
 describe('Fluxo de lembretes', () => {
-  it('valida data passada e cria lembrete com sucesso', () => {
+  it('cria lembrete com sucesso', () => {
     const user = buildUser('lembrete');
     const reminderName = `Lembrete Cypress ${Date.now()}`;
 
@@ -40,19 +40,48 @@ describe('Fluxo de lembretes', () => {
     cy.contains('Criar lembrete').should('be.visible');
 
     cy.get('[name="titulo"]').type(reminderName);
-    cy.get('[name="data_hora"]').type('2000-01-01T10:00');
-    cy.get('[data-cy="create-reminder"]').click();
-
-    cy.contains('A data e o horário do lembrete não podem estar no passado.').should('be.visible');
-
-    cy.get('[name="data_hora"]').clear().type(formatDateTime(1));
+    cy.get('[name="data_hora"]').type(formatDateTime(1));
     cy.get('[data-cy="create-reminder"]').click();
 
     cy.contains('Lembrete criado com sucesso!').should('be.visible');
     cy.contains(reminderName).should('be.visible');
+    cy.contains('Agendado').should('be.visible');
 
     cy.get('[data-cy="nav-home"]').click();
-    cy.contains('Lembretes próximos').should('be.visible');
+    cy.contains(/Lembretes pr.ximos/).should('be.visible');
     cy.contains(reminderName).should('be.visible');
+  });
+
+  it('impede cadastro com data no passado', () => {
+    const user = buildUser('lembrete-passado');
+
+    registerUser(user);
+
+    cy.visit('/lembretes/');
+    cy.contains('Criar lembrete').should('be.visible');
+
+    cy.get('[name="titulo"]').type('Lembrete antigo');
+    cy.get('[name="data_hora"]').type('2000-01-01T10:00');
+    cy.get('[data-cy="create-reminder"]').click();
+
+    cy.contains(/A data e o hor.rio do lembrete n.o podem estar no passado/).should('be.visible');
+    cy.contains('Lembrete criado com sucesso!').should('not.exist');
+    cy.contains(/Nenhum lembrete cadastrado at. o momento/).should('be.visible');
+    cy.contains('Lembrete antigo').should('not.exist');
+  });
+
+  it('exibe erro quando campos obrigatÃ³rios ficam vazios', () => {
+    const user = buildUser('lembrete-vazio');
+
+    registerUser(user);
+
+    cy.visit('/lembretes/');
+    cy.contains('Criar lembrete').should('be.visible');
+
+    cy.get('[data-cy="create-reminder"]').click();
+
+    cy.contains(/Este campo . obrigat.rio/).should('be.visible');
+    cy.contains('Lembrete criado com sucesso!').should('not.exist');
+    cy.contains(/Nenhum lembrete cadastrado at. o momento/).should('be.visible');
   });
 });
