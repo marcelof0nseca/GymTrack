@@ -34,6 +34,9 @@ O **GymTrack** é uma aplicação web desenvolvida para auxiliar praticantes de 
 - **Documento do Projeto**  
 [Docs](https://docs.google.com/document/d/1_7_Va8dvJpgzO_IRk2-y4eVUFT7FXoAKBGFNV3WwMas/edit?usp=sharing)
 
+- **Guia de Contribuição**  
+[CONTRIBUTING.md](CONTRIBUTING.md)
+
 - **Link deploy**  
 [Deploy](https://gymtrack-nnjj.onrender.com)
 ---
