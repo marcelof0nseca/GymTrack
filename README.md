@@ -157,7 +157,7 @@ No fechamento da entrega, o pair programming também foi usado para revisar o qu
 
 ### Screencasts da Entrega 4
 
-- [Screencast das funcionalidades novas](ADICIONAR_LINK_AQUI)
+- [Screencast das funcionalidades novas](https://www.youtube.com/watch?v=gVoN5zfhAM4)
 - [Screencast dos testes E2E](ADICIONAR_LINK_AQUI)
 - [Screencast do CI/CD](ADICIONAR_LINK_AQUI)
 
