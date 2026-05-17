@@ -119,7 +119,7 @@ Inclua, quando possivel:
 Tem duvidas ou precisa de ajuda?
 
 - Abra uma issue com a tag `question`.
-- Entre em contato com o mantenedor: maf@cesar.school.
+- Entre em contato com o mantenedor: maf@cesar.school, jcmsn@cesar.school
 
 ---
 
