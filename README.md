@@ -117,9 +117,6 @@ Na Entrega 3, a programação em pares aconteceu principalmente entre eu e um co
 </details>
 
 
-</details>
-
-
 
 
 ---
@@ -146,6 +143,14 @@ Na Entrega 3, a programação em pares aconteceu principalmente entre eu e um co
 ![Issues da Entrega 4](assets/entrega4-issues.png)
 
 <br>
+
+## Relato de Pair Programming -- Entrega 4
+
+Na Entrega 4, a equipe utilizou pair programming em sessões com compartilhamento de tela para revisar e finalizar a versão final do GymTrack. Durante essas sessões, um integrante (Marcelo) atuava como **driver**, implementando as alterações, enquanto outro atuava como **navigator** (Joao Mafra), revisando a lógica, conferindo os critérios da sprint e sugerindo ajustes.
+
+O trabalho em pares foi aplicado principalmente nas funcionalidades de **lembretes**, **relatório mensal de treinos**, melhorias da **home**, ajustes de formulários, validações e testes E2E. A dupla conferiu os fluxos manualmente no navegador, revisou models, forms, views e templates, e validou se as funcionalidades estavam alinhadas às histórias planejadas no backlog.
+
+No fechamento da entrega, o pair programming também foi usado para revisar o quadro da sprint, as issues, a execução dos testes e o pipeline de CI/CD. Essa prática ajudou a reduzir erros, melhorar o alinhamento da equipe e entregar uma versão final mais estável.
 
 ### Screencasts da Entrega 4
 
