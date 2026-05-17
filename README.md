@@ -107,6 +107,7 @@ Mesmo com a divisão de responsabilidades, houve constante interação entre os 
 Na Entrega 3, a programação em pares aconteceu principalmente entre eu e um colega da equipe, com foco em alinhamento técnico, revisão de funcionalidades e validação da sprint. A implementação ficou concentrada em nós dois, mas de forma desigual: meu colega desenvolveu a história de metas, enquanto eu fiquei responsável pelas demais histórias da sprint, além da configuração de CI/CD, testes E2E, deployment, versionamento e atualização do bug tracker. Mesmo assim, houve colaboração nas decisões, na revisão dos fluxos e na conferência final da entrega, o que manteve a prática de pair programming como apoio importante ao desenvolvimento.
 
 
+
 ### Screencasts da Entrega 3
 
 
@@ -126,11 +127,33 @@ Na Entrega 3, a programação em pares aconteceu principalmente entre eu e um co
 <details>
 <summary>Entrega 4 — Versão Final</summary>
 
-Conteúdo da entrega final.
 
-- Sistema completo  
-- Melhorias de interface  
-- Apresentação final  
+
+### Backlog da Sprint
+
+![Backlog da Entrega 4](assets/entrega4-backlog.png)
+
+<br>
+
+### Quadro da Sprint
+
+![Quadro da Entrega 4](assets/entrega4-quadro.png)
+
+<br>
+
+### Issues da Entrega 4
+
+![Issues da Entrega 4](assets/entrega4-issues.png)
+
+<br>
+
+### Screencasts da Entrega 4
+
+- [Screencast das funcionalidades novas](ADICIONAR_LINK_AQUI)
+- [Screencast dos testes E2E](ADICIONAR_LINK_AQUI)
+- [Screencast do CI/CD](ADICIONAR_LINK_AQUI)
+
+
 
 </details>
 
