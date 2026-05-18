@@ -1210,6 +1210,10 @@ img {
     line-height: 1.6;
 }
 
+.reminders-page .content-card > .section-subtitle::after {
+    content: 'Cadastre lembretes para organizar seus treinos, horarios e atividades importantes.';
+}
+
 .metas-summary-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
