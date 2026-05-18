@@ -159,7 +159,7 @@ No fechamento da entrega, o pair programming também foi usado para revisar o qu
 
 - [Screencast das funcionalidades novas](https://www.youtube.com/watch?v=gVoN5zfhAM4)
 - [Screencast dos testes E2E](https://youtu.be/G5TrFqNb_vY)
-- [Screencast do CI/CD](ADICIONAR_LINK_AQUI)
+- [Screencast do CI/CD](https://youtu.be/0FoxSdgByiM)
 
 
 
